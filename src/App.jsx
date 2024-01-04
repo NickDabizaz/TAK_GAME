@@ -42,15 +42,26 @@ const App = () => {
 
   // Fungsi handler untuk membuka modal tindakan
   const openActionModalHandler = (row, col) => {
-    openActionModal(
-      row,
-      col,
-      setActionModalOpen,
-      setActionModalContent,
-      board,
-      setSelectedRow,
-      setSelectedCol
-    );
+    // Pengecekan pemain dan pion yang dapat diklik
+    const selectedCell = board[row][col];
+    const playerSymbol =
+      currentPlayer === 1 ? ["w", "W", "CW"] : ["b", "B", "CB"];
+
+    // Jika pemain mengklik pion yang sesuai dengan giliran, buka modal
+    if (
+      selectedCell.length > 0 &&
+      playerSymbol.includes(selectedCell[selectedCell.length - 1].symbol)
+    ) {
+      openActionModal(
+        row,
+        col,
+        setActionModalOpen,
+        setActionModalContent,
+        board,
+        setSelectedRow,
+        setSelectedCol
+      );
+    }
   };
 
   // Fungsi handler untuk menutup modal tindakan
@@ -75,6 +86,22 @@ const App = () => {
       player2
     );
 
+  // Fungsi handler untuk menangani tombol aksi
+  const handleActionHandler = (direction) => {
+    handleAction(
+      direction,
+      selectedRow,
+      selectedCol,
+      setBoard,
+      board,
+      currentPlayer,
+      setCurrentPlayer
+    );
+
+    // Menutup modal setelah tombol aksi ditekan
+    closeActionModalHandler();
+  };
+
   // Fungsi untuk menampilkan papan
   const renderBoard = () => {
     return (
@@ -83,6 +110,7 @@ const App = () => {
           display: "grid",
           gridTemplateColumns: "repeat(5, 50px)",
           gap: "4px",
+          cursor: "pointer", // Set cursor default menjadi pointer
         }}
       >
         {board.map((row, rowIndex) =>
@@ -103,7 +131,11 @@ const App = () => {
                 alignItems: "center",
                 fontSize: "20px",
                 fontWeight: "bold",
-                cursor: cell.length === 0 ? "pointer" : "pointer",
+                cursor:
+                  cell.length > 0 &&
+                  !isPlayerTurnValid(cell[cell.length - 1].symbol)
+                    ? "not-allowed"
+                    : "pointer",
                 position: "relative",
               }}
             >
@@ -117,6 +149,13 @@ const App = () => {
         )}
       </div>
     );
+  };
+
+  // Fungsi untuk menentukan apakah pemain dapat mengklik pion tersebut berdasarkan giliran
+  const isPlayerTurnValid = (symbol) => {
+    const playerSymbol =
+      currentPlayer === 1 ? ["w", "W", "CW"] : ["b", "B", "CB"];
+    return playerSymbol.includes(symbol);
   };
 
   // Menentukan apakah tombol capstone masih aktif atau tidak
@@ -157,6 +196,7 @@ const App = () => {
       </div>
       {/* Tampilkan board */}
       {renderBoard()}
+
       {/* Modal untuk memilih status stone atau capstone */}
       {isModalOpen && (
         <div
@@ -206,9 +246,11 @@ const App = () => {
                 Capstone
               </button>
             )}
+            <button onClick={() => setModalOpen(false)}>Close</button>
           </div>
         </div>
       )}
+
       {/* Modal untuk tindakan stack */}
       {isActionModalOpen && (
         <div
@@ -245,25 +287,29 @@ const App = () => {
             </div>
             <div style={{ marginTop: "10px" }}>
               <button
-                onClick={() => handleAction("up", selectedRow, selectedCol)}
+                onClick={() => handleActionHandler("up")}
                 style={{ marginRight: "5px" }}
+                disabled={selectedRow === 0}
               >
                 Up
               </button>
               <button
-                onClick={() => handleAction("down", selectedRow, selectedCol)}
+                onClick={() => handleActionHandler("down")}
                 style={{ marginRight: "5px" }}
+                disabled={selectedRow === 4}
               >
                 Down
               </button>
               <button
-                onClick={() => handleAction("left", selectedRow, selectedCol)}
+                onClick={() => handleActionHandler("left")}
                 style={{ marginRight: "5px" }}
+                disabled={selectedCol === 0}
               >
                 Left
               </button>
               <button
-                onClick={() => handleAction("right", selectedRow, selectedCol)}
+                onClick={() => handleActionHandler("right")}
+                disabled={selectedCol === 4}
               >
                 Right
               </button>
@@ -272,6 +318,7 @@ const App = () => {
           </div>
         </div>
       )}
+
       {/* Tombol untuk mengonsole log isi board */}
       <div>
         <button onClick={logBoard}>Log Board</button>

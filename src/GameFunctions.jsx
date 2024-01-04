@@ -90,18 +90,58 @@ const closeActionModal = (setActionModalOpen) => {
   setActionModalOpen(false);
 };
 
-const handleAction = (direction, row, col) => {
-  // Tambahkan logika atau perintah yang sesuai dengan setiap arah
-  if (direction === "up") {
-    alert(`PION COLUMN ${col} dan ROW ${row} GO UP`);
-  } else if (direction === "down") {
-    alert(`PION COLUMN ${col} dan ROW ${row} GO DOWN`);
-  } else if (direction === "left") {
-    alert(`PION COLUMN ${col} dan ROW ${row} GO LEFT`);
-  } else if (direction === "right") {
-    alert(`PION COLUMN ${col} dan ROW ${row} GO RIGHT`);
+const handleAction = (direction, row, col, setBoard, board, currentPlayer, setCurrentPlayer) => {
+  const newBoard = board.map((row) => row.slice());
+
+  // Ambil seluruh stack pion dari cell yang dipilih
+  const selectedCellStack = [...newBoard[row][col]];
+
+  // Tentukan arah gerakan dan koordinat cell tujuan
+  let targetRow = row;
+  let targetCol = col;
+
+  if (direction === 'up' && row > 0) {
+    targetRow -= 1;
+  } else if (direction === 'down' && row < 4) {
+    targetRow += 1;
+  } else if (direction === 'left' && col > 0) {
+    targetCol -= 1;
+  } else if (direction === 'right' && col < 4) {
+    targetCol += 1;
   }
+
+  // Periksa apakah cell tujuan kosong atau tidak
+  if (newBoard[targetRow][targetCol].length === 0) {
+    // Jika kosong, pindahkan seluruh stack pion dari cell yang dipilih ke cell tujuan
+    newBoard[targetRow][targetCol] = [...selectedCellStack];
+  } else {
+    // Jika tidak kosong, ambil pion paling atas dari stack cell tujuan
+    const topPiece = newBoard[targetRow][targetCol][newBoard[targetRow][targetCol].length - 1];
+
+    // Periksa apakah pion paling atas adalah pion standing ('W' atau 'B')
+    if (topPiece && (topPiece.symbol === 'W' || topPiece.symbol === 'B')) {
+      // Tampilkan pesan error bahwa pion standing tidak dapat ditumpuk
+      alert("Pion standing ('W' atau 'B') tidak dapat ditumpuk.");
+      return;
+    }
+
+    // Jika tidak kosong, tambahkan seluruh stack pion dari cell yang dipilih ke stack yang sudah ada di cell tujuan
+    newBoard[targetRow][targetCol] = [...newBoard[targetRow][targetCol], ...selectedCellStack];
+  }
+
+  // Kosongkan stack pion di cell yang dipilih
+  newBoard[row][col] = [];
+
+  // Ganti giliran pemain
+  const newCurrentPlayer = currentPlayer === 1 ? 2 : 1;
+  setCurrentPlayer(newCurrentPlayer);
+
+  // Update state board setelah gerakan
+  setBoard(newBoard);
 };
+
+
+
 
 export {
   openModal,
