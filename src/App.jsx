@@ -87,20 +87,12 @@ const App = () => {
     );
 
   // Fungsi handler untuk menangani tombol aksi
-  const handleActionHandler = (direction) => {
-    handleAction(
-      direction,
-      selectedRow,
-      selectedCol,
-      setBoard,
-      board,
-      currentPlayer,
-      setCurrentPlayer
-    );
+const handleActionHandler = (direction) => {
+  handleAction(direction, selectedRow, selectedCol, setBoard, board, currentPlayer, setCurrentPlayer);
 
-    // Menutup modal setelah tombol aksi ditekan
-    closeActionModalHandler();
-  };
+  // Menutup modal setelah tombol aksi ditekan
+  closeActionModalHandler();
+};
 
   // Fungsi untuk menampilkan papan
   const renderBoard = () => {
