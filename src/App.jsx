@@ -87,12 +87,20 @@ const App = () => {
     );
 
   // Fungsi handler untuk menangani tombol aksi
-const handleActionHandler = (direction) => {
-  handleAction(direction, selectedRow, selectedCol, setBoard, board, currentPlayer, setCurrentPlayer);
+  const handleActionHandler = (direction) => {
+    handleAction(
+      direction,
+      selectedRow,
+      selectedCol,
+      setBoard,
+      board,
+      currentPlayer,
+      setCurrentPlayer
+    );
 
-  // Menutup modal setelah tombol aksi ditekan
-  closeActionModalHandler();
-};
+    // Menutup modal setelah tombol aksi ditekan
+    closeActionModalHandler();
+  };
 
   // Fungsi untuk menampilkan papan
   const renderBoard = () => {
@@ -271,11 +279,11 @@ const handleActionHandler = (direction) => {
           >
             <h2>Stack Information</h2>
             <div>
-              {actionModalContent.map((item, index) => (
-                <div key={index}>
-                  {item.symbol} - {item.status}
-                </div>
-              ))}
+            {[...actionModalContent].reverse().map((item, index) => (
+  <div key={index}>
+    {item.symbol} - {item.status}
+  </div>
+))}
             </div>
             <div style={{ marginTop: "10px" }}>
               <button

@@ -90,7 +90,15 @@ const closeActionModal = (setActionModalOpen) => {
   setActionModalOpen(false);
 };
 
-const handleAction = (direction, row, col, setBoard, board, currentPlayer, setCurrentPlayer) => {
+const handleAction = (
+  direction,
+  row,
+  col,
+  setBoard,
+  board,
+  currentPlayer,
+  setCurrentPlayer
+) => {
   const newBoard = board.map((row) => row.slice());
 
   // Ambil seluruh stack pion dari cell yang dipilih
@@ -100,13 +108,13 @@ const handleAction = (direction, row, col, setBoard, board, currentPlayer, setCu
   let targetRow = row;
   let targetCol = col;
 
-  if (direction === 'up' && row > 0) {
+  if (direction === "up" && row > 0) {
     targetRow -= 1;
-  } else if (direction === 'down' && row < 4) {
+  } else if (direction === "down" && row < 4) {
     targetRow += 1;
-  } else if (direction === 'left' && col > 0) {
+  } else if (direction === "left" && col > 0) {
     targetCol -= 1;
-  } else if (direction === 'right' && col < 4) {
+  } else if (direction === "right" && col < 4) {
     targetCol += 1;
   }
 
@@ -115,48 +123,74 @@ const handleAction = (direction, row, col, setBoard, board, currentPlayer, setCu
     // Jika kosong, pindahkan seluruh stack pion dari cell yang dipilih ke cell tujuan
     newBoard[targetRow][targetCol] = [...selectedCellStack];
   } else {
-    const targetCellTop = newBoard[targetRow][targetCol][newBoard[targetRow][targetCol].length - 1];
+    const targetCellTop =
+      newBoard[targetRow][targetCol][newBoard[targetRow][targetCol].length - 1];
 
     // Periksa apakah pion yang akan di-stack adalah 'w' atau 'b'
-    if (['w', 'b'].includes(selectedCellStack[selectedCellStack.length - 1].symbol)) {
+    if (
+      ["w", "b"].includes(
+        selectedCellStack[selectedCellStack.length - 1].symbol
+      )
+    ) {
       // Jika 'w' atau 'b', maka pion hanya bisa menumpuk pion 'w' atau 'b'
-      if (['W', 'B', 'CB', 'CW'].includes(targetCellTop.symbol)) {
+      if (["W", "B", "CB", "CW"].includes(targetCellTop.symbol)) {
         // Jika target pion adalah 'W' atau 'B' atau 'CB' atau 'CW', maka tidak bisa menumpuk
-        alert(`Pemain ${currentPlayer} hanya dapat menumpuk pion 'w' atau 'b' pada pion 'W' atau 'B'.`);
+        alert(
+          `Pemain ${currentPlayer} hanya dapat menumpuk pion 'w' atau 'b' pada pion 'W' atau 'B'.`
+        );
         return;
       }
-    } else if (['W'].includes(selectedCellStack[selectedCellStack.length - 1].symbol)) {
+    } else if (
+      ["W"].includes(selectedCellStack[selectedCellStack.length - 1].symbol)
+    ) {
       // Jika 'W', maka pion hanya bisa menumpuk pion 'W' atau 'CW'
-      if (['B', 'CB', 'CW'].includes(targetCellTop.symbol)) {
+      if (["B", "CB", "CW"].includes(targetCellTop.symbol)) {
         // Jika target pion adalah 'B' atau 'CB' atau 'CW', maka tidak bisa menumpuk
-        alert(`Pemain ${currentPlayer} hanya dapat menumpuk pion 'W' pada pion 'B' atau 'CB'.`);
+        alert(
+          `Pemain ${currentPlayer} hanya dapat menumpuk pion 'W' pada pion 'B' atau 'CB'.`
+        );
         return;
       }
-    } else if (['B'].includes(selectedCellStack[selectedCellStack.length - 1].symbol)) {
+    } else if (
+      ["B"].includes(selectedCellStack[selectedCellStack.length - 1].symbol)
+    ) {
       // Jika 'B', maka pion hanya bisa menumpuk pion 'B' atau 'CB'
-      if (['W', 'CW', 'CB'].includes(targetCellTop.symbol)) {
+      if (["W", "CW", "CB"].includes(targetCellTop.symbol)) {
         // Jika target pion adalah 'W' atau 'CW' atau 'CB', maka tidak bisa menumpuk
-        alert(`Pemain ${currentPlayer} hanya dapat menumpuk pion 'B' pada pion 'W' atau 'CW'.`);
+        alert(
+          `Pemain ${currentPlayer} hanya dapat menumpuk pion 'B' pada pion 'W' atau 'CW'.`
+        );
         return;
       }
-    } else if (['CB'].includes(selectedCellStack[selectedCellStack.length - 1].symbol)) {
+    } else if (
+      ["CB"].includes(selectedCellStack[selectedCellStack.length - 1].symbol)
+    ) {
       // Jika 'CB', maka 'CB' tidak bisa menumpuk pion 'CW'
-      if (['CW'].includes(targetCellTop.symbol)) {
+      if (["CW"].includes(targetCellTop.symbol)) {
         // Jika target pion adalah 'CW', maka tidak bisa menumpuk
-        alert(`Pemain ${currentPlayer} tidak dapat menumpuk pion 'CB' pada pion 'CW'.`);
+        alert(
+          `Pemain ${currentPlayer} tidak dapat menumpuk pion 'CB' pada pion 'CW'.`
+        );
         return;
       }
-    } else if (['CW'].includes(selectedCellStack[selectedCellStack.length - 1].symbol)) {
+    } else if (
+      ["CW"].includes(selectedCellStack[selectedCellStack.length - 1].symbol)
+    ) {
       // Jika 'CW', maka 'CW' tidak bisa menumpuk pion 'CB'
-      if (['CB'].includes(targetCellTop.symbol)) {
+      if (["CB"].includes(targetCellTop.symbol)) {
         // Jika target pion adalah 'CB', maka tidak bisa menumpuk
-        alert(`Pemain ${currentPlayer} tidak dapat menumpuk pion 'CW' pada pion 'CB'.`);
+        alert(
+          `Pemain ${currentPlayer} tidak dapat menumpuk pion 'CW' pada pion 'CB'.`
+        );
         return;
       }
     }
 
     // Jika tidak kosong, tambahkan seluruh stack pion dari cell yang dipilih ke stack yang sudah ada di cell tujuan
-    newBoard[targetRow][targetCol] = [...newBoard[targetRow][targetCol], ...selectedCellStack];
+    newBoard[targetRow][targetCol] = [
+      ...newBoard[targetRow][targetCol],
+      ...selectedCellStack,
+    ];
   }
 
   // Kosongkan stack pion di cell yang dipilih
@@ -168,7 +202,6 @@ const handleAction = (direction, row, col, setBoard, board, currentPlayer, setCu
   // Ganti giliran ke pemain selanjutnya
   setCurrentPlayer(currentPlayer === 1 ? 2 : 1);
 };
-
 
 export {
   openModal,
