@@ -53,7 +53,7 @@ const selectStatus = (
   setBoard(newBoard);
 
   // Update state pemain (stone atau capstone)
-  if (status === "sleeping") {
+  if (status === "sleeping" || status === "standing") {
     currentPlayer === 1
       ? setPlayer1({ ...player1, stones: player1.stones - 1 })
       : setPlayer2({ ...player2, stones: player2.stones - 1 });

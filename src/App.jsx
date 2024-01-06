@@ -34,7 +34,41 @@ const App = () => {
 
   // Fungsi handler untuk membuka modal
   const openModalHandler = (row, col) => {
-    openModal(row, col, setModalOpen, setSelectedRow, setSelectedCol);
+    if (
+      currentPlayer === 2 &&
+      player1.stones === 21 &&
+      player1.capstones === 1
+    ) {
+      const isiBoard = {
+        symbol: "w",
+        status: "sleeping",
+      };
+
+      const tempBoard = [...board];
+      tempBoard[row][col] = [isiBoard];
+      setBoard(tempBoard);
+
+      setPlayer1({ ...player1, stones: player1.stones - 1 });
+      setCurrentPlayer(currentPlayer === 1 ? 2 : 1);
+    } else if (
+      currentPlayer === 1 &&
+      player2.stones === 21 &&
+      player2.capstones === 1
+    ) {
+      const isiBoard = {
+        symbol: "b",
+        status: "sleeping",
+      };
+
+      const tempBoard = [...board];
+      tempBoard[row][col] = [isiBoard];
+      setBoard(tempBoard);
+
+      setPlayer2({ ...player2, stones: player2.stones - 1 });
+      setCurrentPlayer(currentPlayer === 1 ? 2 : 1);
+    } else {
+      openModal(row, col, setModalOpen, setSelectedRow, setSelectedCol);
+    }
   };
 
   // Fungsi handler untuk menutup modal
