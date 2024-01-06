@@ -366,15 +366,13 @@ const checkWin = (board, currentPlayer) => {
 };
 
 const AiMove = (board, setBoard, player2, setPlayer2) => {
-  // alert("Masuk ke function AIMOVE");
   const newBoard = board.map((row) => row.slice());
   let randomRow = Math.floor(Math.random() * 5);
   let randomCol = Math.floor(Math.random() * 5);
   const randomDirection = Math.floor(Math.random() * 4);
-  // const randomAction = Math.floor(Math.random() * 2);
-  const randomAction = 0;
+  const randomAction = player2.stones > 0 ? Math.floor(Math.random() * 2) : 1;
 
-  if (randomAction === 0) {
+  if (randomAction === 0 && player2.stones > 0) {
     // Place
     let isPlaced = false;
     while (!isPlaced) {
@@ -383,9 +381,9 @@ const AiMove = (board, setBoard, player2, setPlayer2) => {
       if (newBoard[randomRow][randomCol].length === 0) {
         let randomStatus;
         if (player2.capstones === 0) {
-          randomStatus = Math.floor(Math.random() * 3);
-        } else if (player2.capstones === 1) {
           randomStatus = Math.floor(Math.random() * 2);
+        } else if (player2.capstones > 0) {
+          randomStatus = Math.floor(Math.random() * 3);
         }
         var status = ["sleeping", "standing", "capstone"][randomStatus];
         const symbol =
@@ -403,7 +401,7 @@ const AiMove = (board, setBoard, player2, setPlayer2) => {
     } else if (status === "capstone") {
       setPlayer2({ ...player2, capstones: player2.capstones - 1 });
     }
-  } else {
+  } else if (newBoard[randomRow][randomCol].length > 0) {
     // Move
     const selectedCellStack = [...newBoard[randomRow][randomCol]];
     let targetRow = randomRow;
@@ -421,6 +419,7 @@ const AiMove = (board, setBoard, player2, setPlayer2) => {
 
     if (newBoard[targetRow][targetCol].length === 0) {
       newBoard[targetRow][targetCol] = [...selectedCellStack];
+      newBoard[randomRow][randomCol] = [];
     } else {
       const targetCellTop =
         newBoard[targetRow][targetCol][
@@ -433,30 +432,32 @@ const AiMove = (board, setBoard, player2, setPlayer2) => {
         )
       ) {
         if (["W", "B", "CB", "CW"].includes(targetCellTop.symbol)) {
-          return AiMove(board);
+          return AiMove(board, setBoard, player2, setPlayer2);
         }
       } else if (
         ["W"].includes(selectedCellStack[selectedCellStack.length - 1].symbol)
       ) {
         if (["B", "CB", "CW"].includes(targetCellTop.symbol)) {
-          return AiMove(board);
+          return AiMove(board, setBoard, player2, setPlayer2);
         }
       } else if (
         ["B"].includes(selectedCellStack[selectedCellStack.length - 1].symbol)
       ) {
         if (["W", "CW", "CB"].includes(targetCellTop.symbol)) {
-          return AiMove(board);
+          return AiMove(board, setBoard, player2, setPlayer2);
         }
       }
       newBoard[targetRow][targetCol] = [
         ...newBoard[targetRow][targetCol],
         ...selectedCellStack,
       ];
+      newBoard[randomRow][randomCol] = [];
     }
+  } else {
+    return AiMove(board, setBoard, player2, setPlayer2);
   }
   setBoard(newBoard);
   console.log({ newBoard });
-  // newBoard[randomRow][randomCol] = [];
 };
 
 export {
