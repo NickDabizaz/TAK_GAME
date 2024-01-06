@@ -273,11 +273,56 @@ const App = () => {
           >
             <h2>Stack Information</h2>
             <div>
-              {[...actionModalContent].reverse().map((item, index) => (
-                <div key={index}>
-                  {item.symbol} - {item.status}
-                </div>
-              ))}
+              {[...actionModalContent].reverse().map((item, index) =>
+                item.status === "capstone" ? (
+                  <div key={index}>
+                    <div
+                      style={{
+                        width: "30.5px",
+                        height: "10px",
+                        backgroundColor: `${
+                          item.symbol === "b" ? "black" : "white"
+                        }`,
+                        transform: "perspective(1.1px) rotateX(3deg)",
+                        margin: "auto",
+                        marginBottom: "11px",
+                        border: "1px solid black",
+                        borderBottom: "none",
+                      }}
+                    ></div>
+                    <div
+                      style={{
+                        width: "30px",
+                        height: "50px",
+                        backgroundColor: `${
+                          item.symbol === "b" ? "black" : "white"
+                        }`,
+                        transform: "perspective(5px) rotateX(177deg)",
+                        margin: "auto",
+                        border: "1px solid black",
+                        borderBottom: "none",
+                      }}
+                    ></div>
+                  </div>
+                ) : (
+                  <div
+                    key={index}
+                    style={{
+                      border: "1px solid black",
+                      backgroundColor: `${
+                        item.symbol === "b" ? "black" : "white"
+                      }`,
+                      color: `${item.symbol === "b" ? "white" : "black"}`,
+                      height: `${item.status === "sleeping" ? "30px" : "60px"}`,
+                      width: `${item.status === "sleeping" ? "100px" : "30px"}`,
+                      margin: "auto",
+                      marginTop: "2px",
+                    }}
+                  >
+                    {item.symbol} - {item.status}
+                  </div>
+                )
+              )}
             </div>
             <div style={{ marginTop: "10px" }}>
               <button

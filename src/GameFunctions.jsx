@@ -176,6 +176,13 @@ const handleAction = (
         );
         return;
       }
+      //jika 'CB', maka 'W' berubah menjadi 'w'
+      if (["W"].includes(targetCellTop.symbol)) {
+        newBoard[targetRow][targetCol][
+          newBoard[targetRow][targetCol].length - 1
+        ].symbol = "w";
+        newBoard[targetRow][targetCol][0].status = "sleeping";
+      }
     } else if (
       ["CW"].includes(selectedCellStack[selectedCellStack.length - 1].symbol)
     ) {
@@ -186,6 +193,13 @@ const handleAction = (
           `Pemain ${currentPlayer} tidak dapat menumpuk pion 'CW' pada pion 'CB'.`
         );
         return;
+      }
+      //jika 'CW', maka 'B' berubah menjadi 'b'
+      if (["B"].includes(targetCellTop.symbol)) {
+        newBoard[targetRow][targetCol][
+          newBoard[targetRow][targetCol].length - 1
+        ].symbol = "b";
+        newBoard[targetRow][targetCol][0].status = "sleeping";
       }
     }
 
