@@ -177,10 +177,13 @@ const handleAction = (
         return;
       }
       //jika 'CB', maka 'W' berubah menjadi 'w'
+
+      if (["B"].includes(targetCellTop.symbol)) {
+        newBoard[targetRow][targetCol][0].symbol = "b";
+        newBoard[targetRow][targetCol][0].status = "sleeping";
+      }
       if (["W"].includes(targetCellTop.symbol)) {
-        newBoard[targetRow][targetCol][
-          newBoard[targetRow][targetCol].length - 1
-        ].symbol = "w";
+        newBoard[targetRow][targetCol][0].symbol = "w";
         newBoard[targetRow][targetCol][0].status = "sleeping";
       }
     } else if (
@@ -196,9 +199,11 @@ const handleAction = (
       }
       //jika 'CW', maka 'B' berubah menjadi 'b'
       if (["B"].includes(targetCellTop.symbol)) {
-        newBoard[targetRow][targetCol][
-          newBoard[targetRow][targetCol].length - 1
-        ].symbol = "b";
+        newBoard[targetRow][targetCol][0].symbol = "b";
+        newBoard[targetRow][targetCol][0].status = "sleeping";
+      }
+      if (["W"].includes(targetCellTop.symbol)) {
+        newBoard[targetRow][targetCol][0].symbol = "w";
         newBoard[targetRow][targetCol][0].status = "sleeping";
       }
     }
@@ -345,6 +350,29 @@ const checkWin = (board, currentPlayer) => {
     // );
     // console.log({ currentPlayer });
   }
+
+  let isAvailable = false;
+
+  for (let i = 0; i < 5; i++) {
+    for (let j = 0; j < 5; j++) {
+      if (board[i][j].length == 0) isAvailable = true;
+    }
+  }
+
+  if (!isAvailable) {
+    let whiteStoneCount = 0;
+    let blackStoneCount = 0;
+
+    for (let i = 0; i < 5; i++) {
+      for (let j = 0; j < 5; j++) {
+        if (board[i][j][board[i][j].length - 1] == "w") whiteStoneCount++;
+        else if (board[i][j][board[i][j].length - 1] == "b") blackStoneCount++;
+      }
+    }
+
+    if (whiteStoneCount > blackStoneCount) alert(`Player 1 Win`);
+    else alert(`Player 2 Win`);
+  } else return;
 };
 
 const AiMove = (board, setBoard, player2, setPlayer2) => {
@@ -385,7 +413,6 @@ const AiMove = (board, setBoard, player2, setPlayer2) => {
     } else if (status === "capstone") {
       setPlayer2({ ...player2, capstones: player2.capstones - 1 });
     }
-    
   } else {
     // Move
     const selectedCellStack = [...newBoard[randomRow][randomCol]];
