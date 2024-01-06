@@ -138,31 +138,25 @@ const handleAction = (
       // Jika 'w' atau 'b', maka pion hanya bisa menumpuk pion 'w' atau 'b'
       if (["W", "B", "CB", "CW"].includes(targetCellTop.symbol)) {
         // Jika target pion adalah 'W' atau 'B' atau 'CB' atau 'CW', maka tidak bisa menumpuk
-        alert(
-          `Pemain ${currentPlayer} hanya dapat menumpuk pion 'w' atau 'b' pada pion 'W' atau 'B'.`
-        );
+        alert(`Sleeping stone hanya dapat menumpuk sleeping stone.`);
         return;
       }
     } else if (
       ["W"].includes(selectedCellStack[selectedCellStack.length - 1].symbol)
     ) {
       // Jika 'W', maka pion hanya bisa menumpuk pion 'W' atau 'CW'
-      if (["B", "CB", "CW"].includes(targetCellTop.symbol)) {
+      if (["B", "W", "CB", "CW"].includes(targetCellTop.symbol)) {
         // Jika target pion adalah 'B' atau 'CB' atau 'CW', maka tidak bisa menumpuk
-        alert(
-          `Pemain ${currentPlayer} hanya dapat menumpuk pion 'W' pada pion 'B' atau 'CB'.`
-        );
+        alert(`Standing stone hanya dapat menumpuk sleeping stone.`);
         return;
       }
     } else if (
       ["B"].includes(selectedCellStack[selectedCellStack.length - 1].symbol)
     ) {
       // Jika 'B', maka pion hanya bisa menumpuk pion 'B' atau 'CB'
-      if (["W", "CW", "CB"].includes(targetCellTop.symbol)) {
+      if (["W", "B", "CW", "CB"].includes(targetCellTop.symbol)) {
         // Jika target pion adalah 'W' atau 'CW' atau 'CB', maka tidak bisa menumpuk
-        alert(
-          `Pemain ${currentPlayer} hanya dapat menumpuk pion 'B' pada pion 'W' atau 'CW'.`
-        );
+        alert(`Standing stone hanya dapat menumpuk sleeping stone.`);
         return;
       }
     } else if (
@@ -171,9 +165,7 @@ const handleAction = (
       // Jika 'CB', maka 'CB' tidak bisa menumpuk pion 'CW'
       if (["CW"].includes(targetCellTop.symbol)) {
         // Jika target pion adalah 'CW', maka tidak bisa menumpuk
-        alert(
-          `Pemain ${currentPlayer} tidak dapat menumpuk pion 'CB' pada pion 'CW'.`
-        );
+        alert(`Capstone tidak bisa menumpuk capstone.`);
         return;
       }
       //jika 'CB', maka 'W' berubah menjadi 'w'
@@ -192,9 +184,7 @@ const handleAction = (
       // Jika 'CW', maka 'CW' tidak bisa menumpuk pion 'CB'
       if (["CB"].includes(targetCellTop.symbol)) {
         // Jika target pion adalah 'CB', maka tidak bisa menumpuk
-        alert(
-          `Pemain ${currentPlayer} tidak dapat menumpuk pion 'CW' pada pion 'CB'.`
-        );
+        alert(`Capstone tidak bisa menumpuk capstone.`);
         return;
       }
       //jika 'CW', maka 'B' berubah menjadi 'b'
