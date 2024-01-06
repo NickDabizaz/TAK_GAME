@@ -455,7 +455,6 @@ const AiMove = (board, setBoard, player2, setPlayer2) => {
     }
   }
   setBoard(newBoard);
-  checkWin(newBoard, 2);
   console.log({ newBoard });
   // newBoard[randomRow][randomCol] = [];
 };
@@ -468,4 +467,5 @@ export {
   closeActionModal,
   handleAction,
   AiMove,
+  checkWin,
 };

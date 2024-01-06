@@ -8,6 +8,7 @@ import {
   closeActionModal,
   handleAction,
   AiMove,
+  checkWin,
 } from "./GameFunctions";
 
 const App = () => {
@@ -124,6 +125,8 @@ const App = () => {
   if (currentPlayer === 2 && player2.stones !== 21 && player1.stones !== 21) {
     // alert('AI move')
     AiMove(board, setBoard, player2, setPlayer2);
+
+    checkWin(board, 2);
     setCurrentPlayer(1);
   }
 
@@ -360,7 +363,7 @@ const App = () => {
                       marginTop: "2px",
                     }}
                   >
-                    {item.symbol} - {item.status}
+                    {/* {item.symbol} - {item.status} */}
                   </div>
                 )
               )}
