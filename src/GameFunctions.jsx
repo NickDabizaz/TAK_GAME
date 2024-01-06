@@ -109,22 +109,28 @@ const handleAction = (
   console.log(newBoard[row][col].length);
   console.log(move);
   // Cek banyak stack
-  if(move > newBoard[row][col].length){
-    console.log(newBoard[row][col])
-    alert("Jumlah stack tidak sebanyak itu!")
-    setMoveCount(1)
+  if (move > newBoard[row][col].length) {
+    console.log(newBoard[row][col]);
+    alert("Jumlah stack tidak sebanyak itu!");
+    setMoveCount(1);
     return;
   }
 
   // Ambil seluruh stack pion dari cell yang dipilih
   const selectedCellStack = [];
-  
-  for (let i = 0; i < move; i++) {
-    selectedCellStack.push(newBoard[row][col][newBoard[row][col].length - 1 - i])
+
+  //ini belum ada pengecekan, kalo misalnya sleeping mau nindih standing kan gabisa
+  //jadi habis alert, yang mau dipindah malah hilang
+  for (
+    let i = newBoard[row][col].length - move;
+    i < newBoard[row][col].length;
+    i++
+  ) {
+    selectedCellStack.push(newBoard[row][col][i]);
   }
-  
+
   for (let i = 0; i < move; i++) {
-    newBoard[row][col].pop()
+    newBoard[row][col].pop();
   }
 
   console.log(selectedCellStack);

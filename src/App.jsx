@@ -155,7 +155,7 @@ const App = () => {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(5, 50px)",
+          gridTemplateColumns: "repeat(5, 70px)",
           gap: "4px",
           cursor: "pointer", // Set cursor default menjadi pointer
         }}
@@ -170,8 +170,8 @@ const App = () => {
                   : openModalHandler(rowIndex, colIndex)
               }
               style={{
-                width: "50px",
-                height: "50px",
+                width: "70px",
+                height: "70px",
                 border: "1px solid black",
                 display: "flex",
                 justifyContent: "center",
@@ -187,8 +187,68 @@ const App = () => {
               }}
             >
               {cell.length > 0 && (
-                <div style={{ position: "absolute" }}>
-                  {cell[cell.length - 1].symbol}
+                <div
+                  style={{
+                    width: "60px",
+                    height: "60px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    border: `${cell.length > 1 ? "1px solid black" : "none"}`,
+                    backgroundColor: `${
+                      cell.length > 1
+                        ? cell[cell.length - 2].symbol === "b" ||
+                          cell[cell.length - 2].symbol === "B" ||
+                          cell[cell.length - 2].symbol === "CB"
+                          ? "#8f6459"
+                          : "#f8dbb2"
+                        : ""
+                    }`,
+                  }}
+                >
+                  <div
+                    style={{
+                      position: "absolute",
+                      width: `${
+                        cell[cell.length - 1].symbol === "CB" ||
+                        cell[cell.length - 1].symbol === "CW"
+                          ? "30px"
+                          : "60px"
+                      }`,
+                      height: `${
+                        cell[cell.length - 1].status === "sleeping"
+                          ? "60px"
+                          : cell[cell.length - 1].status === "standing"
+                          ? "20px"
+                          : "30px"
+                      }`,
+                      backgroundColor: `${
+                        cell[cell.length - 1].symbol === "b" ||
+                        cell[cell.length - 1].symbol === "B" ||
+                        cell[cell.length - 1].symbol === "CB"
+                          ? "#8f6459"
+                          : "#f8dbb2"
+                      }`,
+                      color: `${
+                        cell[cell.length - 1].symbol === "b" ||
+                        cell[cell.length - 1].symbol === "B" ||
+                        cell[cell.length - 1].symbol === "CB"
+                          ? "white"
+                          : "black"
+                      }`,
+                      border: "1px solid black",
+                      borderRadius: `${
+                        cell[cell.length - 1].status === "capstone" ? "50%" : ""
+                      }`,
+                      transform: `${
+                        cell[cell.length - 1].status === "standing"
+                          ? "rotate(45deg)"
+                          : "rotate(0deg)"
+                      }`,
+                    }}
+                  >
+                    {/* {cell[cell.length - 1].symbol} */}
+                  </div>
                 </div>
               )}
             </div>
@@ -328,7 +388,7 @@ const App = () => {
                         width: "30.5px",
                         height: "10px",
                         backgroundColor: `${
-                          item.symbol === "b" ? "black" : "white"
+                          item.symbol === "b" ? "#8f6459" : "#f8dbb2"
                         }`,
                         transform: "perspective(1.1px) rotateX(3deg)",
                         margin: "auto",
@@ -342,7 +402,7 @@ const App = () => {
                         width: "30px",
                         height: "50px",
                         backgroundColor: `${
-                          item.symbol === "b" ? "black" : "white"
+                          item.symbol === "b" ? "#8f6459" : "#f8dbb2"
                         }`,
                         transform: "perspective(5px) rotateX(177deg)",
                         margin: "auto",
@@ -357,9 +417,9 @@ const App = () => {
                     style={{
                       border: "1px solid black",
                       backgroundColor: `${
-                        item.symbol === "b" ? "black" : "white"
+                        item.symbol === "b" ? "#8f6459" : "#f8dbb2"
                       }`,
-                      color: `${item.symbol === "b" ? "white" : "black"}`,
+                      color: `${item.symbol === "b" ? "#f8dbb2" : "#8f6459"}`,
                       height: `${item.status === "sleeping" ? "30px" : "60px"}`,
                       width: `${item.status === "sleeping" ? "100px" : "30px"}`,
                       margin: "auto",
@@ -371,10 +431,23 @@ const App = () => {
                 )
               )}
             </div>
-            <div style={{display: "flex", marginTop: "2px", marginBottom: "2px"}}>
-              <span style={{height: "20px", marginRight: "3px"}}>How Many Stack?</span>
-              <input type="number" value={movecount} max={5} min={1} onChange={(e) => {setMoveCount(e.target.value)}} style={{width: "20%", height: "20px"}}/>
-            </div>            
+            <div
+              style={{ display: "flex", marginTop: "2px", marginBottom: "2px" }}
+            >
+              <span style={{ height: "20px", marginRight: "3px" }}>
+                How Many Stack?
+              </span>
+              <input
+                type="number"
+                value={movecount}
+                max={5}
+                min={1}
+                onChange={(e) => {
+                  setMoveCount(e.target.value);
+                }}
+                style={{ width: "20%", height: "20px" }}
+              />
+            </div>
             <div style={{ marginTop: "10px" }}>
               <button
                 onClick={() => handleActionHandler("up", movecount)}
