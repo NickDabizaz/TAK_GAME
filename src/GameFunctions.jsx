@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // GameFunctions.jsx
 const openModal = (row, col, setModalOpen, setSelectedRow, setSelectedCol) => {
   setSelectedRow(row);
@@ -62,6 +63,8 @@ const selectStatus = (
       : setPlayer2({ ...player2, capstones: player2.capstones - 1 });
   }
 
+  // Check Win
+  checkWin(board, currentPlayer);
   // Ganti giliran pemain
   setCurrentPlayer(currentPlayer === 1 ? 2 : 1);
 
@@ -199,8 +202,131 @@ const handleAction = (
   // Update state board setelah gerakan
   setBoard(newBoard);
 
+  // Check Win
+  checkWin(board, currentPlayer);
+
   // Ganti giliran ke pemain selanjutnya
   setCurrentPlayer(currentPlayer === 1 ? 2 : 1);
+};
+
+const checkJalan = (
+  board,
+  startRow,
+  startCol,
+  currentPlayer,
+  visitedBoard,
+  direction
+) => {
+  // console.log(`Checking (${startRow}, ${startCol})`);
+  if (!visitedBoard) {
+    visitedBoard = new Array(5).fill(false).map(() => new Array(5).fill(false));
+  }
+
+  if (
+    startRow < 0 ||
+    startRow >= 5 ||
+    startCol < 0 ||
+    startCol >= 5 ||
+    visitedBoard[startRow][startCol]
+  ) {
+    return false;
+  }
+
+  visitedBoard[startRow][startCol] = true;
+
+  // Check jika blok kosong atau blok adalah wall
+  if (
+    board[startRow][startCol].length === 0 ||
+    ["W", "B"].includes(
+      board[startRow][startCol][board[startRow][startCol].length - 1].symbol
+    )
+  ) {
+    return false;
+  }
+
+  const currentBlock =
+    board[startRow][startCol][board[startRow][startCol].length - 1].symbol;
+  console.log({ currentBlock });
+  if (
+    (currentPlayer === 1 && currentBlock === "b") ||
+    (currentPlayer === 1 && currentBlock === "B") ||
+    (currentPlayer === 1 && currentBlock === "CB")
+  ) {
+    return false;
+  }
+
+  if (
+    (currentPlayer === 2 && currentBlock === "w") ||
+    (currentPlayer === 2 && currentBlock === "W") ||
+    (currentPlayer === 2 && currentBlock === "CW")
+  ) {
+    return false;
+  }
+
+  if (
+    (direction === "horizontal" && startCol === 4) ||
+    (direction === "vertical" && startRow === 4)
+  ) {
+    return true;
+  }
+
+  // Pemanggilan rekursif untuk semua arah
+  return (
+    checkJalan(
+      board,
+      startRow,
+      startCol + 1,
+      currentPlayer,
+      visitedBoard,
+      direction
+    ) || // Right
+    checkJalan(
+      board,
+      startRow,
+      startCol - 1,
+      currentPlayer,
+      visitedBoard,
+      direction
+    ) || // Left
+    checkJalan(
+      board,
+      startRow + 1,
+      startCol,
+      currentPlayer,
+      visitedBoard,
+      direction
+    ) || // Down
+    checkJalan(
+      board,
+      startRow - 1,
+      startCol,
+      currentPlayer,
+      visitedBoard,
+      direction
+    ) // Up
+  );
+};
+
+const checkWin = (board, currentPlayer) => {
+  for (let i = 0; i < 5; i++) {
+    if (
+      checkJalan(board, 0, i, currentPlayer, null, "vertical") ||
+      checkJalan(board, i, 0, currentPlayer, null, "horizontal")
+    ) {
+      alert(`Player ${currentPlayer} Win`);
+      return; // Keluar dari fungsi setelah menemukan kemenangan
+    }
+    console.log(
+      i,
+      "horizontal : ",
+      checkJalan(board, i, 0, currentPlayer, null, "horizontal")
+    );
+    console.log(
+      i,
+      "vertical : ",
+      checkJalan(board, 0, i, currentPlayer, null, "vertical")
+    );
+  }
 };
 
 export {

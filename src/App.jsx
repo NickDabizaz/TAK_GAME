@@ -165,13 +165,7 @@ const App = () => {
 
   // Fungsi untuk mengonsole log isi board
   const logBoard = () => {
-    console.log("Current Board:");
-    board.forEach((row, rowIndex) => {
-      row.forEach((cell, colIndex) => {
-        console.log(`[${rowIndex}-${colIndex}]: `, cell);
-      });
-    });
-    console.log("-----------------------");
+    console.log({ board });
   };
 
   // Tampilkan board
@@ -279,11 +273,11 @@ const App = () => {
           >
             <h2>Stack Information</h2>
             <div>
-            {[...actionModalContent].reverse().map((item, index) => (
-  <div key={index}>
-    {item.symbol} - {item.status}
-  </div>
-))}
+              {[...actionModalContent].reverse().map((item, index) => (
+                <div key={index}>
+                  {item.symbol} - {item.status}
+                </div>
+              ))}
             </div>
             <div style={{ marginTop: "10px" }}>
               <button
