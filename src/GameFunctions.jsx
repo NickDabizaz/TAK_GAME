@@ -230,8 +230,8 @@ const checkJalan = (
   visitedBoard,
   direction
 ) => {
-  console.log(`Checking (${startRow}, ${startCol})`);
-  console.log({ board });
+  // console.log(`Checking (${startRow}, ${startCol})`);
+  // console.log({ board });
   if (!visitedBoard) {
     visitedBoard = new Array(5).fill(false).map(() => new Array(5).fill(false));
   }
@@ -255,15 +255,15 @@ const checkJalan = (
       board[startRow][startCol][board[startRow][startCol].length - 1].symbol
     )
   ) {
-    console.log(board[startRow][startCol].length);
+    // console.log(board[startRow][startCol].length);
     return false;
   }
 
-  console.log("masuk");
+  // console.log("masuk");
 
   const currentBlock =
     board[startRow][startCol][board[startRow][startCol].length - 1].symbol;
-  console.log({ currentBlock });
+  // console.log({ currentBlock });
   if (
     (currentPlayer === 1 && currentBlock === "b") ||
     (currentPlayer === 1 && currentBlock === "B") ||
@@ -333,18 +333,114 @@ const checkWin = (board, currentPlayer) => {
       alert(`Player ${currentPlayer} Win`);
       return; // Keluar dari fungsi setelah menemukan kemenangan
     }
-    console.log(
-      i,
-      "horizontal : ",
-      checkJalan(board, i, 0, currentPlayer, null, "horizontal")
-    );
-    console.log(
-      i,
-      "vertical : ",
-      checkJalan(board, 0, i, currentPlayer, null, "vertical")
-    );
-    console.log({ currentPlayer });
+    // console.log(
+    //   i,
+    //   "horizontal : ",
+    //   checkJalan(board, i, 0, currentPlayer, null, "horizontal")
+    // );
+    // console.log(
+    //   i,
+    //   "vertical : ",
+    //   checkJalan(board, 0, i, currentPlayer, null, "vertical")
+    // );
+    // console.log({ currentPlayer });
   }
+};
+
+const AiMove = (board, setBoard, player2, setPlayer2) => {
+  // alert("Masuk ke function AIMOVE");
+  const newBoard = board.map((row) => row.slice());
+  let randomRow = Math.floor(Math.random() * 5);
+  let randomCol = Math.floor(Math.random() * 5);
+  const randomDirection = Math.floor(Math.random() * 4);
+  // const randomAction = Math.floor(Math.random() * 2);
+  const randomAction = 0;
+
+  if (randomAction === 0) {
+    // Place
+    let isPlaced = false;
+    while (!isPlaced) {
+      randomRow = Math.floor(Math.random() * 5);
+      randomCol = Math.floor(Math.random() * 5);
+      if (newBoard[randomRow][randomCol].length === 0) {
+        let randomStatus;
+        if (player2.capstones === 0) {
+          randomStatus = Math.floor(Math.random() * 3);
+        } else if (player2.capstones === 1) {
+          randomStatus = Math.floor(Math.random() * 2);
+        }
+        var status = ["sleeping", "standing", "capstone"][randomStatus];
+        const symbol =
+          status === "sleeping" ? "b" : status === "standing" ? "B" : "CB";
+        newBoard[randomRow][randomCol] = [
+          ...newBoard[randomRow][randomCol],
+          { symbol, status },
+        ];
+        isPlaced = true;
+      }
+    }
+    // Update state AI (stone atau capstone)
+    if (status === "sleeping" || status === "standing") {
+      setPlayer2({ ...player2, stones: player2.stones - 1 });
+    } else if (status === "capstone") {
+      setPlayer2({ ...player2, capstones: player2.capstones - 1 });
+    }
+    
+  } else {
+    // Move
+    const selectedCellStack = [...newBoard[randomRow][randomCol]];
+    let targetRow = randomRow;
+    let targetCol = randomCol;
+
+    if (randomDirection === 0 && randomRow > 0) {
+      targetRow -= 1;
+    } else if (randomDirection === 1 && randomRow < 4) {
+      targetRow += 1;
+    } else if (randomDirection === 2 && randomCol > 0) {
+      targetCol -= 1;
+    } else if (randomDirection === 3 && randomCol < 4) {
+      targetCol += 1;
+    }
+
+    if (newBoard[targetRow][targetCol].length === 0) {
+      newBoard[targetRow][targetCol] = [...selectedCellStack];
+    } else {
+      const targetCellTop =
+        newBoard[targetRow][targetCol][
+          newBoard[targetRow][targetCol].length - 1
+        ];
+
+      if (
+        ["w", "b"].includes(
+          selectedCellStack[selectedCellStack.length - 1].symbol
+        )
+      ) {
+        if (["W", "B", "CB", "CW"].includes(targetCellTop.symbol)) {
+          return AiMove(board);
+        }
+      } else if (
+        ["W"].includes(selectedCellStack[selectedCellStack.length - 1].symbol)
+      ) {
+        if (["B", "CB", "CW"].includes(targetCellTop.symbol)) {
+          return AiMove(board);
+        }
+      } else if (
+        ["B"].includes(selectedCellStack[selectedCellStack.length - 1].symbol)
+      ) {
+        if (["W", "CW", "CB"].includes(targetCellTop.symbol)) {
+          return AiMove(board);
+        }
+      }
+      newBoard[targetRow][targetCol] = [
+        ...newBoard[targetRow][targetCol],
+        ...selectedCellStack,
+      ];
+    }
+  }
+  setBoard(newBoard);
+  checkWin(newBoard, 2);
+  console.log({ newBoard });
+  // newBoard[randomRow][randomCol] = [];
 };
 
 export {
@@ -354,4 +450,5 @@ export {
   openActionModal,
   closeActionModal,
   handleAction,
+  AiMove,
 };

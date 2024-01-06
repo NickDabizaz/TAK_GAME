@@ -7,6 +7,7 @@ import {
   openActionModal,
   closeActionModal,
   handleAction,
+  AiMove,
 } from "./GameFunctions";
 
 const App = () => {
@@ -66,6 +67,7 @@ const App = () => {
 
       setPlayer2({ ...player2, stones: player2.stones - 1 });
       setCurrentPlayer(currentPlayer === 1 ? 2 : 1);
+      console.log("masuk");
     } else {
       openModal(row, col, setModalOpen, setSelectedRow, setSelectedCol);
     }
@@ -119,6 +121,11 @@ const App = () => {
       player1,
       player2
     );
+  if (currentPlayer === 2 && player2.stones !== 21 && player1.stones !== 21) {
+    // alert('AI move')
+    AiMove(board, setBoard, player2, setPlayer2);
+    setCurrentPlayer(1);
+  }
 
   // Fungsi handler untuk menangani tombol aksi
   const handleActionHandler = (direction) => {
