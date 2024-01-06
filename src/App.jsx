@@ -29,6 +29,7 @@ const App = () => {
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
   const [selectedCol, setSelectedCol] = useState(null);
+  const [movecount, setMoveCount] = useState(1);
 
   // State untuk modal tindakan
   const [isActionModalOpen, setActionModalOpen] = useState(false);
@@ -131,7 +132,7 @@ const App = () => {
   }
 
   // Fungsi handler untuk menangani tombol aksi
-  const handleActionHandler = (direction) => {
+  const handleActionHandler = (direction, move) => {
     handleAction(
       direction,
       selectedRow,
@@ -139,7 +140,9 @@ const App = () => {
       setBoard,
       board,
       currentPlayer,
-      setCurrentPlayer
+      setCurrentPlayer,
+      move,
+      setMoveCount
     );
 
     // Menutup modal setelah tombol aksi ditekan
@@ -368,30 +371,34 @@ const App = () => {
                 )
               )}
             </div>
+            <div style={{display: "flex", marginTop: "2px", marginBottom: "2px"}}>
+              <span style={{height: "20px", marginRight: "3px"}}>How Many Stack?</span>
+              <input type="number" value={movecount} max={5} min={1} onChange={(e) => {setMoveCount(e.target.value)}} style={{width: "20%", height: "20px"}}/>
+            </div>            
             <div style={{ marginTop: "10px" }}>
               <button
-                onClick={() => handleActionHandler("up")}
+                onClick={() => handleActionHandler("up", movecount)}
                 style={{ marginRight: "5px" }}
                 disabled={selectedRow === 0}
               >
                 Up
               </button>
               <button
-                onClick={() => handleActionHandler("down")}
+                onClick={() => handleActionHandler("down", movecount)}
                 style={{ marginRight: "5px" }}
                 disabled={selectedRow === 4}
               >
                 Down
               </button>
               <button
-                onClick={() => handleActionHandler("left")}
+                onClick={() => handleActionHandler("left", movecount)}
                 style={{ marginRight: "5px" }}
                 disabled={selectedCol === 0}
               >
                 Left
               </button>
               <button
-                onClick={() => handleActionHandler("right")}
+                onClick={() => handleActionHandler("right", movecount)}
                 disabled={selectedCol === 4}
               >
                 Right

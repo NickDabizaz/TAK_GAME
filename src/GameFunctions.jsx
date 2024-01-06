@@ -100,12 +100,34 @@ const handleAction = (
   setBoard,
   board,
   currentPlayer,
-  setCurrentPlayer
+  setCurrentPlayer,
+  move,
+  setMoveCount
 ) => {
   const newBoard = board.map((row) => row.slice());
 
+  console.log(newBoard[row][col].length);
+  console.log(move);
+  // Cek banyak stack
+  if(move > newBoard[row][col].length){
+    console.log(newBoard[row][col])
+    alert("Jumlah stack tidak sebanyak itu!")
+    setMoveCount(1)
+    return;
+  }
+
   // Ambil seluruh stack pion dari cell yang dipilih
-  const selectedCellStack = [...newBoard[row][col]];
+  const selectedCellStack = [];
+  
+  for (let i = 0; i < move; i++) {
+    selectedCellStack.push(newBoard[row][col][newBoard[row][col].length - 1 - i])
+  }
+  
+  for (let i = 0; i < move; i++) {
+    newBoard[row][col].pop()
+  }
+
+  console.log(selectedCellStack);
 
   // Tentukan arah gerakan dan koordinat cell tujuan
   let targetRow = row;
@@ -206,7 +228,7 @@ const handleAction = (
   }
 
   // Kosongkan stack pion di cell yang dipilih
-  newBoard[row][col] = [];
+  // newBoard[row][col] = [];
 
   // Update state board setelah gerakan
   setBoard(newBoard);
