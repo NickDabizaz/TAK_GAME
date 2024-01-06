@@ -64,7 +64,7 @@ const selectStatus = (
   }
 
   // Check Win
-  checkWin(board, currentPlayer);
+  checkWin(newBoard, currentPlayer);
   // Ganti giliran pemain
   setCurrentPlayer(currentPlayer === 1 ? 2 : 1);
 
@@ -195,6 +195,7 @@ const handleAction = (
       ...selectedCellStack,
     ];
   }
+  
 
   // Kosongkan stack pion di cell yang dipilih
   newBoard[row][col] = [];
@@ -204,7 +205,6 @@ const handleAction = (
 
   // Check Win
   checkWin(board, currentPlayer);
-
   // Ganti giliran ke pemain selanjutnya
   setCurrentPlayer(currentPlayer === 1 ? 2 : 1);
 };
@@ -217,7 +217,8 @@ const checkJalan = (
   visitedBoard,
   direction
 ) => {
-  // console.log(`Checking (${startRow}, ${startCol})`);
+  console.log(`Checking (${startRow}, ${startCol})`);
+  console.log({board});
   if (!visitedBoard) {
     visitedBoard = new Array(5).fill(false).map(() => new Array(5).fill(false));
   }
@@ -241,8 +242,11 @@ const checkJalan = (
       board[startRow][startCol][board[startRow][startCol].length - 1].symbol
     )
   ) {
+    console.log(board[startRow][startCol].length);
     return false;
   }
+
+  console.log('masuk');
 
   const currentBlock =
     board[startRow][startCol][board[startRow][startCol].length - 1].symbol;
@@ -326,6 +330,7 @@ const checkWin = (board, currentPlayer) => {
       "vertical : ",
       checkJalan(board, 0, i, currentPlayer, null, "vertical")
     );
+    console.log({currentPlayer});
   }
 };
 
