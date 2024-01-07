@@ -342,7 +342,7 @@ const handlePut = (
 
   if (tempStack.length < 1) {
     // Check Win
-    checkWin(newBoard, 1) === 1;
+    checkWin(newBoard, 1) === 1 ? alert("Player 1 Win") : checkWin(newBoard, 1) && alert("Player 2 Win");
 
     // Ganti giliran AI
     setCurrentPlayer(2);
