@@ -229,16 +229,6 @@ const handlePut = (
 
   const newBoard = board.map((row) => row.slice());
 
-  // if (direction === "up" && row > 0) {
-  //   targetRow -= 1;
-  // } else if (direction === "down" && row < 4) {
-  //   targetRow += 1;
-  // } else if (direction === "left" && col > 0) {
-  //   targetCol -= 1;
-  // } else if (direction === "right" && col < 4) {
-  //   targetCol += 1;
-  // }
-
   // Periksa apakah cell tujuan kosong atau tidak
   if (newBoard[targetRow][targetCol].length === 0) {
     // Jika kosong, pindahkan seluruh stack pion dari cell yang dipilih ke cell tujuan

@@ -528,36 +528,7 @@ const App = () => {
               >
                 Ok
               </button>
-            </div>
-            {/* <div style={{ marginTop: "10px" }}>
-              <button
-                onClick={() => handleActionHandler("up", movecount)}
-                style={{ marginRight: "5px" }}
-                disabled={selectedRow === 0}
-              >
-                Up
-              </button>
-              <button
-                onClick={() => handleActionHandler("down", movecount)}
-                style={{ marginRight: "5px" }}
-                disabled={selectedRow === 4}
-              >
-                Down
-              </button>
-              <button
-                onClick={() => handleActionHandler("left", movecount)}
-                style={{ marginRight: "5px" }}
-                disabled={selectedCol === 0}
-              >
-                Left
-              </button>
-              <button
-                onClick={() => handleActionHandler("right", movecount)}
-                disabled={selectedCol === 4}
-              >
-                Right
-              </button>
-            </div> */}
+            </div>            
             <button onClick={closeActionModalHandler}>Close</button>
           </div>
         </div>
