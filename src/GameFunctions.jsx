@@ -943,97 +943,96 @@ const sbe = (board, row, col) => {
   const totalConnectPlayer = (board) => {
     let maxCount = 0;
     const visited = Array.from({ length: 5 }, () =>
-        Array(board[0].length).fill(false)
+      Array(board[0].length).fill(false)
     );
 
     const dfs = (i, j) => {
-        if (
-            i < 0 ||
-            i >= 5 ||
-            j < 0 ||
-            j >= 5 ||
-            visited[i][j] ||
-            board[i][j].length === 0 || // Check if the cell is empty
-            !(
-                board[i][j][board[i][j].length - 1].symbol === "w" ||
-                board[i][j][board[i][j].length - 1].symbol === "CW"
-            )
-        ) {
-            return 0;
-        }
+      if (
+        i < 0 ||
+        i >= 5 ||
+        j < 0 ||
+        j >= 5 ||
+        visited[i][j] ||
+        board[i][j].length === 0 || // Check if the cell is empty
+        !(
+          board[i][j][board[i][j].length - 1].symbol === "w" ||
+          board[i][j][board[i][j].length - 1].symbol === "CW"
+        )
+      ) {
+        return 0;
+      }
 
-        visited[i][j] = true;
+      visited[i][j] = true;
 
-        let count = 1;
-        count += dfs(i - 1, j) + dfs(i + 1, j) + dfs(i, j - 1) + dfs(i, j + 1);
+      let count = 1;
+      count += dfs(i - 1, j) + dfs(i + 1, j) + dfs(i, j - 1) + dfs(i, j + 1);
 
-        return count;
+      return count;
     };
 
     for (let i = 0; i < 5; i++) {
-        for (let j = 0; j < board[i].length; j++) {
-            if (
-                !visited[i][j] &&
-                board[i][j].length > 0 && // Check if the cell is not empty
-                (board[i][j][board[i][j].length - 1].symbol === "w" ||
-                    board[i][j][board[i][j].length - 1].symbol === "CW")
-            ) {
-                const count = dfs(i, j);
-                maxCount = Math.max(maxCount, count);
-            }
+      for (let j = 0; j < board[i].length; j++) {
+        if (
+          !visited[i][j] &&
+          board[i][j].length > 0 && // Check if the cell is not empty
+          (board[i][j][board[i][j].length - 1].symbol === "w" ||
+            board[i][j][board[i][j].length - 1].symbol === "CW")
+        ) {
+          const count = dfs(i, j);
+          maxCount = Math.max(maxCount, count);
         }
+      }
     }
 
     return maxCount;
-};
-
+  };
 
   const totalConnectAi = (board) => {
     let maxCount = 0;
     const visited = Array.from({ length: 5 }, () =>
-        Array(board[0].length).fill(false)
+      Array(board[0].length).fill(false)
     );
 
     const dfs = (i, j) => {
-        if (
-            i < 0 ||
-            i >= 5 ||
-            j < 0 ||
-            j >= 5 ||
-            visited[i][j] ||
-            board[i][j].length === 0 || // Check if the cell is empty
-            !(
-                board[i][j][board[i][j].length - 1].symbol === "b" ||
-                board[i][j][board[i][j].length - 1].symbol === "CB"
-            )
-        ) {
-            return 0;
-        }
+      if (
+        i < 0 ||
+        i >= 5 ||
+        j < 0 ||
+        j >= 5 ||
+        visited[i][j] ||
+        board[i][j].length === 0 || // Check if the cell is empty
+        !(
+          board[i][j][board[i][j].length - 1].symbol === "b" ||
+          board[i][j][board[i][j].length - 1].symbol === "CB"
+        )
+      ) {
+        return 0;
+      }
 
-        visited[i][j] = true;
+      visited[i][j] = true;
 
-        let count = 1;
-        count += dfs(i - 1, j) + dfs(i + 1, j) + dfs(i, j - 1) + dfs(i, j + 1);
+      let count = 1;
+      count += dfs(i - 1, j) + dfs(i + 1, j) + dfs(i, j - 1) + dfs(i, j + 1);
 
-        return count;
+      return count;
     };
 
     for (let i = 0; i < 5; i++) {
-        for (let j = 0; j < board[i].length; j++) {
-            if (
-                !visited[i][j] &&
-                board[i][j].length > 0 && // Check if the cell is not empty
-                (board[i][j][board[i][j].length - 1].symbol === "b" ||
-                    board[i][j][board[i][j].length - 1].symbol === "CB")
-            ) {
-                const count = dfs(i, j);
-                maxCount = Math.max(maxCount, count);
-            }
+      for (let j = 0; j < board[i].length; j++) {
+        if (
+          !visited[i][j] &&
+          board[i][j].length > 0 && // Check if the cell is not empty
+          (board[i][j][board[i][j].length - 1].symbol === "b" ||
+            board[i][j][board[i][j].length - 1].symbol === "CB")
+        ) {
+          const count = dfs(i, j);
+          maxCount = Math.max(maxCount, count);
         }
+      }
     }
 
     return maxCount;
-};
+  };
 
   console.log({ totalConnectAi: totalConnectAi(board) });
   console.log({ totalConnectPlayer: totalConnectPlayer(board) });
