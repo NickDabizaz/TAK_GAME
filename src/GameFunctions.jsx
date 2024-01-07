@@ -611,13 +611,14 @@ const AiMove = (
   console.log({ newBoard });
 };
 
-const minimax = (board) => {
+const minimax = (board, player2) => {
   const availableMove = [];
   for (let i = 0; i < 5; i++) {
     for (let j = 0; j < 5; j++) {
       // Cari Available untuk di taruh
       if (board[i][j].length === 0) {
         const tempBoard = board.map((row) => row.slice());
+        console.log({ player2 });
         for (let k = 0; k < 3; k++) {
           tempBoard[i][j] = [
             {
@@ -631,6 +632,7 @@ const minimax = (board) => {
             col: j,
             sbe: sbe(tempBoard),
           });
+          tempBoard[i][j] = [];
         }
       } else if (
         board[i][j][board[i][j].length - 1].symbol == "b" ||
@@ -642,7 +644,7 @@ const minimax = (board) => {
         if (i > 0 && board[i - 1][j].length === 0) {
           const tempBoard = board.map((row) => row.slice());
           const selectedCell = [...tempBoard[i][j]];
-          tempBoard[i - 1][j].push(selectedCell);
+          tempBoard[i - 1][j] = [selectedCell];
           availableMove.push({
             action: "move",
             row: i,
@@ -650,11 +652,12 @@ const minimax = (board) => {
             direction: "up",
             sbe: sbe(tempBoard),
           });
+          tempBoard[i - 1][j] = [];
         }
         if (i < 4 && board[i + 1][j].length === 0) {
           const tempBoard = board.map((row) => row.slice());
           const selectedCell = [...tempBoard[i][j]];
-          tempBoard[i + 1][j].push(selectedCell);
+          tempBoard[i + 1][j] = [selectedCell];
           availableMove.push({
             action: "move",
             row: i,
@@ -662,11 +665,12 @@ const minimax = (board) => {
             direction: "down",
             sbe: sbe(tempBoard),
           });
+          tempBoard[i + 1][j] = [];
         }
         if (j > 0 && board[i][j - 1].length === 0) {
           const tempBoard = board.map((row) => row.slice());
           const selectedCell = [...tempBoard[i][j]];
-          tempBoard[i][j - 1].push(selectedCell);
+          tempBoard[i][j - 1] = [selectedCell];
           availableMove.push({
             action: "move",
             row: i,
@@ -674,11 +678,12 @@ const minimax = (board) => {
             direction: "left",
             sbe: sbe(tempBoard),
           });
+          tempBoard[i][j - 1] = [];
         }
         if (j < 4 && board[i][j + 1].length === 0) {
           const tempBoard = board.map((row) => row.slice());
           const selectedCell = [...tempBoard[i][j]];
-          tempBoard[i][j + 1].push(selectedCell);
+          tempBoard[i][j + 1] = [selectedCell];
           availableMove.push({
             action: "move",
             row: i,
@@ -686,6 +691,7 @@ const minimax = (board) => {
             direction: "right",
             sbe: sbe(tempBoard),
           });
+          tempBoard[i][j + 1] = [];
         }
       }
     }
@@ -703,39 +709,39 @@ const minimax = (board) => {
   return availableMove[maxSbeIndex];
 };
 
-const getScore = (board, currentPlayer) => {
-  // let isAvailable = false;
+// const getScore = (board, currentPlayer) => {
+//   // let isAvailable = false;
 
-  // for (let i = 0; i < 5; i++) {
-  //   for (let j = 0; j < 5; j++) {
-  //     if (board[i][j].length == 0) isAvailable = true;
-  //   }
-  // }
-  // if (!isAvailable) {
-  //   let whiteStoneCount = 0;
-  //   let blackStoneCount = 0;
+//   // for (let i = 0; i < 5; i++) {
+//   //   for (let j = 0; j < 5; j++) {
+//   //     if (board[i][j].length == 0) isAvailable = true;
+//   //   }
+//   // }
+//   // if (!isAvailable) {
+//   //   let whiteStoneCount = 0;
+//   //   let blackStoneCount = 0;
 
-  //   for (let i = 0; i < 5; i++) {
-  //     for (let j = 0; j < 5; j++) {
-  //       if (board[i][j][board[i][j].length - 1] == "w") whiteStoneCount++;
-  //       else if (board[i][j][board[i][j].length - 1] == "b") blackStoneCount++;
-  //     }
-  //   }
+//   //   for (let i = 0; i < 5; i++) {
+//   //     for (let j = 0; j < 5; j++) {
+//   //       if (board[i][j][board[i][j].length - 1] == "w") whiteStoneCount++;
+//   //       else if (board[i][j][board[i][j].length - 1] == "b") blackStoneCount++;
+//   //     }
+//   //   }
 
-  //   if (currentPlayer === 1) return -whiteStoneCount;
-  //   else return blackStoneCount;
-  // } else {
-  //   if (checkWin(board, 2) === 2) {
-  //     return 100;
-  //   } else if (checkWin(board, 2) === 1) {
-  //     return -100;
-  //   }
-  // }
-  // return checkWin(board, 2)
+//   //   if (currentPlayer === 1) return -whiteStoneCount;
+//   //   else return blackStoneCount;
+//   // } else {
+//   //   if (checkWin(board, 2) === 2) {
+//   //     return 100;
+//   //   } else if (checkWin(board, 2) === 1) {
+//   //     return -100;
+//   //   }
+//   // }
+//   // return checkWin(board, 2)
 
-  const randomNumber = Math.random();
-  return randomNumber;
-};
+//   const randomNumber = Math.random();
+//   return randomNumber;
+// };
 
 const sbe = (board) => {
   let playerScore = 0;
@@ -761,7 +767,7 @@ const sbe = (board) => {
     }
   }
 
-  return Math.random();
+  return aiScore - playerScore
 };
 
 // const minimax = (board, isMaximizing, depth) => {
