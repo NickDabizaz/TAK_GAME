@@ -768,7 +768,7 @@ const minimax = (board, player2) => {
             action: "put",
             row: i,
             col: j,
-            sbe: sbe(tempBoard,i,j),
+            sbe: sbe(tempBoard, i, j),
           });
           tempBoard[i][j] = [];
         }
@@ -788,7 +788,7 @@ const minimax = (board, player2) => {
             row: i,
             col: j,
             direction: "up",
-            sbe: sbe(tempBoard,i,j),
+            sbe: sbe(tempBoard, i, j),
           });
           tempBoard[i - 1][j] = [];
         }
@@ -801,7 +801,7 @@ const minimax = (board, player2) => {
             row: i,
             col: j,
             direction: "down",
-            sbe: sbe(tempBoard,i,j),
+            sbe: sbe(tempBoard, i, j),
           });
           tempBoard[i + 1][j] = [];
         }
@@ -814,7 +814,7 @@ const minimax = (board, player2) => {
             row: i,
             col: j,
             direction: "left",
-            sbe: sbe(tempBoard,i,j),
+            sbe: sbe(tempBoard, i, j),
           });
           tempBoard[i][j - 1] = [];
         }
@@ -827,7 +827,7 @@ const minimax = (board, player2) => {
             row: i,
             col: j,
             direction: "right",
-            sbe: sbe(tempBoard,i,j),
+            sbe: sbe(tempBoard, i, j),
           });
           tempBoard[i][j + 1] = [];
         }
@@ -922,132 +922,120 @@ const sbe = (board, row, col) => {
   //   }
   // }
 
-  for (let i = 0; i < 5; i++) {
-    for (let j = 0; j < 5; j++) {
-      //setiap kontrol atas stack +2 poin
-      if (board[i][j].length > 0) {
+  // for (let i = 0; i < 5; i++) {
+  //   for (let j = 0; j < 5; j++) {
+  //     //setiap kontrol atas stack +2 poin
+  //     if (board[i][j].length > 0) {
+  //       if (
+  //         board[i][j][board[i][j].length - 1].symbol === "b" &&
+  //         board[i][j][board[i][j].length - 1].status === "sleeping"
+  //       )
+  //         aiScore += 1;
+  //       else if (
+  //         board[i][j][board[i][j].length - 1].symbol === "w" &&
+  //         board[i][j][board[i][j].length - 1].status === "sleeping"
+  //       )
+  //         playerScore += 1;
+  //     }
+  //   }
+  // }
+
+  const totalConnectPlayer = (board) => {
+    let maxCount = 0;
+    const visited = Array.from({ length: 5 }, () =>
+      Array(board[0].length).fill(false)
+    );
+
+    const dfs = (i, j) => {
+      if (
+        i < 0 ||
+        i >= 5 ||
+        j < 0 ||
+        j >= 5 ||
+        visited[i][j] ||
+        board[i][j].length === 0 || // Check if the cell is empty
+        !(board[i][j][board[i][j].length - 1].symbol === "w") ||
+        !(board[i][j][board[i][j].length - 1].symbol === "CW")
+      ) {
+        return 0;
+      }
+
+      visited[i][j] = true;
+
+      let count = 1;
+      count += dfs(i - 1, j) + dfs(i + 1, j) + dfs(i, j - 1) + dfs(i, j + 1);
+
+      return count;
+    };
+
+    for (let i = 0; i < 5; i++) {
+      for (let j = 0; j < board[i].length; j++) {
         if (
-          board[i][j][board[i][j].length - 1].symbol === "b" &&
-          board[i][j][board[i][j].length - 1].status === "sleeping"
-        )
-          aiScore += 1;
-        else if (
-          board[i][j][board[i][j].length - 1].symbol === "w" &&
-          board[i][j][board[i][j].length - 1].status === "sleeping"
-        )
-          playerScore += 1;
-      }
-    }
-  }
-
-  const visited = Array.from({ length: 5 }, () =>
-    Array(board[0].length).fill(false)
-  );
-
-  const tempBoard = board.map((row) => row.slice());
-
-  const cekPanjang = (i, j, curMultiplier) => {
-    if (visited[i][j] || i < 0 || i > 4 || j < 0 || j > 4) return;
-    if (tempBoard[i][j].length !== 0) {
-      //cek atas
-      if (i - 1 >= 0) {
-        if (tempBoard[i - 1][j].length > 0) {
-          if (
-            tempBoard[i - 1][j][tempBoard[i - 1][j].length - 1].symbol ===
-              "b" ||
-            tempBoard[i - 1][j][tempBoard[i - 1][j].length - 1].symbol ===
-              "CB" ||
-            tempBoard[i - 1][j].length !== 0
-          ) {
-            aiScore += curMultiplier;
-            cekPanjang(i - 1, j, curMultiplier * 2);
-            visited[i - 1][j] = true;
-          } else if (
-            tempBoard[i - 1][j][tempBoard[i - 1][j].length - 1].symbol ===
-              "w" ||
-            tempBoard[i - 1][j][tempBoard[i - 1][j].length - 1].symbol === "CW"
-          ) {
-            visited[i - 1][j] = true;
-            playerScore += curMultiplier;
-            cekPanjang(i - 1, j, curMultiplier * 2);
-          }
-        }
-      }
-
-      //cek bawah
-      if (i + 1 < 5) {
-        if (tempBoard[i + 1][j].length > 0) {
-          if (
-            tempBoard[i + 1][j][tempBoard[i + 1][j].length - 1].symbol ===
-              "b" ||
-            tempBoard[i + 1][j][tempBoard[i + 1][j].length - 1].symbol === "CB"
-          ) {
-            aiScore += curMultiplier;
-            cekPanjang(i + 1, j, curMultiplier * 2);
-            visited[i + 1][j] = true;
-          } else if (
-            tempBoard[i + 1][j][tempBoard[i + 1][j].length - 1].symbol ===
-              "w" ||
-            tempBoard[i + 1][j][tempBoard[i + 1][j].length - 1].symbol === "CW"
-          ) {
-            visited[i + 1][j] = true;
-            playerScore += curMultiplier;
-            cekPanjang(i + 1, j, curMultiplier * 2);
-          }
-        }
-      }
-
-      //cek kiri
-      if (j - 1 >= 0) {
-        if (tempBoard[i][j - 1].length > 0) {
-          if (
-            tempBoard[i][j - 1][tempBoard[i][j - 1].length - 1].symbol ===
-              "b" ||
-            tempBoard[i][j - 1][tempBoard[i][j - 1].length - 1].symbol === "CB"
-          ) {
-            aiScore += curMultiplier;
-            cekPanjang(i, j - 1, curMultiplier * 2);
-            visited[i][j - 1] = true;
-          } else if (
-            tempBoard[i][j - 1][tempBoard[i][j - 1].length - 1].symbol ===
-              "w" ||
-            tempBoard[i][j - 1][tempBoard[i][j - 1].length - 1].symbol === "CW"
-          ) {
-            visited[i][j - 1] = true;
-
-            playerScore += curMultiplier;
-            cekPanjang(i, j - 1, curMultiplier * 2);
-          }
-        }
-      }
-
-      //cek kanan
-      if (j + 1 < 5) {
-        if (tempBoard[i][j + 1].length > 0) {
-          if (
-            tempBoard[i][j + 1][tempBoard[i][j + 1].length - 1].symbol ===
-              "b" ||
-            tempBoard[i][j + 1][tempBoard[i][j + 1].length - 1].symbol === "CB"
-          ) {
-            aiScore += curMultiplier;
-            cekPanjang(i, j + 1, curMultiplier * 2);
-            visited[i][j + 1] = true;
-          } else if (
-            tempBoard[i][j + 1][tempBoard[i][j + 1].length - 1].symbol ===
-              "w" ||
-            tempBoard[i][j + 1][tempBoard[i][j + 1].length - 1].symbol === "CW"
-          ) {
-            visited[i][j + 1] = true;
-            playerScore += curMultiplier;
-            cekPanjang(i, j + 1, curMultiplier * 2);
-          }
+          !visited[i][j] &&
+          board[i][j].length > 0 && // Check if the cell is not empty
+          (board[i][j][board[i][j].length - 1].symbol === "w" ||
+            board[i][j][board[i][j].length - 1].symbol === "CW")
+        ) {
+          const count = dfs(i, j);
+          maxCount = Math.max(maxCount, count);
         }
       }
     }
-    return;
+
+    return maxCount;
   };
 
-  cekPanjang(row, col, 1);
+  const totalConnectAi = (board) => {
+    // TODO: Implement AI logic here
+    let maxCount = 0;
+    const visited = Array.from({ length: 5 }, () =>
+      Array(board[0].length).fill(false)
+    );
+
+    const dfs = (i, j) => {
+      if (
+        i < 0 ||
+        i >= 5 ||
+        j < 0 ||
+        j >= 5 ||
+        visited[i][j] ||
+        board[i][j].length === 0 || // Check if the cell is empty
+        !(board[i][j][board[i][j].length - 1].symbol === "b") ||
+        !(board[i][j][board[i][j].length - 1].symbol === "CB")
+      ) {
+        return 0;
+      }
+
+      visited[i][j] = true;
+
+      let count = 1;
+      count += dfs(i - 1, j) + dfs(i + 1, j) + dfs(i, j - 1) + dfs(i, j + 1);
+
+      return count;
+    };
+
+    for (let i = 0; i < 5; i++) {
+      for (let j = 0; j < board[i].length; j++) {
+        if (
+          !visited[i][j] &&
+          board[i][j].length > 0 && // Check if the cell is not empty
+          (board[i][j][board[i][j].length - 1].symbol === "b" ||
+            board[i][j][board[i][j].length - 1].symbol === "CB")
+        ) {
+          const count = dfs(i, j);
+          maxCount = Math.max(maxCount, count);
+        }
+      }
+    }
+
+    return maxCount;
+  };
+
+  console.log({ totalConnectAi: totalConnectAi(board) });
+  console.log({ totalConnectPlayer: totalConnectPlayer(board) });
+
+  aiScore += totalConnectAi(board);
+  playerScore += totalConnectPlayer(board);
 
   return aiScore - playerScore;
 };
