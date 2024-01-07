@@ -63,9 +63,13 @@ const selectStatus = (
       : setPlayer2({ ...player2, capstones: player2.capstones - 1 });
   }
   // Check Win
-  checkWin(newBoard, currentPlayer) === 1
-    ? alert("Player 1 Win")
-    : checkWin(newBoard, currentPlayer) === 2 && alert("Player 2 Win");
+  if (checkWin(newBoard, currentPlayer) === 1) {
+    alert("Player 1 Win");
+    window.location.reload();
+  } else if (checkWin(newBoard, currentPlayer) === 2) {
+    alert("Player 2 Win");
+    window.location.reload();
+  }
 
   // Ganti giliran pemain
   setCurrentPlayer(currentPlayer === 1 ? 2 : 1);
@@ -342,7 +346,13 @@ const handlePut = (
 
   if (tempStack.length < 1) {
     // Check Win
-    checkWin(newBoard, 1) === 1 ? alert("Player 1 Win") : checkWin(newBoard, 1) && alert("Player 2 Win");
+    if (checkWin(newBoard, currentPlayer) === 1) {
+      alert("Player 1 Win");
+      window.location.reload();
+    } else if (checkWin(newBoard, currentPlayer) === 2) {
+      alert("Player 2 Win");
+      window.location.reload();
+    }
 
     // Ganti giliran AI
     setCurrentPlayer(2);
@@ -647,8 +657,13 @@ const AiMove = (
     return AiMove(board, setBoard, player2, setPlayer2);
   }
 
-  if (checkWin(newBoard, 2) == 1) alert("Player 1 menang");
-  else if (checkWin(newBoard, 2) == 2) alert("Player 2 menang");
+  if (checkWin(newBoard, 2) === 1) {
+    alert("Player 1 Win");
+    window.location.reload();
+  } else if (checkWin(newBoard, 2) === 2) {
+    alert("Player 2 Win");
+    window.location.reload();
+  }
   setBoard(newBoard);
   console.log({ newBoard });
 };
