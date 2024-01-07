@@ -394,10 +394,10 @@ const checkWin = (board, currentPlayer) => {
 
     if (whiteStoneCount > blackStoneCount) return 1;
     else return 2;
-  } else return 0
+  } else return 0;
 };
 
-const AiMove = (board, setBoard, player2, setPlayer2, action,row,col) => {
+const AiMove = (board, setBoard, player2, setPlayer2, action, row, col) => {
   const newBoard = board.map((row) => row.slice());
   let randomRow = Math.floor(Math.random() * 5);
   let randomCol = Math.floor(Math.random() * 5);
@@ -493,42 +493,45 @@ const AiMove = (board, setBoard, player2, setPlayer2, action,row,col) => {
 };
 
 const getScore = (board, currentPlayer) => {
-  let isAvailable = false;
+  // let isAvailable = false;
 
-  for (let i = 0; i < 5; i++) {
-    for (let j = 0; j < 5; j++) {
-      if (board[i][j].length == 0) isAvailable = true;
-    }
-  }
-  if (!isAvailable) {
-    let whiteStoneCount = 0;
-    let blackStoneCount = 0;
+  // for (let i = 0; i < 5; i++) {
+  //   for (let j = 0; j < 5; j++) {
+  //     if (board[i][j].length == 0) isAvailable = true;
+  //   }
+  // }
+  // if (!isAvailable) {
+  //   let whiteStoneCount = 0;
+  //   let blackStoneCount = 0;
 
-    for (let i = 0; i < 5; i++) {
-      for (let j = 0; j < 5; j++) {
-        if (board[i][j][board[i][j].length - 1] == "w") whiteStoneCount++;
-        else if (board[i][j][board[i][j].length - 1] == "b") blackStoneCount++;
-      }
-    }
+  //   for (let i = 0; i < 5; i++) {
+  //     for (let j = 0; j < 5; j++) {
+  //       if (board[i][j][board[i][j].length - 1] == "w") whiteStoneCount++;
+  //       else if (board[i][j][board[i][j].length - 1] == "b") blackStoneCount++;
+  //     }
+  //   }
 
-    if (currentPlayer === 1) return -whiteStoneCount;
-    else return blackStoneCount;
-  } else {
-    if (checkWin(board, 2) === 2) {
-      return 100;
-    } else if (checkWin(board, 2) === 1) {
-      return -100;
-    }
-  }
-  return checkWin(board, 2)
+  //   if (currentPlayer === 1) return -whiteStoneCount;
+  //   else return blackStoneCount;
+  // } else {
+  //   if (checkWin(board, 2) === 2) {
+  //     return 100;
+  //   } else if (checkWin(board, 2) === 1) {
+  //     return -100;
+  //   }
+  // }
+  // return checkWin(board, 2)
+
+  const randomNumber = Math.random();
+  return randomNumber;
 };
 
 const minimax = (board, isMaximizing, depth) => {
   const currentPlayer = isMaximizing ? 2 : 1;
   const score = getScore(board, currentPlayer);
-  console.log({score});
+  console.log({ score });
 
-  if (score !== 0 || depth === 0) {
+  if (depth === 0) {
     return { score: Number(score), move: null };
   }
 
@@ -556,7 +559,7 @@ const minimax = (board, isMaximizing, depth) => {
               action: "move",
               direction: "up",
               row: i,
-              col: j, 
+              col: j,
             };
           } else {
             newBoard[targetRow][targetCol] = [
@@ -676,24 +679,24 @@ const minimax = (board, isMaximizing, depth) => {
         }
       } else {
         const newBoard = board.map((row) => row.slice());
-        for (let i = 0; i < 3; i++) {
-          if (i === 0) {
+        for (let k = 0; k < 3; k++) {
+          if (k === 0) {
             newBoard[i][j] = [
               ...newBoard[i][j],
               { symbol: currentPlayer === 1 ? "w" : "b", status: "sleeping" },
             ];
-          } else if (i === 1) {
+          } else if (k === 1) {
             newBoard[i][j] = [
               ...newBoard[i][j],
               { symbol: currentPlayer === 1 ? "W" : "B", status: "standing" },
             ];
-          } else {
+          } else if (k === 2) {
             newBoard[i][j] = [
               ...newBoard[i][j],
               { symbol: currentPlayer === 1 ? "CW" : "CB", status: "capstone" },
             ];
           }
-          const score = minimax(newBoard, !isMaximizing, depth - 1).score
+          const score = minimax(newBoard, !isMaximizing, depth - 1).score;
           bestScore = isMaximizing
             ? Math.max(score, bestScore)
             : Math.min(score, bestScore);
@@ -706,7 +709,7 @@ const minimax = (board, isMaximizing, depth) => {
       }
     }
   }
-  console.log({bestScore});
+  console.log({ bestScore });
   return { score: Number(bestScore), move: bestMove };
 };
 
