@@ -62,9 +62,9 @@ const selectStatus = (
       ? setPlayer1({ ...player1, capstones: player1.capstones - 1 })
       : setPlayer2({ ...player2, capstones: player2.capstones - 1 });
   }
-
   // Check Win
-  checkWin(newBoard, currentPlayer);
+  checkWin(newBoard, currentPlayer) === 1 ? alert('Player 1 Win') : checkWin(newBoard, currentPlayer) === 2 && alert('Player 2 Win')
+  
   // Ganti giliran pemain
   setCurrentPlayer(currentPlayer === 1 ? 2 : 1);
 
@@ -240,7 +240,8 @@ const handleAction = (
   setBoard(newBoard);
 
   // Check Win
-  checkWin(newBoard, currentPlayer);
+  checkWin(newBoard, currentPlayer) === 1 ? alert('Player 1 Win') : checkWin(newBoard, currentPlayer) === 2 && alert('Player 2 Win')
+  
   // Ganti giliran ke pemain selanjutnya
   setCurrentPlayer(currentPlayer === 1 ? 2 : 1);
 };
@@ -353,8 +354,7 @@ const checkWin = (board, currentPlayer) => {
       checkJalan(board, 0, i, currentPlayer, null, "vertical") ||
       checkJalan(board, i, 0, currentPlayer, null, "horizontal")
     ) {
-      alert(`Player ${currentPlayer} Win`);
-      return; // Keluar dari fungsi setelah menemukan kemenangan
+      return currentPlayer
     }
     // console.log(
     //   i,
@@ -388,8 +388,8 @@ const checkWin = (board, currentPlayer) => {
       }
     }
 
-    if (whiteStoneCount > blackStoneCount) alert(`Player 1 Win`);
-    else alert(`Player 2 Win`);
+    if (whiteStoneCount > blackStoneCount)return 1
+    else return 2
   } else return;
 };
 

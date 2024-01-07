@@ -38,38 +38,45 @@ const App = () => {
   // Fungsi handler untuk membuka modal
   const openModalHandler = (row, col) => {
     if (
-      currentPlayer === 2 &&
-      player1.stones === 21 &&
-      player1.capstones === 1
-    ) {
-      const isiBoard = {
-        symbol: "w",
-        status: "sleeping",
-      };
-
-      const tempBoard = [...board];
-      tempBoard[row][col] = [isiBoard];
-      setBoard(tempBoard);
-
-      setPlayer1({ ...player1, stones: player1.stones - 1 });
-      setCurrentPlayer(currentPlayer === 1 ? 2 : 1);
-    } else if (
       currentPlayer === 1 &&
       player2.stones === 21 &&
-      player2.capstones === 1
+      player2.capstones === 1 &&
+      player1.stones === 21 &&
+      player1.capstones === 1
     ) {
       const isiBoard = {
         symbol: "b",
         status: "sleeping",
       };
 
-      const tempBoard = [...board];
+      const isiBoardAi = {
+        symbol: "w",
+        status: "sleeping",
+      };
+
+      let tempBoard = [...board];
       tempBoard[row][col] = [isiBoard];
+
+      let randomRow = Math.floor(Math.random() * 5);
+      let randomCol = Math.floor(Math.random() * 5);
+      let isPlaced = false;
+      while (!isPlaced) {
+        if (randomCol !== col && randomRow !== row) {
+          if (tempBoard[randomRow][randomCol].length === 0) {
+            tempBoard[randomRow][randomCol] = [isiBoardAi];
+            isPlaced = true;
+          }
+        } else {
+          randomRow = Math.floor(Math.random() * 5);
+          randomCol = Math.floor(Math.random() * 5);
+        }
+      }
+
       setBoard(tempBoard);
 
       setPlayer2({ ...player2, stones: player2.stones - 1 });
-      setCurrentPlayer(currentPlayer === 1 ? 2 : 1);
-      console.log("masuk");
+      setPlayer1({ ...player1, stones: player1.stones - 1 });
+      setCurrentPlayer(1);
     } else {
       openModal(row, col, setModalOpen, setSelectedRow, setSelectedCol);
     }
@@ -124,7 +131,6 @@ const App = () => {
       player2
     );
   if (currentPlayer === 2 && player2.stones !== 21 && player1.stones !== 21) {
-    // alert('AI move')
     AiMove(board, setBoard, player2, setPlayer2);
 
     checkWin(board, 2);
