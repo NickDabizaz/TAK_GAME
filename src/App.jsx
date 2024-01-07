@@ -9,6 +9,7 @@ import {
   handleAction,
   AiMove,
   checkWin,
+  minimax,
 } from "./GameFunctions";
 
 const App = () => {
@@ -132,7 +133,7 @@ const App = () => {
     );
   if (currentPlayer === 2 && player2.stones !== 21 && player1.stones !== 21) {
     AiMove(board, setBoard, player2, setPlayer2);
-
+    console.log({minimax: minimax(board, 2,3)});
     checkWin(board, 2);
     setCurrentPlayer(1);
   }
