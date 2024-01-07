@@ -190,10 +190,6 @@ const App = () => {
       move.status
     );
 
-    AiMove(board, setBoard, player2, setPlayer2);
-    console.log({ minimax: minimax(board, 2, 2) });
-    checkWin(board, 2);
-
     setCurrentPlayer(1);
   }
 

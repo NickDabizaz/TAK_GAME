@@ -497,7 +497,7 @@ const checkWin = (board, currentPlayer) => {
 
     if (whiteStoneCount > blackStoneCount) return 1;
     else return 2;
-  } else return 0;
+  } else return;
 };
 
 // const AiMove = (board, setBoard, player2, setPlayer2, action, row, col) => {
@@ -925,16 +925,18 @@ const sbe = (board) => {
   for (let i = 0; i < 5; i++) {
     for (let j = 0; j < 5; j++) {
       //setiap kontrol atas stack +2 poin
-      if (
-        board[i][j][board[i][j].length - 1].symbol === "b" &&
-        board[i][j][board[i][j].length - 1].status === "sleeping"
-      )
-        aiScore += 1;
-      else if (
-        board[i][j][board[i][j].length - 1].symbol === "w" &&
-        board[i][j][board[i][j].length - 1].status === "sleeping"
-      )
-        playerScore += 1;
+      if (board[i][j].length > 0) {
+        if (
+          board[i][j][board[i][j].length - 1].symbol === "b" &&
+          board[i][j][board[i][j].length - 1].status === "sleeping"
+        )
+          aiScore += 1;
+        else if (
+          board[i][j][board[i][j].length - 1].symbol === "w" &&
+          board[i][j][board[i][j].length - 1].status === "sleeping"
+        )
+          playerScore += 1;
+      }
     }
   }
 
@@ -943,87 +945,102 @@ const sbe = (board) => {
   const cekPanjang = (i, j, curMultiplier) => {
     for (let i = 0; i < 5; i++) {
       for (let j = 0; j < 5; j++) {
-        if (board[i][j].length > 0) {
+        if (tempBoard[i][j].length > 0) {
           //cek atas
           if (i - 1 > 0) {
-            if (
-              board[i - 1][j][board[i][j].length - 1].symbol === "b" ||
-              board[i - 1][j][board[i][j].length - 1].symbol === "CB"
-            ) {
-              aiScore += curMultiplier;
-              board[i][j][board[i][j].length - 1].visited = true;
-              board[(i - 1, j, curMultiplier * 2)];
-            } else if (
-              board[i - 1][j][board[i][j].length - 1].symbol === "w" ||
-              board[i - 1][j][board[i][j].length - 1].symbol === "CW"
-            ) {
-              playerScore += curMultiplier;
-              board[i][j][board[i][j].length - 1].visited = true;
-              board[(i - 1, j, curMultiplier * 2)];
+            if (tempBoard[i - 1][j].length > 0) {
+              if (
+                tempBoard[i - 1][j][tempBoard[i][j].length - 1].symbol ===
+                  "b" ||
+                tempBoard[i - 1][j][tempBoard[i][j].length - 1].symbol === "CB"
+              ) {
+                aiScore += curMultiplier;
+                tempBoard[i][j][tempBoard[i][j].length - 1].visited = true;
+                tempBoard[(i - 1, j, curMultiplier * 2)];
+              } else if (
+                tempBoard[i - 1][j][tempBoard[i][j].length - 1].symbol ===
+                  "w" ||
+                tempBoard[i - 1][j][tempBoard[i][j].length - 1].symbol === "CW"
+              ) {
+                playerScore += curMultiplier;
+                tempBoard[i][j][tempBoard[i][j].length - 1].visited = true;
+                tempBoard[(i - 1, j, curMultiplier * 2)];
+              }
             }
           }
 
           //cek bawah
           if (i + 1 < 5) {
-            if (
-              board[i + 1][j][board[i][j].length - 1].symbol === "b" ||
-              board[i + 1][j][board[i][j].length - 1].symbol === "CB"
-            ) {
-              aiScore += curMultiplier;
-              board[i][j][board[i][j].length - 1].visited = true;
-              board[(i + 1, j, curMultiplier * 2)];
-            } else if (
-              board[i + 1][j][board[i][j].length - 1].symbol === "w" ||
-              board[i + 1][j][board[i][j].length - 1].symbol === "CW"
-            ) {
-              playerScore += curMultiplier;
-              board[i][j][board[i][j].length - 1].visited = true;
-              board[(i + 1, j, curMultiplier * 2)];
+            if (board[i + 1][j].length > 0) {
+              if (
+                board[i + 1][j][board[i][j].length - 1].symbol === "b" ||
+                board[i + 1][j][board[i][j].length - 1].symbol === "CB"
+              ) {
+                aiScore += curMultiplier;
+                board[i][j][board[i][j].length - 1].visited = true;
+                board[(i + 1, j, curMultiplier * 2)];
+              } else if (
+                board[i + 1][j][board[i][j].length - 1].symbol === "w" ||
+                board[i + 1][j][board[i][j].length - 1].symbol === "CW"
+              ) {
+                playerScore += curMultiplier;
+                board[i][j][board[i][j].length - 1].visited = true;
+                board[(i + 1, j, curMultiplier * 2)];
+              }
             }
           }
 
           //cek kiri
           if (j - 1 > 0) {
-            if (
-              board[i][j - 1][board[i][j].length - 1].symbol === "b" ||
-              board[i][j - 1][board[i][j].length - 1].symbol === "CB"
-            ) {
-              aiScore += curMultiplier;
-              board[i][j][board[i][j].length - 1].visited = true;
-              board[(i, j - 1, curMultiplier * 2)];
-            } else if (
-              board[i][j - 1][board[i][j].length - 1].symbol === "w" ||
-              board[i][j - 1][board[i][j].length - 1].symbol === "CW"
-            ) {
-              playerScore += curMultiplier;
-              board[i][j][board[i][j].length - 1].visited = true;
-              board[(i, j - 1, curMultiplier * 2)];
+            if (board[i][j - 1].length > 0) {
+              if (
+                board[i][j - 1][board[i][j].length - 1].symbol === "b" ||
+                board[i][j - 1][board[i][j].length - 1].symbol === "CB"
+              ) {
+                aiScore += curMultiplier;
+                board[i][j][board[i][j].length - 1].visited = true;
+                board[(i, j - 1, curMultiplier * 2)];
+              } else if (
+                board[i][j - 1][board[i][j].length - 1].symbol === "w" ||
+                board[i][j - 1][board[i][j].length - 1].symbol === "CW"
+              ) {
+                playerScore += curMultiplier;
+                board[i][j][board[i][j].length - 1].visited = true;
+                board[(i, j - 1, curMultiplier * 2)];
+              }
             }
           }
 
           //cek kanan
           if (j + 1 < 5) {
-            if (
-              board[i][j + 1][board[i][j].length - 1].symbol === "b" ||
-              board[i][j + 1][board[i][j].length - 1].symbol === "CB"
-            ) {
-              aiScore += curMultiplier;
-              board[i][j][board[i][j].length - 1].visited = true;
-              board[(i, j + 1, curMultiplier * 2)];
-            } else if (
-              board[i][j + 1][board[i][j].length - 1].symbol === "w" ||
-              board[i][j + 1][board[i][j].length - 1].symbol === "CW"
-            ) {
-              playerScore += curMultiplier;
-              board[i][j][board[i][j].length - 1].visited = true;
-              board[(i, j + 1, curMultiplier * 2)];
+            if (board[i][j + 1].length > 0) {
+              if (
+                board[i][j + 1][board[i][j].length - 1].symbol === "b" ||
+                board[i][j + 1][board[i][j].length - 1].symbol === "CB"
+              ) {
+                aiScore += curMultiplier;
+                board[i][j][board[i][j].length - 1].visited = true;
+                board[(i, j + 1, curMultiplier * 2)];
+              } else if (
+                board[i][j + 1][board[i][j].length - 1].symbol === "w" ||
+                board[i][j + 1][board[i][j].length - 1].symbol === "CW"
+              ) {
+                playerScore += curMultiplier;
+                board[i][j][board[i][j].length - 1].visited = true;
+                board[(i, j + 1, curMultiplier * 2)];
+              }
             }
           }
         }
       }
     }
   };
-  cekPanjang(0, 0, 1);
+
+  for (let i = 0; i < 5; i++) {
+    for (let j = 0; j < 5; j++) {
+      cekPanjang(i, j, 1);
+    }
+  }
 
   return aiScore - playerScore;
 };
