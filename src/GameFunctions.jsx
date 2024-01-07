@@ -169,7 +169,7 @@ const handlePut = (
   let targetCol = col;
   let tempStack = [];
 
-  console.log(selectedCellStack)
+  console.log(selectedCellStack);
 
   if (movestatus == "") {
     if (targetRow == initialRow - 1 && targetCol == initialCol) {
@@ -242,58 +242,44 @@ const handlePut = (
   // Periksa apakah cell tujuan kosong atau tidak
   if (newBoard[targetRow][targetCol].length === 0) {
     // Jika kosong, pindahkan seluruh stack pion dari cell yang dipilih ke cell tujuan
-    newBoard[targetRow][targetCol] = [
-      selectedCellStack[0],
-    ];
+    newBoard[targetRow][targetCol] = [selectedCellStack[0]];
 
     tempStack = selectedCellStack;
     tempStack.shift();
     if (tempStack.length > 0) {
       setSelectedCellStack(tempStack);
+    } else {
+      setSelectedCellStack([]);
     }
-    else{
-      setSelectedCellStack([])
-    }
-    setInitialRow(targetRow)
-    setInitialCol(targetCol)
-
+    setInitialRow(targetRow);
+    setInitialCol(targetCol);
   } else {
     const targetCellTop =
       newBoard[targetRow][targetCol][newBoard[targetRow][targetCol].length - 1];
 
     // Periksa apakah pion yang akan di-stack adalah 'w' atau 'b'
-    if (
-      ["w", "b"].includes(
-        selectedCellStack[0].symbol
-      )
-    ) {
+    if (["w", "b"].includes(selectedCellStack[0].symbol)) {
       // Jika 'w' atau 'b', maka pion hanya bisa menumpuk pion 'w' atau 'b'
       if (["W", "B", "CB", "CW"].includes(targetCellTop.symbol)) {
         // Jika target pion adalah 'W' atau 'B' atau 'CB' atau 'CW', maka tidak bisa menumpuk
         alert(`Sleeping stone hanya dapat menumpuk sleeping stone.`);
         return;
       }
-    } else if (
-      ["W"].includes(selectedCellStack[0].symbol)
-    ) {
+    } else if (["W"].includes(selectedCellStack[0].symbol)) {
       // Jika 'W', maka pion hanya bisa menumpuk pion 'W' atau 'CW'
       if (["B", "W", "CB", "CW"].includes(targetCellTop.symbol)) {
         // Jika target pion adalah 'B' atau 'CB' atau 'CW', maka tidak bisa menumpuk
         alert(`Standing stone hanya dapat menumpuk sleeping stone.`);
         return;
       }
-    } else if (
-      ["B"].includes(selectedCellStack[0].symbol)
-    ) {
+    } else if (["B"].includes(selectedCellStack[0].symbol)) {
       // Jika 'B', maka pion hanya bisa menumpuk pion 'B' atau 'CB'
       if (["W", "B", "CW", "CB"].includes(targetCellTop.symbol)) {
         // Jika target pion adalah 'W' atau 'CW' atau 'CB', maka tidak bisa menumpuk
         alert(`Standing stone hanya dapat menumpuk sleeping stone.`);
         return;
       }
-    } else if (
-      ["CB"].includes(selectedCellStack[0].symbol)
-    ) {
+    } else if (["CB"].includes(selectedCellStack[0].symbol)) {
       // Jika 'CB', maka 'CB' tidak bisa menumpuk pion 'CW'
       if (["CW"].includes(targetCellTop.symbol)) {
         // Jika target pion adalah 'CW', maka tidak bisa menumpuk
@@ -318,9 +304,7 @@ const handlePut = (
           newBoard[targetRow][targetCol].length - 1
         ].status = "sleeping";
       }
-    } else if (
-      ["CW"].includes(selectedCellStack[0].symbol)
-    ) {
+    } else if (["CW"].includes(selectedCellStack[0].symbol)) {
       // Jika 'CW', maka 'CW' tidak bisa menumpuk pion 'CB'
       if (["CB"].includes(targetCellTop.symbol)) {
         // Jika target pion adalah 'CB', maka tidak bisa menumpuk
@@ -356,12 +340,11 @@ const handlePut = (
     tempStack.shift();
     if (tempStack.length > 0) {
       setSelectedCellStack(tempStack);
+    } else {
+      setSelectedCellStack([]);
     }
-    else{
-      setSelectedCellStack([])
-    }
-    setInitialRow(targetRow)
-    setInitialCol(targetCol)
+    setInitialRow(targetRow);
+    setInitialCol(targetCol);
   }
 
   // Update state board setelah gerakan
@@ -369,14 +352,14 @@ const handlePut = (
 
   if (tempStack.length < 1) {
     // Check Win
-    checkWin(newBoard, 1) === 1
+    checkWin(newBoard, 1) === 1;
 
     // Ganti giliran AI
     setCurrentPlayer(2);
 
-    setMoveStatus("")
-    setInitialRow(null)
-    setInitialCol(null)
+    setMoveStatus("");
+    setInitialRow(null);
+    setInitialCol(null);
   }
 };
 
@@ -630,7 +613,8 @@ const AiMove = (
   col,
   row,
   direction,
-  action
+  action,
+  status
 ) => {
   const newBoard = board.map((row) => row.slice());
   // let randomRow = Math.floor(Math.random() * 5);
@@ -666,7 +650,7 @@ const AiMove = (
         } else if (player2.capstones > 0) {
           randomStatus = Math.floor(Math.random() * 3);
         }
-        var status = ["sleeping", "standing", "capstone"][randomStatus];
+        // var status = ["sleeping", "standing", "capstone"][randomStatus];
         const symbol =
           status === "sleeping" ? "b" : status === "standing" ? "B" : "CB";
         newBoard[randomRow][randomCol] = [
@@ -682,7 +666,7 @@ const AiMove = (
     } else if (status === "capstone") {
       setPlayer2({ ...player2, capstones: player2.capstones - 1 });
     }
-  } else if (newBoard[randomRow][randomCol].length > 0) {
+  } else if (newBoard[row][col].length > 0) {
     // Move
     const selectedCellStack = [...newBoard[randomRow][randomCol]];
     let targetRow = randomRow;
@@ -713,19 +697,49 @@ const AiMove = (
         )
       ) {
         if (["W", "B", "CB", "CW"].includes(targetCellTop.symbol)) {
-          return AiMove(board, setBoard, player2, setPlayer2);
+          return AiMove(
+            board,
+            setBoard,
+            player2,
+            setPlayer2,
+            col,
+            row,
+            direction,
+            action,
+            status
+          );
         }
       } else if (
         ["W"].includes(selectedCellStack[selectedCellStack.length - 1].symbol)
       ) {
         if (["B", "CB", "CW"].includes(targetCellTop.symbol)) {
-          return AiMove(board, setBoard, player2, setPlayer2);
+          return AiMove(
+            board,
+            setBoard,
+            player2,
+            setPlayer2,
+            col,
+            row,
+            direction,
+            action,
+            status
+          );
         }
       } else if (
         ["B"].includes(selectedCellStack[selectedCellStack.length - 1].symbol)
       ) {
         if (["W", "CW", "CB"].includes(targetCellTop.symbol)) {
-          return AiMove(board, setBoard, player2, setPlayer2);
+          return AiMove(
+            board,
+            setBoard,
+            player2,
+            setPlayer2,
+            col,
+            row,
+            direction,
+            action,
+            status
+          );
         }
       }
       newBoard[targetRow][targetCol] = [
@@ -737,6 +751,9 @@ const AiMove = (
   } else {
     return AiMove(board, setBoard, player2, setPlayer2);
   }
+
+  if (checkWin(newBoard, 2) == 1) alert("Player 1 menang");
+  else if (checkWin(newBoard, 2) == 2) alert("Player 2 menang");
   setBoard(newBoard);
   console.log({ newBoard });
 };
@@ -749,7 +766,7 @@ const minimax = (board, player2) => {
       if (board[i][j].length === 0) {
         const tempBoard = board.map((row) => row.slice());
         console.log({ player2 });
-        for (let k = 0; k < 3; k++) {
+        for (let k = 0; k < (player2.capstones == 0 ? 2 : 3); k++) {
           tempBoard[i][j] = [
             {
               symbol: k == 0 ? "b" : k == 1 ? "B" : "CB",
@@ -757,6 +774,7 @@ const minimax = (board, player2) => {
             },
           ];
           availableMove.push({
+            status: tempBoard[i][j][tempBoard[i][j].length - 1].status,
             action: "put",
             row: i,
             col: j,
@@ -771,7 +789,7 @@ const minimax = (board, player2) => {
       ) {
         console.log("masuk lain");
         // Cari Available untuk di pindah
-        if (i > 0 && board[i - 1][j].length === 0) {
+        if (i > 0) {
           const tempBoard = board.map((row) => row.slice());
           const selectedCell = [...tempBoard[i][j]];
           tempBoard[i - 1][j] = [selectedCell];
@@ -784,7 +802,7 @@ const minimax = (board, player2) => {
           });
           tempBoard[i - 1][j] = [];
         }
-        if (i < 4 && board[i + 1][j].length === 0) {
+        if (i < 4) {
           const tempBoard = board.map((row) => row.slice());
           const selectedCell = [...tempBoard[i][j]];
           tempBoard[i + 1][j] = [selectedCell];
@@ -797,7 +815,7 @@ const minimax = (board, player2) => {
           });
           tempBoard[i + 1][j] = [];
         }
-        if (j > 0 && board[i][j - 1].length === 0) {
+        if (j > 0) {
           const tempBoard = board.map((row) => row.slice());
           const selectedCell = [...tempBoard[i][j]];
           tempBoard[i][j - 1] = [selectedCell];
@@ -810,7 +828,7 @@ const minimax = (board, player2) => {
           });
           tempBoard[i][j - 1] = [];
         }
-        if (j < 4 && board[i][j + 1].length === 0) {
+        if (j < 4) {
           const tempBoard = board.map((row) => row.slice());
           const selectedCell = [...tempBoard[i][j]];
           tempBoard[i][j + 1] = [selectedCell];
@@ -877,27 +895,147 @@ const sbe = (board) => {
   let playerScore = 0;
   let aiScore = 0;
 
+  // for (let i = 0; i < 5; i++) {
+  //   for (let j = 0; j < 5; j++) {
+  //     if (board[i][j].length == 1) {
+  //       //setiap sleeping stone +1 poin
+  //       if (
+  //         board[i][j][0].symbol === "b" &&
+  //         board[i][j][0].status === "sleeping"
+  //       )
+  //         aiScore++;
+  //       else if (
+  //         board[i][j][0].symbol === "w" &&
+  //         board[i][j][0].status === "sleeping"
+  //       )
+  //         playerScore++;
+  //       else if (board[i][j][0].symbol === "CB") aiScore += 3;
+  //       else if (board[i][j][0].symbol === "CW") playerScore += 2;
+  //     } else if (board[i][j].length > 1) {
+  //       //setiap kontrol atas stack +2 poin
+  //       if (
+  //         board[i][j][board[i][j].length - 1].symbol === "b" &&
+  //         board[i][j][board[i][j].length - 1].status === "sleeping"
+  //       )
+  //         aiScore += 2 * board[i][j].length;
+  //       else if (
+  //         board[i][j][board[i][j].length - 1].symbol === "w" &&
+  //         board[i][j][board[i][j].length - 1].status === "sleeping"
+  //       )
+  //         playerScore += 2 * board[i][j].length;
+  //       //setiap capstone +3poin
+  //       else if (board[i][j][board[i][j].length - 1].symbol === "CB")
+  //         aiScore += 3 * board[i][j].length;
+  //       else if (board[i][j][board[i][j].length - 1].symbol === "CW")
+  //         playerScore += 3 * board[i][j].length;
+  //     }
+  //   }
+  // }
+
   for (let i = 0; i < 5; i++) {
     for (let j = 0; j < 5; j++) {
-      if (board[i][j].length == 1) {
-        //setiap sleeping stone +1 poin
-        if (board[i][j][0].symbol === "b") aiScore++;
-        else if (board[i][j][0].symbol === "w") playerScore++;
-      } else if (board[i][j].length > 1) {
-        //setiap kontrol atas stack +2 poin
-        if (board[i][j][board[i][j].lenght - 1].symbol === "b") aiScore += 2;
-        else if (board[i][j][board[i][j].lenght - 1].symbol === "w")
-          playerScore += 2;
-        //setiap capstone +3poin
-        else if (board[i][j][board[i][j].lenght - 1].symbol === "CB")
-          aiScore += 3;
-        else if (board[i][j][board[i][j].lenght - 1].symbol === "CW")
-          playerScore += 2;
-      }
+      //setiap kontrol atas stack +2 poin
+      if (
+        board[i][j][board[i][j].length - 1].symbol === "b" &&
+        board[i][j][board[i][j].length - 1].status === "sleeping"
+      )
+        aiScore += 1;
+      else if (
+        board[i][j][board[i][j].length - 1].symbol === "w" &&
+        board[i][j][board[i][j].length - 1].status === "sleeping"
+      )
+        playerScore += 1;
     }
   }
 
-  return aiScore - playerScore
+  const tempBoard = board.map((row) => row.slice());
+
+  const cekPanjang = (i, j, curMultiplier) => {
+    for (let i = 0; i < 5; i++) {
+      for (let j = 0; j < 5; j++) {
+        if (board[i][j].length > 0) {
+          //cek atas
+          if (i - 1 > 0) {
+            if (
+              board[i - 1][j][board[i][j].length - 1].symbol === "b" ||
+              board[i - 1][j][board[i][j].length - 1].symbol === "CB"
+            ) {
+              aiScore += curMultiplier;
+              board[i][j][board[i][j].length - 1].visited = true;
+              board[(i - 1, j, curMultiplier * 2)];
+            } else if (
+              board[i - 1][j][board[i][j].length - 1].symbol === "w" ||
+              board[i - 1][j][board[i][j].length - 1].symbol === "CW"
+            ) {
+              playerScore += curMultiplier;
+              board[i][j][board[i][j].length - 1].visited = true;
+              board[(i - 1, j, curMultiplier * 2)];
+            }
+          }
+
+          //cek bawah
+          if (i + 1 < 5) {
+            if (
+              board[i + 1][j][board[i][j].length - 1].symbol === "b" ||
+              board[i + 1][j][board[i][j].length - 1].symbol === "CB"
+            ) {
+              aiScore += curMultiplier;
+              board[i][j][board[i][j].length - 1].visited = true;
+              board[(i + 1, j, curMultiplier * 2)];
+            } else if (
+              board[i + 1][j][board[i][j].length - 1].symbol === "w" ||
+              board[i + 1][j][board[i][j].length - 1].symbol === "CW"
+            ) {
+              playerScore += curMultiplier;
+              board[i][j][board[i][j].length - 1].visited = true;
+              board[(i + 1, j, curMultiplier * 2)];
+            }
+          }
+
+          //cek kiri
+          if (j - 1 > 0) {
+            if (
+              board[i][j - 1][board[i][j].length - 1].symbol === "b" ||
+              board[i][j - 1][board[i][j].length - 1].symbol === "CB"
+            ) {
+              aiScore += curMultiplier;
+              board[i][j][board[i][j].length - 1].visited = true;
+              board[(i, j - 1, curMultiplier * 2)];
+            } else if (
+              board[i][j - 1][board[i][j].length - 1].symbol === "w" ||
+              board[i][j - 1][board[i][j].length - 1].symbol === "CW"
+            ) {
+              playerScore += curMultiplier;
+              board[i][j][board[i][j].length - 1].visited = true;
+              board[(i, j - 1, curMultiplier * 2)];
+            }
+          }
+
+          //cek kanan
+          if (j + 1 < 5) {
+            if (
+              board[i][j + 1][board[i][j].length - 1].symbol === "b" ||
+              board[i][j + 1][board[i][j].length - 1].symbol === "CB"
+            ) {
+              aiScore += curMultiplier;
+              board[i][j][board[i][j].length - 1].visited = true;
+              board[(i, j + 1, curMultiplier * 2)];
+            } else if (
+              board[i][j + 1][board[i][j].length - 1].symbol === "w" ||
+              board[i][j + 1][board[i][j].length - 1].symbol === "CW"
+            ) {
+              playerScore += curMultiplier;
+              board[i][j][board[i][j].length - 1].visited = true;
+              board[(i, j + 1, curMultiplier * 2)];
+            }
+          }
+        }
+      }
+    }
+  };
+  cekPanjang(0, 0, 1);
+
+  return aiScore - playerScore;
 };
 
 // const minimax = (board, isMaximizing, depth) => {
@@ -1097,5 +1235,5 @@ export {
   AiMove,
   checkWin,
   minimax,
-  handlePut
+  handlePut,
 };

@@ -44,10 +44,24 @@ const App = () => {
   // Fungsi handler untuk membuka modal
   const openModalHandler = (row, col) => {
     //Pengecekan Mode Move
-    if(currentPlayer === 3){
-      handlePut(row, col, board, setBoard, currentPlayer, setCurrentPlayer, selectedCellStack, setSelectedCellStack, initialRow, setInitialRow, initialCol, setInitialCol, movestatus, setMoveStatus)
-    }
-    else{
+    if (currentPlayer === 3) {
+      handlePut(
+        row,
+        col,
+        board,
+        setBoard,
+        currentPlayer,
+        setCurrentPlayer,
+        selectedCellStack,
+        setSelectedCellStack,
+        initialRow,
+        setInitialRow,
+        initialCol,
+        setInitialCol,
+        movestatus,
+        setMoveStatus
+      );
+    } else {
       if (
         currentPlayer === 1 &&
         player2.stones === 21 &&
@@ -59,15 +73,15 @@ const App = () => {
           symbol: "b",
           status: "sleeping",
         };
-  
+
         const isiBoardAi = {
           symbol: "w",
           status: "sleeping",
         };
-  
+
         let tempBoard = [...board];
         tempBoard[row][col] = [isiBoard];
-  
+
         let randomRow = Math.floor(Math.random() * 5);
         let randomCol = Math.floor(Math.random() * 5);
         let isPlaced = false;
@@ -82,16 +96,16 @@ const App = () => {
             randomCol = Math.floor(Math.random() * 5);
           }
         }
-  
+
         setBoard(tempBoard);
-  
+
         setPlayer2({ ...player2, stones: player2.stones - 1 });
         setPlayer1({ ...player1, stones: player1.stones - 1 });
         setCurrentPlayer(1);
       } else {
         openModal(row, col, setModalOpen, setSelectedRow, setSelectedCol);
       }
-    }    
+    }
   };
 
   // Fungsi handler untuk menutup modal
@@ -101,9 +115,23 @@ const App = () => {
   const openActionModalHandler = (row, col) => {
     // Pengecekan sedang dalam mode move atau tidak
     if (currentPlayer === 3) {
-      handlePut(row, col, board, setBoard, currentPlayer, setCurrentPlayer, selectedCellStack, setSelectedCellStack, initialRow, setInitialRow, initialCol, setInitialCol, movestatus, setMoveStatus)
-    } 
-    else {
+      handlePut(
+        row,
+        col,
+        board,
+        setBoard,
+        currentPlayer,
+        setCurrentPlayer,
+        selectedCellStack,
+        setSelectedCellStack,
+        initialRow,
+        setInitialRow,
+        initialCol,
+        setInitialCol,
+        movestatus,
+        setMoveStatus
+      );
+    } else {
       // Pengecekan pemain dan pion yang dapat diklik
       const selectedCell = board[row][col];
       const playerSymbol =
@@ -149,8 +177,7 @@ const App = () => {
       player2
     );
   if (currentPlayer === 2 && player2.stones !== 21 && player1.stones !== 21) {
-<<<<<<< Updated upstream
-    const move = minimax(board,player2);
+    const move = minimax(board, player2);
     AiMove(
       board,
       setBoard,
@@ -159,13 +186,12 @@ const App = () => {
       move.col,
       move.row,
       move.direction,
-      move.action
+      move.action,
+      move.status
     );
 
-=======
     AiMove(board, setBoard, player2, setPlayer2);
     console.log({ minimax: minimax(board, 2, 2) });
->>>>>>> Stashed changes
     checkWin(board, 2);
 
     setCurrentPlayer(1);
@@ -227,7 +253,9 @@ const App = () => {
                   cell.length > 0 &&
                   !isPlayerTurnValid(cell[cell.length - 1].symbol)
                     ? "not-allowed"
-                    : currentPlayer === 3 ? "pointer" : "pointer",
+                    : currentPlayer === 3
+                    ? "pointer"
+                    : "pointer",
                 position: "relative",
               }}
             >
