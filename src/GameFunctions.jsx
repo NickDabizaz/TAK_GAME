@@ -96,17 +96,23 @@ const closeActionModal = (setActionModalOpen) => {
 };
 
 const handleAction = (
-  direction,
   row,
   col,
-  setBoard,
   board,
+  setBoard,
+  move,
+  setMoveCount,
   currentPlayer,
   setCurrentPlayer,
-  move,
-  setMoveCount
+  selectedCellStack,
+  setSelectedCellStack,
+  initialRow,
+  setInitialRow,
+  initialCol,
+  setInitialCol
 ) => {
   const newBoard = board.map((row) => row.slice());
+  let tempArray = [];
 
   console.log(newBoard[row][col].length);
   console.log(move);
@@ -118,9 +124,6 @@ const handleAction = (
     return;
   }
 
-  // Ambil seluruh stack pion dari cell yang dipilih
-  const selectedCellStack = [];
-
   //ini belum ada pengecekan, kalo misalnya sleeping mau nindih standing kan gabisa
   //jadi habis alert, yang mau dipindah malah hilang
   for (
@@ -128,33 +131,132 @@ const handleAction = (
     i < newBoard[row][col].length;
     i++
   ) {
-    selectedCellStack.push(newBoard[row][col][i]);
+    tempArray.push(newBoard[row][col][i]);
   }
 
   for (let i = 0; i < move; i++) {
     newBoard[row][col].pop();
   }
 
-  console.log(selectedCellStack);
+  // Update state board setelah gerakan
+  setBoard(newBoard);
+  setSelectedCellStack(tempArray);
+  setInitialRow(row);
+  setInitialCol(col);
 
+  setCurrentPlayer(3);
+  alert("Sekarang dalam status move");
+};
+
+const handlePut = (
+  row,
+  col,
+  board,
+  setBoard,
+  currentPlayer,
+  setCurrentPlayer,
+  selectedCellStack,
+  setSelectedCellStack,
+  initialRow,
+  setInitialRow,
+  initialCol,
+  setInitialCol,
+  movestatus,
+  setMoveStatus
+) => {
   // Tentukan arah gerakan dan koordinat cell tujuan
   let targetRow = row;
   let targetCol = col;
+  let tempStack = [];
 
-  if (direction === "up" && row > 0) {
-    targetRow -= 1;
-  } else if (direction === "down" && row < 4) {
-    targetRow += 1;
-  } else if (direction === "left" && col > 0) {
-    targetCol -= 1;
-  } else if (direction === "right" && col < 4) {
-    targetCol += 1;
+  console.log(selectedCellStack)
+
+  if (movestatus == "") {
+    if (targetRow == initialRow - 1 && targetCol == initialCol) {
+      setMoveStatus("top");
+    } else if (targetRow == initialRow && targetCol == initialCol + 1) {
+      setMoveStatus("right");
+    } else if (targetRow == initialRow + 1 && targetCol == initialCol) {
+      setMoveStatus("bottom");
+    } else if (targetRow == initialRow && targetCol == initialCol - 1) {
+      setMoveStatus("left");
+    } else {
+      alert("Invalid move");
+      return;
+    }
+  } else {
+    if (movestatus == "top") {
+      if (
+        targetRow < initialRow - 1 ||
+        targetRow > initialRow ||
+        targetCol != initialCol
+      ) {
+        alert("Invalid move ke atas");
+        return;
+      }
+    } else if (movestatus == "right") {
+      if (
+        targetCol > initialCol + 1 ||
+        targetCol < initialCol ||
+        targetRow != initialRow
+      ) {
+        alert("Invalid move ke kanan");
+        return;
+      }
+    } else if (movestatus == "bottom") {
+      if (
+        targetRow > initialRow + 1 ||
+        targetRow < initialRow ||
+        targetCol != initialCol
+      ) {
+        alert("Invalid move ke bawah");
+        return;
+      }
+    } else if (movestatus == "left") {
+      if (
+        targetCol < initialCol - 1 ||
+        targetCol > initialCol ||
+        targetRow != initialRow
+      ) {
+        alert("Invalid move ke kiri");
+        return;
+      }
+    } else {
+      alert("Move status salah");
+      return;
+    }
   }
+
+  const newBoard = board.map((row) => row.slice());
+
+  // if (direction === "up" && row > 0) {
+  //   targetRow -= 1;
+  // } else if (direction === "down" && row < 4) {
+  //   targetRow += 1;
+  // } else if (direction === "left" && col > 0) {
+  //   targetCol -= 1;
+  // } else if (direction === "right" && col < 4) {
+  //   targetCol += 1;
+  // }
 
   // Periksa apakah cell tujuan kosong atau tidak
   if (newBoard[targetRow][targetCol].length === 0) {
     // Jika kosong, pindahkan seluruh stack pion dari cell yang dipilih ke cell tujuan
-    newBoard[targetRow][targetCol] = [...selectedCellStack];
+    newBoard[targetRow][targetCol] = [
+      selectedCellStack[0],
+    ];
+
+    tempStack = selectedCellStack;
+    tempStack.shift();
+    if (tempStack.length > 0) {
+      setSelectedCellStack(tempStack);
+    }
+    else{
+      setSelectedCellStack([])
+    }
+    setInitialRow(targetRow)
+    setInitialCol(targetCol)
+
   } else {
     const targetCellTop =
       newBoard[targetRow][targetCol][newBoard[targetRow][targetCol].length - 1];
@@ -162,7 +264,7 @@ const handleAction = (
     // Periksa apakah pion yang akan di-stack adalah 'w' atau 'b'
     if (
       ["w", "b"].includes(
-        selectedCellStack[selectedCellStack.length - 1].symbol
+        selectedCellStack[0].symbol
       )
     ) {
       // Jika 'w' atau 'b', maka pion hanya bisa menumpuk pion 'w' atau 'b'
@@ -172,7 +274,7 @@ const handleAction = (
         return;
       }
     } else if (
-      ["W"].includes(selectedCellStack[selectedCellStack.length - 1].symbol)
+      ["W"].includes(selectedCellStack[0].symbol)
     ) {
       // Jika 'W', maka pion hanya bisa menumpuk pion 'W' atau 'CW'
       if (["B", "W", "CB", "CW"].includes(targetCellTop.symbol)) {
@@ -181,7 +283,7 @@ const handleAction = (
         return;
       }
     } else if (
-      ["B"].includes(selectedCellStack[selectedCellStack.length - 1].symbol)
+      ["B"].includes(selectedCellStack[0].symbol)
     ) {
       // Jika 'B', maka pion hanya bisa menumpuk pion 'B' atau 'CB'
       if (["W", "B", "CW", "CB"].includes(targetCellTop.symbol)) {
@@ -190,7 +292,7 @@ const handleAction = (
         return;
       }
     } else if (
-      ["CB"].includes(selectedCellStack[selectedCellStack.length - 1].symbol)
+      ["CB"].includes(selectedCellStack[0].symbol)
     ) {
       // Jika 'CB', maka 'CB' tidak bisa menumpuk pion 'CW'
       if (["CW"].includes(targetCellTop.symbol)) {
@@ -201,15 +303,23 @@ const handleAction = (
       //jika 'CB', maka 'W' berubah menjadi 'w'
 
       if (["B"].includes(targetCellTop.symbol)) {
-        newBoard[targetRow][targetCol][0].symbol = "b";
-        newBoard[targetRow][targetCol][0].status = "sleeping";
+        newBoard[targetRow][targetCol][
+          newBoard[targetRow][targetCol].length - 1
+        ].symbol = "b";
+        newBoard[targetRow][targetCol][
+          newBoard[targetRow][targetCol].length - 1
+        ].status = "sleeping";
       }
       if (["W"].includes(targetCellTop.symbol)) {
-        newBoard[targetRow][targetCol][0].symbol = "w";
-        newBoard[targetRow][targetCol][0].status = "sleeping";
+        newBoard[targetRow][targetCol][
+          newBoard[targetRow][targetCol].length - 1
+        ].symbol = "w";
+        newBoard[targetRow][targetCol][
+          newBoard[targetRow][targetCol].length - 1
+        ].status = "sleeping";
       }
     } else if (
-      ["CW"].includes(selectedCellStack[selectedCellStack.length - 1].symbol)
+      ["CW"].includes(selectedCellStack[0].symbol)
     ) {
       // Jika 'CW', maka 'CW' tidak bisa menumpuk pion 'CB'
       if (["CB"].includes(targetCellTop.symbol)) {
@@ -219,35 +329,55 @@ const handleAction = (
       }
       //jika 'CW', maka 'B' berubah menjadi 'b'
       if (["B"].includes(targetCellTop.symbol)) {
-        newBoard[targetRow][targetCol][0].symbol = "b";
-        newBoard[targetRow][targetCol][0].status = "sleeping";
+        newBoard[targetRow][targetCol][
+          newBoard[targetRow][targetCol].length - 1
+        ].symbol = "b";
+        newBoard[targetRow][targetCol][
+          newBoard[targetRow][targetCol].length - 1
+        ].status = "sleeping";
       }
       if (["W"].includes(targetCellTop.symbol)) {
-        newBoard[targetRow][targetCol][0].symbol = "w";
-        newBoard[targetRow][targetCol][0].status = "sleeping";
+        newBoard[targetRow][targetCol][
+          newBoard[targetRow][targetCol].length - 1
+        ].symbol = "w";
+        newBoard[targetRow][targetCol][
+          newBoard[targetRow][targetCol].length - 1
+        ].status = "sleeping";
       }
     }
 
     // Jika tidak kosong, tambahkan seluruh stack pion dari cell yang dipilih ke stack yang sudah ada di cell tujuan
     newBoard[targetRow][targetCol] = [
       ...newBoard[targetRow][targetCol],
-      ...selectedCellStack,
+      selectedCellStack[0],
     ];
-  }
 
-  // Kosongkan stack pion di cell yang dipilih
-  // newBoard[row][col] = [];
+    tempStack = selectedCellStack;
+    tempStack.shift();
+    if (tempStack.length > 0) {
+      setSelectedCellStack(tempStack);
+    }
+    else{
+      setSelectedCellStack([])
+    }
+    setInitialRow(targetRow)
+    setInitialCol(targetCol)
+  }
 
   // Update state board setelah gerakan
   setBoard(newBoard);
 
-  // Check Win
-  checkWin(newBoard, currentPlayer) === 1
-    ? alert("Player 1 Win")
-    : checkWin(newBoard, currentPlayer) === 2 && alert("Player 2 Win");
+  if (tempStack.length < 1) {
+    // Check Win
+    checkWin(newBoard, 1) === 1
 
-  // Ganti giliran ke pemain selanjutnya
-  setCurrentPlayer(currentPlayer === 1 ? 2 : 1);
+    // Ganti giliran AI
+    setCurrentPlayer(2);
+
+    setMoveStatus("")
+    setInitialRow(null)
+    setInitialCol(null)
+  }
 };
 
 const checkJalan = (
@@ -967,4 +1097,5 @@ export {
   AiMove,
   checkWin,
   minimax,
+  handlePut
 };
