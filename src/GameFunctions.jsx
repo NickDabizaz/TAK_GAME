@@ -500,101 +500,6 @@ const checkWin = (board, currentPlayer) => {
   } else return;
 };
 
-// const AiMove = (board, setBoard, player2, setPlayer2, action, row, col) => {
-//   const newBoard = board.map((row) => row.slice());
-//   let randomRow = Math.floor(Math.random() * 5);
-//   let randomCol = Math.floor(Math.random() * 5);
-//   const randomDirection = Math.floor(Math.random() * 4);
-//   const randomAction = player2.stones > 0 ? Math.floor(Math.random() * 2) : 1;
-
-//   if (randomAction === 0 && player2.stones > 0) {
-//     // Place
-//     let isPlaced = false;
-//     while (!isPlaced) {
-//       randomRow = Math.floor(Math.random() * 5);
-//       randomCol = Math.floor(Math.random() * 5);
-//       if (newBoard[randomRow][randomCol].length === 0) {
-//         let randomStatus;
-//         if (player2.capstones === 0) {
-//           randomStatus = Math.floor(Math.random() * 2);
-//         } else if (player2.capstones > 0) {
-//           randomStatus = Math.floor(Math.random() * 3);
-//         }
-//         var status = ["sleeping", "standing", "capstone"][randomStatus];
-//         const symbol =
-//           status === "sleeping" ? "b" : status === "standing" ? "B" : "CB";
-//         newBoard[randomRow][randomCol] = [
-//           ...newBoard[randomRow][randomCol],
-//           { symbol, status },
-//         ];
-//         isPlaced = true;
-//       }
-//     }
-//     // Update state AI (stone atau capstone)
-//     if (status === "sleeping" || status === "standing") {
-//       setPlayer2({ ...player2, stones: player2.stones - 1 });
-//     } else if (status === "capstone") {
-//       setPlayer2({ ...player2, capstones: player2.capstones - 1 });
-//     }
-//   } else if (newBoard[randomRow][randomCol].length > 0) {
-//     // Move
-//     const selectedCellStack = [...newBoard[randomRow][randomCol]];
-//     let targetRow = randomRow;
-//     let targetCol = randomCol;
-
-//     if (randomDirection === 0 && randomRow > 0) {
-//       targetRow -= 1;
-//     } else if (randomDirection === 1 && randomRow < 4) {
-//       targetRow += 1;
-//     } else if (randomDirection === 2 && randomCol > 0) {
-//       targetCol -= 1;
-//     } else if (randomDirection === 3 && randomCol < 4) {
-//       targetCol += 1;
-//     }
-
-//     if (newBoard[targetRow][targetCol].length === 0) {
-//       newBoard[targetRow][targetCol] = [...selectedCellStack];
-//       newBoard[randomRow][randomCol] = [];
-//     } else {
-//       const targetCellTop =
-//         newBoard[targetRow][targetCol][
-//           newBoard[targetRow][targetCol].length - 1
-//         ];
-
-//       if (
-//         ["w", "b"].includes(
-//           selectedCellStack[selectedCellStack.length - 1].symbol
-//         )
-//       ) {
-//         if (["W", "B", "CB", "CW"].includes(targetCellTop.symbol)) {
-//           return AiMove(board, setBoard, player2, setPlayer2);
-//         }
-//       } else if (
-//         ["W"].includes(selectedCellStack[selectedCellStack.length - 1].symbol)
-//       ) {
-//         if (["B", "CB", "CW"].includes(targetCellTop.symbol)) {
-//           return AiMove(board, setBoard, player2, setPlayer2);
-//         }
-//       } else if (
-//         ["B"].includes(selectedCellStack[selectedCellStack.length - 1].symbol)
-//       ) {
-//         if (["W", "CW", "CB"].includes(targetCellTop.symbol)) {
-//           return AiMove(board, setBoard, player2, setPlayer2);
-//         }
-//       }
-//       newBoard[targetRow][targetCol] = [
-//         ...newBoard[targetRow][targetCol],
-//         ...selectedCellStack,
-//       ];
-//       newBoard[randomRow][randomCol] = [];
-//     }
-//   } else {
-//     return AiMove(board, setBoard, player2, setPlayer2);
-//   }
-//   setBoard(newBoard);
-//   console.log({ newBoard });
-// };
-
 const AiMove = (
   board,
   setBoard,
@@ -847,98 +752,27 @@ const minimax = (board, player2) => {
   return availableMove[maxSbeIndex];
 };
 
-// const getScore = (board, currentPlayer) => {
-//   // let isAvailable = false;
-
-//   // for (let i = 0; i < 5; i++) {
-//   //   for (let j = 0; j < 5; j++) {
-//   //     if (board[i][j].length == 0) isAvailable = true;
-//   //   }
-//   // }
-//   // if (!isAvailable) {
-//   //   let whiteStoneCount = 0;
-//   //   let blackStoneCount = 0;
-
-//   //   for (let i = 0; i < 5; i++) {
-//   //     for (let j = 0; j < 5; j++) {
-//   //       if (board[i][j][board[i][j].length - 1] == "w") whiteStoneCount++;
-//   //       else if (board[i][j][board[i][j].length - 1] == "b") blackStoneCount++;
-//   //     }
-//   //   }
-
-//   //   if (currentPlayer === 1) return -whiteStoneCount;
-//   //   else return blackStoneCount;
-//   // } else {
-//   //   if (checkWin(board, 2) === 2) {
-//   //     return 100;
-//   //   } else if (checkWin(board, 2) === 1) {
-//   //     return -100;
-//   //   }
-//   // }
-//   // return checkWin(board, 2)
-
-//   const randomNumber = Math.random();
-//   return randomNumber;
-// };
-
 const sbe = (board, row, col) => {
   let playerScore = 0;
   let aiScore = 0;
 
-  // for (let i = 0; i < 5; i++) {
-  //   for (let j = 0; j < 5; j++) {
-  //     if (board[i][j].length == 1) {
-  //       //setiap sleeping stone +1 poin
-  //       if (
-  //         board[i][j][0].symbol === "b" &&
-  //         board[i][j][0].status === "sleeping"
-  //       )
-  //         aiScore++;
-  //       else if (
-  //         board[i][j][0].symbol === "w" &&
-  //         board[i][j][0].status === "sleeping"
-  //       )
-  //         playerScore++;
-  //       else if (board[i][j][0].symbol === "CB") aiScore += 3;
-  //       else if (board[i][j][0].symbol === "CW") playerScore += 2;
-  //     } else if (board[i][j].length > 1) {
-  //       //setiap kontrol atas stack +2 poin
-  //       if (
-  //         board[i][j][board[i][j].length - 1].symbol === "b" &&
-  //         board[i][j][board[i][j].length - 1].status === "sleeping"
-  //       )
-  //         aiScore += 2 * board[i][j].length;
-  //       else if (
-  //         board[i][j][board[i][j].length - 1].symbol === "w" &&
-  //         board[i][j][board[i][j].length - 1].status === "sleeping"
-  //       )
-  //         playerScore += 2 * board[i][j].length;
-  //       //setiap capstone +3poin
-  //       else if (board[i][j][board[i][j].length - 1].symbol === "CB")
-  //         aiScore += 3 * board[i][j].length;
-  //       else if (board[i][j][board[i][j].length - 1].symbol === "CW")
-  //         playerScore += 3 * board[i][j].length;
-  //     }
-  //   }
-  // }
-
-  // for (let i = 0; i < 5; i++) {
-  //   for (let j = 0; j < 5; j++) {
-  //     //setiap kontrol atas stack +2 poin
-  //     if (board[i][j].length > 0) {
-  //       if (
-  //         board[i][j][board[i][j].length - 1].symbol === "b" &&
-  //         board[i][j][board[i][j].length - 1].status === "sleeping"
-  //       )
-  //         aiScore += 1;
-  //       else if (
-  //         board[i][j][board[i][j].length - 1].symbol === "w" &&
-  //         board[i][j][board[i][j].length - 1].status === "sleeping"
-  //       )
-  //         playerScore += 1;
-  //     }
-  //   }
-  // }
+  for (let i = 0; i < 5; i++) {
+    for (let j = 0; j < 5; j++) {
+      //setiap kontrol atas stack +2 poin
+      if (board[i][j].length > 0) {
+        if (
+          board[i][j][board[i][j].length - 1].symbol === "b" &&
+          board[i][j][board[i][j].length - 1].status === "sleeping"
+        )
+          aiScore += 1;
+        else if (
+          board[i][j][board[i][j].length - 1].symbol === "w" &&
+          board[i][j][board[i][j].length - 1].status === "sleeping"
+        )
+          playerScore += 1;
+      }
+    }
+  }
 
   const totalConnectPlayer = (board) => {
     let maxCount = 0;
@@ -1042,193 +876,6 @@ const sbe = (board, row, col) => {
 
   return aiScore - playerScore;
 };
-
-// const minimax = (board, isMaximizing, depth) => {
-//   const currentPlayer = isMaximizing ? 2 : 1;
-//   const score = getScore(board, currentPlayer);
-//   console.log({ score });
-
-//   if (depth === 0) {
-//     return { score: Number(score), move: null };
-//   }
-
-//   let bestScore = isMaximizing ? -Infinity : Infinity;
-//   let bestMove;
-
-//   for (let i = 0; i < 5; i++) {
-//     for (let j = 0; j < 5; j++) {
-//       if (board[i][j].length > 0) {
-//         const selectedCellStack = [...board[i][j]];
-//         let targetRow = i;
-//         let targetCol = j;
-
-//         if (i > 0) {
-//           targetRow -= 1;
-//           const newBoard = board.map((row) => row.slice());
-//           if (newBoard[targetRow][targetCol].length === 0) {
-//             newBoard[targetRow][targetCol] = [...selectedCellStack];
-//             newBoard[i][j] = [];
-//             const score = minimax(newBoard, !isMaximizing, depth - 1).score;
-//             bestScore = isMaximizing
-//               ? Math.max(score, bestScore)
-//               : Math.min(score, bestScore);
-//             bestMove = {
-//               action: "move",
-//               direction: "up",
-//               row: i,
-//               col: j,
-//             };
-//           } else {
-//             newBoard[targetRow][targetCol] = [
-//               ...newBoard[targetRow][targetCol],
-//               selectedCellStack,
-//             ];
-//             const scoreFromMerge = getScore(newBoard, currentPlayer);
-//             bestScore = isMaximizing
-//               ? Math.max(scoreFromMerge, bestScore)
-//               : Math.min(scoreFromMerge, bestScore);
-//             bestMove = {
-//               action: "move",
-//               direction: "up",
-//               row: i,
-//               col: j,
-//             };
-//           }
-//         }
-//         if (i < 4) {
-//           targetRow += 1;
-//           const newBoard = board.map((row) => row.slice());
-//           if (newBoard[targetRow][targetCol].length === 0) {
-//             newBoard[targetRow][targetCol] = [...selectedCellStack];
-//             newBoard[i][j] = [];
-//             const score = minimax(newBoard, !isMaximizing, depth - 1).score;
-//             bestScore = isMaximizing
-//               ? Math.max(score, bestScore)
-//               : Math.min(score, bestScore);
-//             bestMove = {
-//               action: "move",
-//               direction: "down",
-//               row: i,
-//               col: j,
-//             };
-//           } else {
-//             newBoard[targetRow][targetCol] = [
-//               ...newBoard[targetRow][targetCol],
-//               selectedCellStack,
-//             ];
-//             const scoreFromMerge = getScore(newBoard, currentPlayer);
-//             bestScore = isMaximizing
-//               ? Math.max(scoreFromMerge, bestScore)
-//               : Math.min(scoreFromMerge, bestScore);
-//             bestMove = {
-//               action: "move",
-//               direction: "down",
-//               row: i,
-//               col: j,
-//             };
-//           }
-//         }
-//         if (j > 0) {
-//           targetCol -= 1;
-//           const newBoard = board.map((row) => row.slice());
-//           if (newBoard[targetRow][targetCol].length === 0) {
-//             newBoard[targetRow][targetCol] = [...selectedCellStack];
-//             newBoard[i][j] = [];
-//             const score = minimax(newBoard, !isMaximizing, depth - 1).score;
-//             bestScore = isMaximizing
-//               ? Math.max(score, bestScore)
-//               : Math.min(score, bestScore);
-//             bestMove = {
-//               action: "move",
-//               direction: "left",
-//               row: i,
-//               col: j,
-//             };
-//           } else {
-//             newBoard[targetRow][targetCol] = [
-//               ...newBoard[targetRow][targetCol],
-//               selectedCellStack,
-//             ];
-//             const scoreFromMerge = getScore(newBoard, currentPlayer);
-//             bestScore = isMaximizing
-//               ? Math.max(scoreFromMerge, bestScore)
-//               : Math.min(scoreFromMerge, bestScore);
-//             bestMove = {
-//               action: "move",
-//               direction: "left",
-//               row: i,
-//               col: j,
-//             };
-//           }
-//         }
-//         if (j < 4) {
-//           targetCol += 1;
-//           const newBoard = board.map((row) => row.slice());
-//           if (newBoard[targetRow][targetCol].length === 0) {
-//             newBoard[targetRow][targetCol] = [...selectedCellStack];
-//             newBoard[i][j] = [];
-//             const score = minimax(newBoard, !isMaximizing, depth - 1).score;
-//             bestScore = isMaximizing
-//               ? Math.max(score, bestScore)
-//               : Math.min(score, bestScore);
-//             bestMove = {
-//               action: "move",
-//               direction: "right",
-//               row: i,
-//               col: j,
-//             };
-//           } else {
-//             newBoard[targetRow][targetCol] = [
-//               ...newBoard[targetRow][targetCol],
-//               selectedCellStack,
-//             ];
-//             const scoreFromMerge = getScore(newBoard, currentPlayer);
-//             bestScore = isMaximizing
-//               ? Math.max(scoreFromMerge, bestScore)
-//               : Math.min(scoreFromMerge, bestScore);
-//             bestMove = {
-//               action: "move",
-//               direction: "right",
-//               row: i,
-//               col: j,
-//             };
-//           }
-//         }
-//       } else {
-//         const newBoard = board.map((row) => row.slice());
-//         for (let k = 0; k < 3; k++) {
-//           if (k === 0) {
-//             newBoard[i][j] = [
-//               ...newBoard[i][j],
-//               { symbol: currentPlayer === 1 ? "w" : "b", status: "sleeping" },
-//             ];
-//           } else if (k === 1) {
-//             newBoard[i][j] = [
-//               ...newBoard[i][j],
-//               { symbol: currentPlayer === 1 ? "W" : "B", status: "standing" },
-//             ];
-//           } else if (k === 2) {
-//             newBoard[i][j] = [
-//               ...newBoard[i][j],
-//               { symbol: currentPlayer === 1 ? "CW" : "CB", status: "capstone" },
-//             ];
-//           }
-//           const score = minimax(newBoard, !isMaximizing, depth - 1).score;
-//           bestScore = isMaximizing
-//             ? Math.max(score, bestScore)
-//             : Math.min(score, bestScore);
-//           bestMove = {
-//             action: "place",
-//             row: i,
-//             col: j,
-//           };
-//         }
-//       }
-//     }
-//   }
-//   console.log({ bestScore });
-//   return { score: Number(bestScore), move: bestMove };
-// };
 
 export {
   openModal,
