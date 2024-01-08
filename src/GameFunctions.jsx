@@ -865,7 +865,7 @@ const minimax = (
                     tempBoard[i - 1][j][tempBoard[i - 1][j].length - 1].symbol
                   )
                 ) {
-                  return;
+                  break;
                 }
               } else if (
                 ["W"].includes(selectedCell[selectedCell.length - 1].symbol)
@@ -875,7 +875,7 @@ const minimax = (
                     tempBoard[i - 1][j][tempBoard[i - 1][j].length - 1].symbol
                   )
                 ) {
-                  return;
+                  break;
                 }
               } else if (
                 ["B"].includes(selectedCell[selectedCell.length - 1].symbol)
@@ -885,7 +885,7 @@ const minimax = (
                     tempBoard[i - 1][j][tempBoard[i - 1][j].length - 1].symbol
                   )
                 ) {
-                  return;
+                  break;
                 }
               }
               tempBoard[i - 1][j] = [...tempBoard[i - 1][j], ...selectedCell];
@@ -938,7 +938,7 @@ const minimax = (
                     tempBoard[i + 1][j][tempBoard[i + 1][j].length - 1].symbol
                   )
                 ) {
-                  return;
+                  break;
                 }
               } else if (
                 ["W"].includes(selectedCell[selectedCell.length - 1].symbol)
@@ -948,7 +948,7 @@ const minimax = (
                     tempBoard[i + 1][j][tempBoard[i + 1][j].length - 1].symbol
                   )
                 ) {
-                  return;
+                  break;
                 }
               } else if (
                 ["B"].includes(selectedCell[selectedCell.length - 1].symbol)
@@ -958,7 +958,7 @@ const minimax = (
                     tempBoard[i + 1][j][tempBoard[i + 1][j].length - 1].symbol
                   )
                 ) {
-                  return;
+                  break;
                 }
               }
               tempBoard[i + 1][j] = [...tempBoard[i + 1][j], ...selectedCell];
@@ -1011,7 +1011,7 @@ const minimax = (
                     tempBoard[i][j - 1][tempBoard[i][j - 1].length - 1].symbol
                   )
                 ) {
-                  return;
+                  break;
                 }
               } else if (
                 ["W"].includes(selectedCell[selectedCell.length - 1].symbol)
@@ -1021,7 +1021,7 @@ const minimax = (
                     tempBoard[i][j - 1][tempBoard[i][j - 1].length - 1].symbol
                   )
                 ) {
-                  return;
+                  break;
                 }
               } else if (
                 ["B"].includes(selectedCell[selectedCell.length - 1].symbol)
@@ -1031,7 +1031,7 @@ const minimax = (
                     tempBoard[i][j - 1][tempBoard[i][j - 1].length - 1].symbol
                   )
                 ) {
-                  return;
+                  break;
                 }
               }
               tempBoard[i][j - 1] = [...tempBoard[i][j - 1], ...selectedCell];
@@ -1084,7 +1084,7 @@ const minimax = (
                     tempBoard[i][j + 1][tempBoard[i][j + 1].length - 1].symbol
                   )
                 ) {
-                  return;
+                  break;
                 }
               } else if (
                 ["W"].includes(selectedCell[selectedCell.length - 1].symbol)
@@ -1094,7 +1094,7 @@ const minimax = (
                     tempBoard[i][j + 1][tempBoard[i][j + 1].length - 1].symbol
                   )
                 ) {
-                  return;
+                  break;
                 }
               } else if (
                 ["B"].includes(selectedCell[selectedCell.length - 1].symbol)
@@ -1104,7 +1104,7 @@ const minimax = (
                     tempBoard[i][j + 1][tempBoard[i][j + 1].length - 1].symbol
                   )
                 ) {
-                  return;
+                  break;
                 }
               }
               tempBoard[i][j + 1] = [...tempBoard[i][j + 1], ...selectedCell];
