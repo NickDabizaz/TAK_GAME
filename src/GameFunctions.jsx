@@ -1120,7 +1120,9 @@ const minimax = (board, depth, player1, player2, isMaximize, lastMove) => {
         }
       }
     }
+    console.log({bestSBE : bestMove.sbe});
     for (let i = 0; i < availableMove.length; i++) {
+      console.log({availableMoveSekarang : availableMove[i]});
       if (bestMove.sbe < availableMove[i].sbe) {
         bestMove = availableMove[i];
       }
@@ -1193,7 +1195,7 @@ const minimax = (board, depth, player1, player2, isMaximize, lastMove) => {
                     tempBoard[i - 1][j][tempBoard[i - 1][j].length - 1].symbol
                   )
                 ) {
-                  return;
+                  break
                 }
               } else if (
                 ["W"].includes(selectedCell[selectedCell.length - 1].symbol)
@@ -1203,7 +1205,7 @@ const minimax = (board, depth, player1, player2, isMaximize, lastMove) => {
                     tempBoard[i - 1][j][tempBoard[i - 1][j].length - 1].symbol
                   )
                 ) {
-                  return;
+                  break;
                 }
               } else if (
                 ["B"].includes(selectedCell[selectedCell.length - 1].symbol)
@@ -1213,7 +1215,7 @@ const minimax = (board, depth, player1, player2, isMaximize, lastMove) => {
                     tempBoard[i - 1][j][tempBoard[i - 1][j].length - 1].symbol
                   )
                 ) {
-                  return;
+                  break;
                 }
               }
               tempBoard[i - 1][j] = [...tempBoard[i - 1][j], ...selectedCell];
@@ -1266,7 +1268,7 @@ const minimax = (board, depth, player1, player2, isMaximize, lastMove) => {
                     tempBoard[i + 1][j][tempBoard[i + 1][j].length - 1].symbol
                   )
                 ) {
-                  return;
+                  break;
                 }
               } else if (
                 ["W"].includes(selectedCell[selectedCell.length - 1].symbol)
@@ -1276,7 +1278,7 @@ const minimax = (board, depth, player1, player2, isMaximize, lastMove) => {
                     tempBoard[i + 1][j][tempBoard[i + 1][j].length - 1].symbol
                   )
                 ) {
-                  return;
+                  break;
                 }
               } else if (
                 ["B"].includes(selectedCell[selectedCell.length - 1].symbol)
@@ -1286,7 +1288,7 @@ const minimax = (board, depth, player1, player2, isMaximize, lastMove) => {
                     tempBoard[i + 1][j][tempBoard[i + 1][j].length - 1].symbol
                   )
                 ) {
-                  return;
+                  break;
                 }
               }
               tempBoard[i + 1][j] = [...tempBoard[i + 1][j], ...selectedCell];
@@ -1339,7 +1341,7 @@ const minimax = (board, depth, player1, player2, isMaximize, lastMove) => {
                     tempBoard[i][j - 1][tempBoard[i][j - 1].length - 1].symbol
                   )
                 ) {
-                  return;
+                  break;
                 }
               } else if (
                 ["W"].includes(selectedCell[selectedCell.length - 1].symbol)
@@ -1349,7 +1351,7 @@ const minimax = (board, depth, player1, player2, isMaximize, lastMove) => {
                     tempBoard[i][j - 1][tempBoard[i][j - 1].length - 1].symbol
                   )
                 ) {
-                  return;
+                  break;
                 }
               } else if (
                 ["B"].includes(selectedCell[selectedCell.length - 1].symbol)
@@ -1359,7 +1361,7 @@ const minimax = (board, depth, player1, player2, isMaximize, lastMove) => {
                     tempBoard[i][j - 1][tempBoard[i][j - 1].length - 1].symbol
                   )
                 ) {
-                  return;
+                  break;
                 }
               }
               tempBoard[i][j - 1] = [...tempBoard[i][j - 1], ...selectedCell];
@@ -1412,7 +1414,7 @@ const minimax = (board, depth, player1, player2, isMaximize, lastMove) => {
                     tempBoard[i][j + 1][tempBoard[i][j + 1].length - 1].symbol
                   )
                 ) {
-                  return;
+                  break;
                 }
               } else if (
                 ["W"].includes(selectedCell[selectedCell.length - 1].symbol)
@@ -1422,7 +1424,7 @@ const minimax = (board, depth, player1, player2, isMaximize, lastMove) => {
                     tempBoard[i][j + 1][tempBoard[i][j + 1].length - 1].symbol
                   )
                 ) {
-                  return;
+                  break;
                 }
               } else if (
                 ["B"].includes(selectedCell[selectedCell.length - 1].symbol)
@@ -1432,7 +1434,7 @@ const minimax = (board, depth, player1, player2, isMaximize, lastMove) => {
                     tempBoard[i][j + 1][tempBoard[i][j + 1].length - 1].symbol
                   )
                 ) {
-                  return;
+                  break;
                 }
               }
               tempBoard[i][j + 1] = [...tempBoard[i][j + 1], ...selectedCell];
