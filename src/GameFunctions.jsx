@@ -1484,128 +1484,428 @@ const minimax = (
 };
 
 const sbe = (board, currentPlayer) => {
-  let playerScore = 0;
-  let aiScore = 0;
+  let playerflat = 0;
+  let playercap = 0;
+  let aiflat = 0;
+  let aicap = 0;
+  let influenceArr = new Array(5)
+    .fill(null)
+    .map(() => new Array(5).fill([]).map(() => []));
 
+  //Function influence
+  const influence = (board) => {
+    for (let i = 0; i < 5; i++) {
+      for (let j = 0; j < 5; j++) {
+        influenceArr[i][j] = 0;
+      }
+    }
+
+    for (let i = 0; i < 5; i++) {
+      for (let j = 0; j < 5; j++) {
+        let ipoint;
+        let thistype;
+        let neartype;
+
+        if(board[i][j].length > 0){
+          if (
+            board[i][j][board[i][j].length - 1].symbol === "w" &&
+            board[i][j][board[i][j].length - 1].status === "sleeping"
+          ){
+            ipoint = 3;
+            thistype = "flat";
+          }
+            
+          else if (
+            board[i][j][board[i][j].length - 1].symbol === "W" &&
+            board[i][j][board[i][j].length - 1].status === "standing"
+          ){
+            ipoint = 3;
+            thistype = "wall";
+          }
+          else if (
+            board[i][j][board[i][j].length - 1].symbol === "CW" &&
+            board[i][j][board[i][j].length - 1].status === "capstone"
+          ){
+            ipoint = 3;
+            thistype = "cap";
+          }
+          else if (
+            board[i][j][board[i][j].length - 1].symbol === "b" &&
+            board[i][j][board[i][j].length - 1].status === "sleeping"
+          ){
+            ipoint = -3;
+            thistype = "flat";
+          }
+          else if (
+            board[i][j][board[i][j].length - 1].symbol === "B" &&
+            board[i][j][board[i][j].length - 1].status === "standing"
+          ){
+            ipoint = -3;
+            thistype = "wall";
+          }
+          else if (
+            board[i][j][board[i][j].length - 1].symbol === "CB" &&
+            board[i][j][board[i][j].length - 1].status === "capstone"
+          ){
+            ipoint = -3;
+            thistype = "cap";
+          }
+        }
+        else{
+          ipoint = 0;
+          thistype = "none";
+        }
+
+        if(ipoint != 0){
+          influenceArr[i][j] += ipoint;
+        }
+        else{
+          if(i > 0){
+            if(board[i-1][j].length > 0){
+              if (
+                board[i-1][j][board[i-1][j].length - 1].symbol === "w" &&
+                board[i-1][j][board[i-1][j].length - 1].status === "sleeping"
+              )
+                neartype = "flat";   
+              else if (
+                board[i-1][j][board[i-1][j].length - 1].symbol === "W" &&
+                board[i-1][j][board[i-1][j].length - 1].status === "standing"
+              )
+                neartype = "wall";              
+              else if (
+                board[i-1][j][board[i-1][j].length - 1].symbol === "CW" &&
+                board[i-1][j][board[i-1][j].length - 1].status === "capstone"
+              )
+                neartype = "cap";
+              else if (
+                board[i-1][j][board[i-1][j].length - 1].symbol === "b" &&
+                board[i-1][j][board[i-1][j].length - 1].status === "sleeping"
+              )
+                neartype = "flat";
+              else if (
+                board[i-1][j][board[i-1][j].length - 1].symbol === "B" &&
+                board[i-1][j][board[i-1][j].length - 1].status === "standing"
+              )
+                neartype = "wall";
+              else if (
+                board[i-1][j][board[i-1][j].length - 1].symbol === "CB" &&
+                board[i-1][j][board[i-1][j].length - 1].status === "capstone"
+              )
+                neartype = "cap";
+            }
+            else{
+              neartype = "none";
+            }
+
+            if(i - 1 >= 0 && (neartype == "none" || neartype == "flat" || (thistype == "cap" && neartype != "cap"))){
+              influenceArr[i-1][j] += ipoint;
+            }
+          }
+
+          if(i < 4){
+            if(board[i+1][j].length > 0){
+              if (
+                board[i+1][j][board[i+1][j].length - 1].symbol === "w" &&
+                board[i+1][j][board[i+1][j].length - 1].status === "sleeping"
+              )
+                neartype = "flat";   
+              else if (
+                board[i+1][j][board[i+1][j].length - 1].symbol === "W" &&
+                board[i+1][j][board[i+1][j].length - 1].status === "standing"
+              )
+                neartype = "wall";              
+              else if (
+                board[i+1][j][board[i+1][j].length - 1].symbol === "CW" &&
+                board[i+1][j][board[i+1][j].length - 1].status === "capstone"
+              )
+                neartype = "cap";
+              else if (
+                board[i+1][j][board[i+1][j].length - 1].symbol === "b" &&
+                board[i+1][j][board[i+1][j].length - 1].status === "sleeping"
+              )
+                neartype = "flat";
+              else if (
+                board[i+1][j][board[i+1][j].length - 1].symbol === "B" &&
+                board[i+1][j][board[i+1][j].length - 1].status === "standing"
+              )
+                neartype = "wall";
+              else if (
+                board[i+1][j][board[i+1][j].length - 1].symbol === "CB" &&
+                board[i+1][j][board[i+1][j].length - 1].status === "capstone"
+              )
+                neartype = "cap";
+            }
+            else{
+              neartype = "none";
+            }
+
+            if(i + 1 < 5 && (neartype == "none" || neartype == "flat" || (thistype == "cap" && neartype != "cap"))){
+              influenceArr[i+1][j] += ipoint;
+            }
+          }
+
+          if(j > 0){
+            if(board[i][j-1].length > 0){
+              if (
+                board[i][j-1][board[i][j-1].length - 1].symbol === "w" &&
+                board[i][j-1][board[i][j-1].length - 1].status === "sleeping"
+              )
+                neartype = "flat";   
+              else if (
+                board[i][j-1][board[i][j-1].length - 1].symbol === "W" &&
+                board[i][j-1][board[i][j-1].length - 1].status === "standing"
+              )
+                neartype = "wall";              
+              else if (
+                board[i][j-1][board[i][j-1].length - 1].symbol === "CW" &&
+                board[i][j-1][board[i][j-1].length - 1].status === "capstone"
+              )
+                neartype = "cap";
+              else if (
+                board[i][j-1][board[i][j-1].length - 1].symbol === "b" &&
+                board[i][j-1][board[i][j-1].length - 1].status === "sleeping"
+              )
+                neartype = "flat";
+              else if (
+                board[i][j-1][board[i][j-1].length - 1].symbol === "B" &&
+                board[i][j-1][board[i][j-1].length - 1].status === "standing"
+              )
+                neartype = "wall";
+              else if (
+                board[i][j-1][board[i][j-1].length - 1].symbol === "CB" &&
+                board[i][j-1][board[i][j-1].length - 1].status === "capstone"
+              )
+                neartype = "cap";
+            }
+            else{
+              neartype = "none";
+            }
+
+            if(j - 1 >= 0 && (neartype == "none" || neartype == "flat" || (thistype == "cap" && neartype != "cap"))){
+              influenceArr[i][j-1] += ipoint;
+            }
+          }
+
+          if(j < 4){
+            if(board[i][j+1].length > 0){
+              if (
+                board[i][j+1][board[i][j+1].length - 1].symbol === "w" &&
+                board[i][j+1][board[i][j+1].length - 1].status === "sleeping"
+              )
+                neartype = "flat";   
+              else if (
+                board[i][j+1][board[i][j+1].length - 1].symbol === "W" &&
+                board[i][j+1][board[i][j+1].length - 1].status === "standing"
+              )
+                neartype = "wall";              
+              else if (
+                board[i][j+1][board[i][j+1].length - 1].symbol === "CW" &&
+                board[i][j+1][board[i][j+1].length - 1].status === "capstone"
+              )
+                neartype = "cap";
+              else if (
+                board[i][j+1][board[i][j+1].length - 1].symbol === "b" &&
+                board[i][j+1][board[i][j+1].length - 1].status === "sleeping"
+              )
+                neartype = "flat";
+              else if (
+                board[i][j+1][board[i][j+1].length - 1].symbol === "B" &&
+                board[i][j+1][board[i][j+1].length - 1].status === "standing"
+              )
+                neartype = "wall";
+              else if (
+                board[i][j+1][board[i][j+1].length - 1].symbol === "CB" &&
+                board[i][j+1][board[i][j+1].length - 1].status === "capstone"
+              )
+                neartype = "cap";
+            }
+            else{
+              neartype = "none";
+            }
+
+            if(j + 1 < 5 && (neartype == "none" || neartype == "flat" || (thistype == "cap" && neartype != "cap"))){
+              influenceArr[i][j+1] += ipoint;
+            }
+          }
+        }
+      }
+    }
+  }  
+
+  //Cek jumlah "flat" atau "capstone" yang ada di papan ("standing" tidak dihitung karena tidak dapat membentuk sebuah road untuk menang)
   for (let i = 0; i < 5; i++) {
     for (let j = 0; j < 5; j++) {
-      //setiap kontrol atas stack +2 poin
       if (board[i][j].length > 0) {
         if (
-          board[i][j][board[i][j].length - 1].symbol === "b" &&
-          board[i][j][board[i][j].length - 1].status === "sleeping"
-        )
-          aiScore += 1;
-        else if (
           board[i][j][board[i][j].length - 1].symbol === "w" &&
           board[i][j][board[i][j].length - 1].status === "sleeping"
         )
-          playerScore += 1;
+          playerflat += 1;
+        else if (
+          board[i][j][board[i][j].length - 1].symbol === "b" &&
+          board[i][j][board[i][j].length - 1].status === "sleeping"
+        )
+          aiflat += 1;
+        else if (
+          board[i][j][board[i][j].length - 1].symbol === "CW" &&
+          board[i][j][board[i][j].length - 1].status === "capstone"
+        )
+          playercap += 1;
+        else if (
+          board[i][j][board[i][j].length - 1].symbol === "CB" &&
+          board[i][j][board[i][j].length - 1].status === "capstone"
+        )
+          aicap += 1;        
       }
     }
   }
 
-  const totalConnectPlayer = (board) => {
-    let maxCount = 0;
-    const visited = Array.from({ length: 5 }, () =>
-      Array(board[0].length).fill(false)
-    );
+  //Menghitung penguasaan papan
+  let occupiedscore = 0;
+  occupiedscore = (playerflat - aiflat) * 75 + (playercap - aicap) * 100
 
-    const dfs = (i, j) => {
-      if (
-        i < 0 ||
-        i >= 5 ||
-        j < 0 ||
-        j >= 5 ||
-        visited[i][j] ||
-        board[i][j].length === 0 || // Check if the cell is empty
-        !(
-          board[i][j][board[i][j].length - 1].symbol === "w" ||
-          board[i][j][board[i][j].length - 1].symbol === "CW"
-        )
-      ) {
-        return 0;
+  //Menghitung score influence
+  let influencescore = 0;
+  influence(board);
+  for (let i = 0; i < 5; i++) {
+    for (let j = 0; j < 5; j++) {
+      let iscore = influenceArr[i][j];
+      if(iscore > 0) {
+        influencescore += Math.pow(iscore, 1.5);
       }
-
-      visited[i][j] = true;
-
-      let count = 1;
-      count += dfs(i - 1, j) + dfs(i + 1, j) + dfs(i, j - 1) + dfs(i, j + 1);
-
-      return count;
-    };
-
-    for (let i = 0; i < 5; i++) {
-      for (let j = 0; j < board[i].length; j++) {
-        if (
-          !visited[i][j] &&
-          board[i][j].length > 0 && // Check if the cell is not empty
-          (board[i][j][board[i][j].length - 1].symbol === "w" ||
-            board[i][j][board[i][j].length - 1].symbol === "CW")
-        ) {
-          const count = dfs(i, j);
-          maxCount = Math.max(maxCount, count);
-        }
+      else{
+        iscore = iscore * -1;
+        influencescore -= Math.pow(iscore, 1.5);
       }
     }
+  }
 
-    return maxCount;
-  };
+  let heuristic = 1.2 * occupiedscore + 0.75 * influencescore;
 
-  const totalConnectAi = (board) => {
-    let maxCount = 0;
-    const visited = Array.from({ length: 5 }, () =>
-      Array(board[0].length).fill(false)
-    );
 
-    const dfs = (i, j) => {
-      if (
-        i < 0 ||
-        i >= 5 ||
-        j < 0 ||
-        j >= 5 ||
-        visited[i][j] ||
-        board[i][j].length === 0 || // Check if the cell is empty
-        !(
-          board[i][j][board[i][j].length - 1].symbol === "b" ||
-          board[i][j][board[i][j].length - 1].symbol === "CB"
-        )
-      ) {
-        return 0;
-      }
+  // //Ganjil = Player, Genap = AI
+  // let playerScore = 0;
+  // let aiScore = 0;
 
-      visited[i][j] = true;
+  // for (let i = 0; i < 5; i++) {
+  //   for (let j = 0; j < 5; j++) {
+  //     //setiap kontrol atas stack +2 poin
+  //     if (board[i][j].length > 0) {
+  //       if (
+  //         board[i][j][board[i][j].length - 1].symbol === "b" &&
+  //         board[i][j][board[i][j].length - 1].status === "sleeping"
+  //       )
+  //         aiScore += 1;
+  //       else if (
+  //         board[i][j][board[i][j].length - 1].symbol === "w" &&
+  //         board[i][j][board[i][j].length - 1].status === "sleeping"
+  //       )
+  //         playerScore += 1;
+  //     }
+  //   }
+  // }
 
-      let count = 1;
-      count += dfs(i - 1, j) + dfs(i + 1, j) + dfs(i, j - 1) + dfs(i, j + 1);
+  // const totalConnectPlayer = (board) => {
+  //   let maxCount = 0;
+  //   const visited = Array.from({ length: 5 }, () =>
+  //     Array(board[0].length).fill(false)
+  //   );
 
-      return count;
-    };
+  //   const dfs = (i, j) => {
+  //     if (
+  //       i < 0 ||
+  //       i >= 5 ||
+  //       j < 0 ||
+  //       j >= 5 ||
+  //       visited[i][j] ||
+  //       board[i][j].length === 0 || // Check if the cell is empty
+  //       !(
+  //         board[i][j][board[i][j].length - 1].symbol === "w" ||
+  //         board[i][j][board[i][j].length - 1].symbol === "CW"
+  //       )
+  //     ) {
+  //       return 0;
+  //     }
 
-    for (let i = 0; i < 5; i++) {
-      for (let j = 0; j < board[i].length; j++) {
-        if (
-          !visited[i][j] &&
-          board[i][j].length > 0 && // Check if the cell is not empty
-          (board[i][j][board[i][j].length - 1].symbol === "b" ||
-            board[i][j][board[i][j].length - 1].symbol === "CB")
-        ) {
-          const count = dfs(i, j);
-          maxCount = Math.max(maxCount, count);
-        }
-      }
-    }
+  //     visited[i][j] = true;
 
-    return maxCount;
-  };
+  //     let count = 1;
+  //     count += dfs(i - 1, j) + dfs(i + 1, j) + dfs(i, j - 1) + dfs(i, j + 1);
 
-  console.log({ totalConnectAi: totalConnectAi(board) });
-  console.log({ totalConnectPlayer: totalConnectPlayer(board) });
+  //     return count;
+  //   };
 
-  aiScore += totalConnectAi(board);
-  playerScore += totalConnectPlayer(board);
+  //   for (let i = 0; i < 5; i++) {
+  //     for (let j = 0; j < board[i].length; j++) {
+  //       if (
+  //         !visited[i][j] &&
+  //         board[i][j].length > 0 && // Check if the cell is not empty
+  //         (board[i][j][board[i][j].length - 1].symbol === "w" ||
+  //           board[i][j][board[i][j].length - 1].symbol === "CW")
+  //       ) {
+  //         const count = dfs(i, j);
+  //         maxCount = Math.max(maxCount, count);
+  //       }
+  //     }
+  //   }
 
-  return aiScore - playerScore;
+  //   return maxCount;
+  // };
+
+  // const totalConnectAi = (board) => {
+  //   let maxCount = 0;
+  //   const visited = Array.from({ length: 5 }, () =>
+  //     Array(board[0].length).fill(false)
+  //   );
+
+  //   const dfs = (i, j) => {
+  //     if (
+  //       i < 0 ||
+  //       i >= 5 ||
+  //       j < 0 ||
+  //       j >= 5 ||
+  //       visited[i][j] ||
+  //       board[i][j].length === 0 || // Check if the cell is empty
+  //       !(
+  //         board[i][j][board[i][j].length - 1].symbol === "b" ||
+  //         board[i][j][board[i][j].length - 1].symbol === "CB"
+  //       )
+  //     ) {
+  //       return 0;
+  //     }
+
+  //     visited[i][j] = true;
+
+  //     let count = 1;
+  //     count += dfs(i - 1, j) + dfs(i + 1, j) + dfs(i, j - 1) + dfs(i, j + 1);
+
+  //     return count;
+  //   };
+
+  //   for (let i = 0; i < 5; i++) {
+  //     for (let j = 0; j < board[i].length; j++) {
+  //       if (
+  //         !visited[i][j] &&
+  //         board[i][j].length > 0 && // Check if the cell is not empty
+  //         (board[i][j][board[i][j].length - 1].symbol === "b" ||
+  //           board[i][j][board[i][j].length - 1].symbol === "CB")
+  //       ) {
+  //         const count = dfs(i, j);
+  //         maxCount = Math.max(maxCount, count);
+  //       }
+  //     }
+  //   }
+
+  //   return maxCount;
+  // };
+
+  // console.log({ totalConnectAi: totalConnectAi(board) });
+  // console.log({ totalConnectPlayer: totalConnectPlayer(board) });
+
+  // aiScore += totalConnectAi(board);
+  // playerScore += totalConnectPlayer(board);
+
+  return heuristic;
 };
 
 // const sbe = (board, row, col) => {
