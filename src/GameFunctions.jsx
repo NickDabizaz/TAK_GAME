@@ -521,11 +521,14 @@ const AiMove = (
   action,
   status
 ) => {
+  console.log({ board });
+  console.log({ col });
+  console.log({ row });
+  console.log({ direction });
+  console.log({ action });
+  console.log({ status });
+
   const newBoard = board.map((row) => row.slice());
-  // let randomRow = Math.floor(Math.random() * 5);
-  // let randomCol = Math.floor(Math.random() * 5);
-  // const randomDirection = Math.floor(Math.random() * 4);
-  // const randomAction = player2.stones > 0 ? Math.floor(Math.random() * 2) : 1;
   let randomCol = col;
   let randomRow = row;
   let randomDirection;
@@ -668,106 +671,378 @@ const AiMove = (
   console.log({ newBoard });
 };
 
-const minimax = (board, player2) => {
+// const minimax = (board, player2) => {
+//   const availableMove = [];
+//   for (let i = 0; i < 5; i++) {
+//     for (let j = 0; j < 5; j++) {
+//       // Cari Available untuk di taruh
+//       if (board[i][j].length === 0) {
+//         const tempBoard = board.map((row) => row.slice());
+//         console.log({ player2 });
+//         for (let k = 0; k < (player2.capstones == 0 ? 2 : 3); k++) {
+//           tempBoard[i][j] = [
+//             {
+//               symbol: k == 0 ? "b" : k == 1 ? "B" : "CB",
+//               status: k == 0 ? "sleeping" : k == 1 ? "standing" : "capstone",
+//             },
+//           ];
+//           availableMove.push({
+//             status: tempBoard[i][j][tempBoard[i][j].length - 1].status,
+//             action: "put",
+//             row: i,
+//             col: j,
+//             sbe: sbe(tempBoard, i, j),
+//           });
+//           tempBoard[i][j] = [];
+//         }
+//       } else if (
+//         board[i][j][board[i][j].length - 1].symbol == "b" ||
+//         board[i][j][board[i][j].length - 1].symbol == "B" ||
+//         board[i][j][board[i][j].length - 1].symbol == "CB"
+//       ) {
+//         console.log("masuk lain");
+//         // Cari Available untuk di pindah
+//         if (i > 0) {
+//           const tempBoard = board.map((row) => row.slice());
+//           const selectedCell = [...tempBoard[i][j]];
+//           tempBoard[i - 1][j] = [selectedCell];
+//           availableMove.push({
+//             action: "move",
+//             row: i,
+//             col: j,
+//             direction: "up",
+//             sbe: sbe(tempBoard, i, j),
+//           });
+//           tempBoard[i - 1][j] = [];
+//         }
+//         if (i < 4) {
+//           const tempBoard = board.map((row) => row.slice());
+//           const selectedCell = [...tempBoard[i][j]];
+//           tempBoard[i + 1][j] = [selectedCell];
+//           availableMove.push({
+//             action: "move",
+//             row: i,
+//             col: j,
+//             direction: "down",
+//             sbe: sbe(tempBoard, i, j),
+//           });
+//           tempBoard[i + 1][j] = [];
+//         }
+//         if (j > 0) {
+//           const tempBoard = board.map((row) => row.slice());
+//           const selectedCell = [...tempBoard[i][j]];
+//           tempBoard[i][j - 1] = [selectedCell];
+//           availableMove.push({
+//             action: "move",
+//             row: i,
+//             col: j,
+//             direction: "left",
+//             sbe: sbe(tempBoard, i, j),
+//           });
+//           tempBoard[i][j - 1] = [];
+//         }
+//         if (j < 4) {
+//           const tempBoard = board.map((row) => row.slice());
+//           const selectedCell = [...tempBoard[i][j]];
+//           tempBoard[i][j + 1] = [selectedCell];
+//           availableMove.push({
+//             action: "move",
+//             row: i,
+//             col: j,
+//             direction: "right",
+//             sbe: sbe(tempBoard, i, j),
+//           });
+//           tempBoard[i][j + 1] = [];
+//         }
+//       }
+//     }
+//   }
+//   let maxSbe = -Infinity;
+//   let maxSbeIndex;
+//   for (let i = 0; i < availableMove.length; i++) {
+//     if (maxSbe < availableMove[i].sbe) {
+//       maxSbe = availableMove[i].sbe;
+//       maxSbeIndex = i;
+//     }
+//   }
+//   console.log({ availableMove });
+//   console.log({ availableMove: availableMove[maxSbeIndex] });
+//   return availableMove[maxSbeIndex];
+// };
+
+const minimax = (board, depth, player1, player2, isMaximize, lastMove) => {
+  if (depth === 1) {
+    console.log("ini ply1");
+  } else {
+    console.log("ini ply2");
+  }
+
   const availableMove = [];
-  for (let i = 0; i < 5; i++) {
-    for (let j = 0; j < 5; j++) {
-      // Cari Available untuk di taruh
-      if (board[i][j].length === 0) {
-        const tempBoard = board.map((row) => row.slice());
-        console.log({ player2 });
-        for (let k = 0; k < (player2.capstones == 0 ? 2 : 3); k++) {
-          tempBoard[i][j] = [
-            {
-              symbol: k == 0 ? "b" : k == 1 ? "B" : "CB",
-              status: k == 0 ? "sleeping" : k == 1 ? "standing" : "capstone",
-            },
-          ];
-          availableMove.push({
-            status: tempBoard[i][j][tempBoard[i][j].length - 1].status,
-            action: "put",
-            row: i,
-            col: j,
-            sbe: sbe(tempBoard, i, j),
-          });
-          tempBoard[i][j] = [];
-        }
-      } else if (
-        board[i][j][board[i][j].length - 1].symbol == "b" ||
-        board[i][j][board[i][j].length - 1].symbol == "B" ||
-        board[i][j][board[i][j].length - 1].symbol == "CB"
-      ) {
-        console.log("masuk lain");
-        // Cari Available untuk di pindah
-        if (i > 0) {
+  let bestMove = {};
+  if (depth === 0) {
+    bestMove.sbe = sbe(board, isMaximize ? 1 : 2);
+    bestMove.col = lastMove.col;
+    bestMove.row = lastMove.row;
+    bestMove.direction = lastMove.direction;
+    bestMove.action = lastMove.action;
+    bestMove.status = lastMove.status;
+    return bestMove;
+  }
+
+  if (isMaximize) {
+    bestMove.sbe = -Infinity;
+    for (let i = 0; i < 5; i++) {
+      for (let j = 0; j < 5; j++) {
+        // Cari Available untuk di taruh
+        if (board[i][j].length === 0) {
           const tempBoard = board.map((row) => row.slice());
-          const selectedCell = [...tempBoard[i][j]];
-          tempBoard[i - 1][j] = [selectedCell];
-          availableMove.push({
-            action: "move",
-            row: i,
-            col: j,
-            direction: "up",
-            sbe: sbe(tempBoard, i, j),
-          });
-          tempBoard[i - 1][j] = [];
-        }
-        if (i < 4) {
-          const tempBoard = board.map((row) => row.slice());
-          const selectedCell = [...tempBoard[i][j]];
-          tempBoard[i + 1][j] = [selectedCell];
-          availableMove.push({
-            action: "move",
-            row: i,
-            col: j,
-            direction: "down",
-            sbe: sbe(tempBoard, i, j),
-          });
-          tempBoard[i + 1][j] = [];
-        }
-        if (j > 0) {
-          const tempBoard = board.map((row) => row.slice());
-          const selectedCell = [...tempBoard[i][j]];
-          tempBoard[i][j - 1] = [selectedCell];
-          availableMove.push({
-            action: "move",
-            row: i,
-            col: j,
-            direction: "left",
-            sbe: sbe(tempBoard, i, j),
-          });
-          tempBoard[i][j - 1] = [];
-        }
-        if (j < 4) {
-          const tempBoard = board.map((row) => row.slice());
-          const selectedCell = [...tempBoard[i][j]];
-          tempBoard[i][j + 1] = [selectedCell];
-          availableMove.push({
-            action: "move",
-            row: i,
-            col: j,
-            direction: "right",
-            sbe: sbe(tempBoard, i, j),
-          });
-          tempBoard[i][j + 1] = [];
+          for (let k = 0; k < (player2.capstones == 0 ? 2 : 3); k++) {
+            tempBoard[i][j] = [
+              {
+                symbol: k == 0 ? "b" : k == 1 ? "B" : "CB",
+                status: k == 0 ? "sleeping" : k == 1 ? "standing" : "capstone",
+              },
+            ];
+            bestMove = minimax(
+              tempBoard,
+              depth - 1,
+              player1,
+              player2,
+              !isMaximize,
+              {
+                status: tempBoard[i][j][tempBoard[i][j].length - 1].status,
+                action: "put",
+                row: i,
+                col: j,
+              }
+            );
+            availableMove.push(bestMove);
+            tempBoard[i][j] = [];
+          }
+        } else if (
+          board[i][j][board[i][j].length - 1].symbol == "b" ||
+          board[i][j][board[i][j].length - 1].symbol == "B" ||
+          board[i][j][board[i][j].length - 1].symbol == "CB"
+        ) {
+          // Cari Available untuk di pindah
+          if (i > 0) {
+            const tempBoard = board.map((row) => row.slice());
+            const selectedCell = [...tempBoard[i][j]];
+            tempBoard[i - 1][j] = [selectedCell];
+            bestMove = minimax(
+              tempBoard,
+              depth - 1,
+              player1,
+              player2,
+              !isMaximize,
+              {
+                action: "move",
+                row: i,
+                col: j,
+                direction: "up",
+              }
+            );
+            availableMove.push(bestMove);
+            tempBoard[i - 1][j] = [];
+          }
+          if (i < 4) {
+            const tempBoard = board.map((row) => row.slice());
+            const selectedCell = [...tempBoard[i][j]];
+            tempBoard[i + 1][j] = [selectedCell];
+            bestMove = minimax(
+              tempBoard,
+              depth - 1,
+              player1,
+              player2,
+              !isMaximize,
+              {
+                action: "move",
+                row: i,
+                col: j,
+                direction: "down",
+              }
+            );
+            availableMove.push(bestMove);
+            tempBoard[i + 1][j] = [];
+          }
+          if (j > 0) {
+            const tempBoard = board.map((row) => row.slice());
+            const selectedCell = [...tempBoard[i][j]];
+            tempBoard[i][j - 1] = [selectedCell];
+            bestMove = minimax(
+              tempBoard,
+              depth - 1,
+              player1,
+              player2,
+              !isMaximize,
+              {
+                action: "move",
+                row: i,
+                col: j,
+                direction: "left",
+              }
+            );
+            availableMove.push(bestMove);
+            tempBoard[i][j - 1] = [];
+          }
+          if (j < 4) {
+            const tempBoard = board.map((row) => row.slice());
+            const selectedCell = [...tempBoard[i][j]];
+            tempBoard[i][j + 1] = [selectedCell];
+            bestMove = minimax(
+              tempBoard,
+              depth - 1,
+              player1,
+              player2,
+              !isMaximize,
+              {
+                action: "move",
+                row: i,
+                col: j,
+                direction: "right",
+              }
+            );
+            availableMove.push(bestMove);
+            tempBoard[i][j + 1] = [];
+          }
         }
       }
     }
-  }
-  let maxSbe = -Infinity;
-  let maxSbeIndex;
-  for (let i = 0; i < availableMove.length; i++) {
-    if (maxSbe < availableMove[i].sbe) {
-      maxSbe = availableMove[i].sbe;
-      maxSbeIndex = i;
+    for (let i = 0; i < availableMove.length; i++) {
+      if (bestMove.sbe < availableMove[i].sbe) {
+        bestMove = availableMove[i];
+      }
     }
+    return bestMove;
+  } else {
+    bestMove.sbe = Infinity;
+    for (let i = 0; i < 5; i++) {
+      for (let j = 0; j < 5; j++) {
+        // Cari Available untuk di taruh
+        if (board[i][j].length === 0) {
+          const tempBoard = board.map((row) => row.slice());
+          for (let k = 0; k < (player2.capstones == 0 ? 2 : 3); k++) {
+            tempBoard[i][j] = [
+              {
+                symbol: k == 0 ? "w" : k == 1 ? "W" : "CW",
+                status: k == 0 ? "sleeping" : k == 1 ? "standing" : "capstone",
+              },
+            ];
+            bestMove = minimax(
+              tempBoard,
+              depth - 1,
+              player1,
+              player2,
+              isMaximize,
+              {
+                status: tempBoard[i][j][tempBoard[i][j].length - 1].status,
+                action: "put",
+                row: i,
+                col: j,
+              }
+            );
+            availableMove.push(bestMove);
+            tempBoard[i][j] = [];
+          }
+        } else if (
+          board[i][j][board[i][j].length - 1].symbol == "w" ||
+          board[i][j][board[i][j].length - 1].symbol == "W" ||
+          board[i][j][board[i][j].length - 1].symbol == "CW"
+        ) {
+          // Cari Available untuk di pindah
+          if (i > 0) {
+            const tempBoard = board.map((row) => row.slice());
+            const selectedCell = [...tempBoard[i][j]];
+            tempBoard[i - 1][j] = [selectedCell];
+            bestMove = minimax(
+              tempBoard,
+              depth - 1,
+              player1,
+              player2,
+              isMaximize,
+              {
+                action: "move",
+                row: i,
+                col: j,
+                direction: "up",
+              }
+            );
+            availableMove.push(bestMove);
+            tempBoard[i - 1][j] = [];
+          }
+          if (i < 4) {
+            const tempBoard = board.map((row) => row.slice());
+            const selectedCell = [...tempBoard[i][j]];
+            tempBoard[i + 1][j] = [selectedCell];
+            bestMove = minimax(
+              tempBoard,
+              depth - 1,
+              player1,
+              player2,
+              isMaximize,
+              {
+                action: "move",
+                row: i,
+                col: j,
+                direction: "down",
+              }
+            );
+            availableMove.push(bestMove);
+            tempBoard[i + 1][j] = [];
+          }
+          if (j > 0) {
+            const tempBoard = board.map((row) => row.slice());
+            const selectedCell = [...tempBoard[i][j]];
+            tempBoard[i][j - 1] = [selectedCell];
+            bestMove = minimax(
+              tempBoard,
+              depth - 1,
+              player1,
+              player2,
+              isMaximize,
+              {
+                action: "move",
+                row: i,
+                col: j,
+                direction: "left",
+              }
+            );
+            availableMove.push(bestMove);
+            tempBoard[i][j - 1] = [];
+          }
+          if (j < 4) {
+            const tempBoard = board.map((row) => row.slice());
+            const selectedCell = [...tempBoard[i][j]];
+            tempBoard[i][j + 1] = [selectedCell];
+            bestMove = minimax(
+              tempBoard,
+              depth - 1,
+              player1,
+              player2,
+              isMaximize,
+              {
+                action: "move",
+                row: i,
+                col: j,
+                direction: "right",
+              }
+            );
+            availableMove.push(bestMove);
+            tempBoard[i][j + 1] = [];
+          }
+        }
+      }
+    }
+    for (let i = 0; i < availableMove.length; i++) {
+      if (bestMove.sbe > availableMove[i].sbe) {
+        bestMove = availableMove[i];
+      }
+    }
+    return bestMove;
   }
-  console.log({ availableMove });
-  console.log({ availableMove: availableMove[maxSbeIndex] });
-  return availableMove[maxSbeIndex];
 };
 
-const sbe = (board, row, col) => {
+const sbe = (board, currentPlayer) => {
   let playerScore = 0;
   let aiScore = 0;
 
@@ -891,6 +1166,131 @@ const sbe = (board, row, col) => {
 
   return aiScore - playerScore;
 };
+
+// const sbe = (board, row, col) => {
+//   let playerScore = 0;
+//   let aiScore = 0;
+
+//   for (let i = 0; i < 5; i++) {
+//     for (let j = 0; j < 5; j++) {
+//       //setiap kontrol atas stack +2 poin
+//       if (board[i][j].length > 0) {
+//         if (
+//           board[i][j][board[i][j].length - 1].symbol === "b" &&
+//           board[i][j][board[i][j].length - 1].status === "sleeping"
+//         )
+//           aiScore += 1;
+//         else if (
+//           board[i][j][board[i][j].length - 1].symbol === "w" &&
+//           board[i][j][board[i][j].length - 1].status === "sleeping"
+//         )
+//           playerScore += 1;
+//       }
+//     }
+//   }
+
+//   const totalConnectPlayer = (board) => {
+//     let maxCount = 0;
+//     const visited = Array.from({ length: 5 }, () =>
+//       Array(board[0].length).fill(false)
+//     );
+
+//     const dfs = (i, j) => {
+//       if (
+//         i < 0 ||
+//         i >= 5 ||
+//         j < 0 ||
+//         j >= 5 ||
+//         visited[i][j] ||
+//         board[i][j].length === 0 || // Check if the cell is empty
+//         !(
+//           board[i][j][board[i][j].length - 1].symbol === "w" ||
+//           board[i][j][board[i][j].length - 1].symbol === "CW"
+//         )
+//       ) {
+//         return 0;
+//       }
+
+//       visited[i][j] = true;
+
+//       let count = 1;
+//       count += dfs(i - 1, j) + dfs(i + 1, j) + dfs(i, j - 1) + dfs(i, j + 1);
+
+//       return count;
+//     };
+
+//     for (let i = 0; i < 5; i++) {
+//       for (let j = 0; j < board[i].length; j++) {
+//         if (
+//           !visited[i][j] &&
+//           board[i][j].length > 0 && // Check if the cell is not empty
+//           (board[i][j][board[i][j].length - 1].symbol === "w" ||
+//             board[i][j][board[i][j].length - 1].symbol === "CW")
+//         ) {
+//           const count = dfs(i, j);
+//           maxCount = Math.max(maxCount, count);
+//         }
+//       }
+//     }
+
+//     return maxCount;
+//   };
+
+//   const totalConnectAi = (board) => {
+//     let maxCount = 0;
+//     const visited = Array.from({ length: 5 }, () =>
+//       Array(board[0].length).fill(false)
+//     );
+
+//     const dfs = (i, j) => {
+//       if (
+//         i < 0 ||
+//         i >= 5 ||
+//         j < 0 ||
+//         j >= 5 ||
+//         visited[i][j] ||
+//         board[i][j].length === 0 || // Check if the cell is empty
+//         !(
+//           board[i][j][board[i][j].length - 1].symbol === "b" ||
+//           board[i][j][board[i][j].length - 1].symbol === "CB"
+//         )
+//       ) {
+//         return 0;
+//       }
+
+//       visited[i][j] = true;
+
+//       let count = 1;
+//       count += dfs(i - 1, j) + dfs(i + 1, j) + dfs(i, j - 1) + dfs(i, j + 1);
+
+//       return count;
+//     };
+
+//     for (let i = 0; i < 5; i++) {
+//       for (let j = 0; j < board[i].length; j++) {
+//         if (
+//           !visited[i][j] &&
+//           board[i][j].length > 0 && // Check if the cell is not empty
+//           (board[i][j][board[i][j].length - 1].symbol === "b" ||
+//             board[i][j][board[i][j].length - 1].symbol === "CB")
+//         ) {
+//           const count = dfs(i, j);
+//           maxCount = Math.max(maxCount, count);
+//         }
+//       }
+//     }
+
+//     return maxCount;
+//   };
+
+//   console.log({ totalConnectAi: totalConnectAi(board) });
+//   console.log({ totalConnectPlayer: totalConnectPlayer(board) });
+
+//   aiScore += totalConnectAi(board);
+//   playerScore += totalConnectPlayer(board);
+
+//   return aiScore - playerScore;
+// };
 
 export {
   openModal,

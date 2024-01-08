@@ -177,7 +177,8 @@ const App = () => {
       player2
     );
   if (currentPlayer === 2 && player2.stones !== 21 && player1.stones !== 21) {
-    const move = minimax(board, player2);
+    let move = minimax(board,2,player1,player2,true,null);
+    console.log({move});
     AiMove(
       board,
       setBoard,
@@ -524,7 +525,7 @@ const App = () => {
               >
                 Ok
               </button>
-            </div>            
+            </div>
             <button onClick={closeActionModalHandler}>Close</button>
           </div>
         </div>
