@@ -13,6 +13,8 @@ import {
   handlePut,
 } from "./GameFunctions";
 
+import "../index.css";
+
 const App = () => {
   // State untuk board
   const [board, setBoard] = useState(
@@ -36,6 +38,7 @@ const App = () => {
   const [movecount, setMoveCount] = useState(1);
   const [selectedCellStack, setSelectedCellStack] = useState([]);
   const [movestatus, setMoveStatus] = useState("");
+  const [curGrid, setCurGrid] = useState(null);
 
   // State untuk modal tindakan
   const [isActionModalOpen, setActionModalOpen] = useState(false);
@@ -177,8 +180,17 @@ const App = () => {
       player2
     );
   if (currentPlayer === 2 && player2.stones !== 21 && player1.stones !== 21) {
-    let move = minimax(board,2,player1,player2,true,null,-Infinity,Infinity);
-    console.log({move});
+    let move = minimax(
+      board,
+      2,
+      player1,
+      player2,
+      true,
+      null,
+      -Infinity,
+      Infinity
+    );
+    console.log({ move });
     AiMove(
       board,
       setBoard,
@@ -219,6 +231,16 @@ const App = () => {
 
   // Fungsi untuk menampilkan papan
   const renderBoard = () => {
+    const handleMouseEnter = (row, col) => {
+      setCurGrid(board[row][col]);
+      // alert("asd");
+    };
+
+    const handleMouseLeave = () => {
+      setCurGrid(null);
+      // console.log(curGrid);
+    };
+
     return (
       <div
         style={{
@@ -258,6 +280,7 @@ const App = () => {
             >
               {cell.length > 0 && (
                 <div
+                  className="bidak"
                   style={{
                     width: "60px",
                     height: "60px",
@@ -275,6 +298,8 @@ const App = () => {
                         : ""
                     }`,
                   }}
+                  onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}
+                  onMouseLeave={handleMouseLeave}
                 >
                   <div
                     style={{
@@ -318,6 +343,64 @@ const App = () => {
                     }}
                   >
                     {/* {cell[cell.length - 1].symbol} */}
+                  </div>
+
+                  <div className="popup">
+                    {curGrid &&
+                      curGrid.reverse().map((item, index) =>
+                        item.status === "capstone" ? (
+                          <div key={index}>
+                            <div
+                              style={{
+                                width: "30.5px",
+                                height: "10px",
+                                backgroundColor: `${
+                                  item.symbol === "b" ? "#8f6459" : "#f8dbb2"
+                                }`,
+                                transform: "perspective(1.1px) rotateX(3deg)",
+                                margin: "auto",
+                                marginBottom: "11px",
+                                border: "1px solid black",
+                                borderBottom: "none",
+                              }}
+                            ></div>
+                            <div
+                              style={{
+                                width: "30px",
+                                height: "50px",
+                                backgroundColor: `${
+                                  item.symbol === "b" ? "#8f6459" : "#f8dbb2"
+                                }`,
+                                transform: "perspective(5px) rotateX(177deg)",
+                                margin: "auto",
+                                border: "1px solid black",
+                                borderBottom: "none",
+                              }}
+                            ></div>
+                          </div>
+                        ) : (
+                          <div
+                            key={index}
+                            style={{
+                              border: "1px solid black",
+                              backgroundColor: `${
+                                item.symbol === "b" ? "#8f6459" : "#f8dbb2"
+                              }`,
+                              color: `${
+                                item.symbol === "b" ? "#f8dbb2" : "#8f6459"
+                              }`,
+                              height: `${
+                                item.status === "sleeping" ? "30px" : "60px"
+                              }`,
+                              width: `${
+                                item.status === "sleeping" ? "100px" : "30px"
+                              }`,
+                              margin: "auto",
+                              marginTop: "2px",
+                            }}
+                          ></div>
+                        )
+                      )}
                   </div>
                 </div>
               )}
