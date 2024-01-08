@@ -828,82 +828,294 @@ const minimax = (board, depth, player1, player2, isMaximize, lastMove) => {
           if (i > 0) {
             const tempBoard = board.map((row) => row.slice());
             const selectedCell = [...tempBoard[i][j]];
-            tempBoard[i - 1][j] = [selectedCell];
-            bestMove = minimax(
-              tempBoard,
-              depth - 1,
-              player1,
-              player2,
-              !isMaximize,
-              {
-                action: "move",
-                row: i,
-                col: j,
-                direction: "up",
+            if (tempBoard[i - 1][j].length === 0) {
+              tempBoard[i - 1][j] = [selectedCell];
+              bestMove = minimax(
+                tempBoard,
+                depth - 1,
+                player1,
+                player2,
+                !isMaximize,
+                {
+                  action: "move",
+                  row: i,
+                  col: j,
+                  direction: "up",
+                }
+              );
+              availableMove.push(bestMove);
+              tempBoard[i - 1][j] = [];
+            } else {
+              if (
+                ["w", "b"].includes(
+                  selectedCell[selectedCell.length - 1].symbol
+                )
+              ) {
+                if (
+                  ["W", "B", "CB", "CW"].includes(
+                    tempBoard[i - 1][j][tempBoard[i - 1][j].length - 1].symbol
+                  )
+                ) {
+                  return;
+                }
+              } else if (
+                ["W"].includes(selectedCell[selectedCell.length - 1].symbol)
+              ) {
+                if (
+                  ["B", "CB", "CW"].includes(
+                    tempBoard[i - 1][j][tempBoard[i - 1][j].length - 1].symbol
+                  )
+                ) {
+                  return;
+                }
+              } else if (
+                ["B"].includes(selectedCell[selectedCell.length - 1].symbol)
+              ) {
+                if (
+                  ["W", "CW", "CB"].includes(
+                    tempBoard[i - 1][j][tempBoard[i - 1][j].length - 1].symbol
+                  )
+                ) {
+                  return;
+                }
               }
-            );
-            availableMove.push(bestMove);
-            tempBoard[i - 1][j] = [];
+              tempBoard[i - 1][j] = [...tempBoard[i - 1][j], ...selectedCell];
+              tempBoard[i][j] = [];
+              bestMove = minimax(
+                tempBoard,
+                depth - 1,
+                player1,
+                player2,
+                !isMaximize,
+                {
+                  action: "move",
+                  row: i,
+                  col: j,
+                  direction: "up",
+                }
+              );
+              availableMove.push(bestMove);
+              tempBoard[i - 1][j] = [];
+            }
           }
           if (i < 4) {
             const tempBoard = board.map((row) => row.slice());
             const selectedCell = [...tempBoard[i][j]];
-            tempBoard[i + 1][j] = [selectedCell];
-            bestMove = minimax(
-              tempBoard,
-              depth - 1,
-              player1,
-              player2,
-              !isMaximize,
-              {
-                action: "move",
-                row: i,
-                col: j,
-                direction: "down",
+            if (tempBoard[i + 1][j].length === 0) {
+              tempBoard[i + 1][j] = [selectedCell];
+              bestMove = minimax(
+                tempBoard,
+                depth - 1,
+                player1,
+                player2,
+                !isMaximize,
+                {
+                  action: "move",
+                  row: i,
+                  col: j,
+                  direction: "down",
+                }
+              );
+              availableMove.push(bestMove);
+              tempBoard[i + 1][j] = [];
+            } else {
+              if (
+                ["w", "b"].includes(
+                  selectedCell[selectedCell.length - 1].symbol
+                )
+              ) {
+                if (
+                  ["W", "B", "CB", "CW"].includes(
+                    tempBoard[i + 1][j][tempBoard[i + 1][j].length - 1].symbol
+                  )
+                ) {
+                  return;
+                }
+              } else if (
+                ["W"].includes(selectedCell[selectedCell.length - 1].symbol)
+              ) {
+                if (
+                  ["B", "CB", "CW"].includes(
+                    tempBoard[i + 1][j][tempBoard[i + 1][j].length - 1].symbol
+                  )
+                ) {
+                  return;
+                }
+              } else if (
+                ["B"].includes(selectedCell[selectedCell.length - 1].symbol)
+              ) {
+                if (
+                  ["W", "CW", "CB"].includes(
+                    tempBoard[i + 1][j][tempBoard[i + 1][j].length - 1].symbol
+                  )
+                ) {
+                  return;
+                }
               }
-            );
-            availableMove.push(bestMove);
-            tempBoard[i + 1][j] = [];
+              tempBoard[i + 1][j] = [...tempBoard[i + 1][j], ...selectedCell];
+              tempBoard[i][j] = [];
+              bestMove = minimax(
+                tempBoard,
+                depth - 1,
+                player1,
+                player2,
+                !isMaximize,
+                {
+                  action: "move",
+                  row: i,
+                  col: j,
+                  direction: "down",
+                }
+              );
+              availableMove.push(bestMove);
+              tempBoard[i + 1][j] = [];
+            }
           }
           if (j > 0) {
             const tempBoard = board.map((row) => row.slice());
             const selectedCell = [...tempBoard[i][j]];
-            tempBoard[i][j - 1] = [selectedCell];
-            bestMove = minimax(
-              tempBoard,
-              depth - 1,
-              player1,
-              player2,
-              !isMaximize,
-              {
-                action: "move",
-                row: i,
-                col: j,
-                direction: "left",
+            if (tempBoard[i][j - 1].length === 0) {
+              tempBoard[i][j - 1] = [selectedCell];
+              bestMove = minimax(
+                tempBoard,
+                depth - 1,
+                player1,
+                player2,
+                !isMaximize,
+                {
+                  action: "move",
+                  row: i,
+                  col: j,
+                  direction: "left",
+                }
+              );
+              availableMove.push(bestMove);
+              tempBoard[i][j - 1] = [];
+            } else {
+              if (
+                ["w", "b"].includes(
+                  selectedCell[selectedCell.length - 1].symbol
+                )
+              ) {
+                if (
+                  ["W", "B", "CB", "CW"].includes(
+                    tempBoard[i][j - 1][tempBoard[i][j - 1].length - 1].symbol
+                  )
+                ) {
+                  return;
+                }
+              } else if (
+                ["W"].includes(selectedCell[selectedCell.length - 1].symbol)
+              ) {
+                if (
+                  ["B", "CB", "CW"].includes(
+                    tempBoard[i][j - 1][tempBoard[i][j - 1].length - 1].symbol
+                  )
+                ) {
+                  return;
+                }
+              } else if (
+                ["B"].includes(selectedCell[selectedCell.length - 1].symbol)
+              ) {
+                if (
+                  ["W", "CW", "CB"].includes(
+                    tempBoard[i][j - 1][tempBoard[i][j - 1].length - 1].symbol
+                  )
+                ) {
+                  return;
+                }
               }
-            );
-            availableMove.push(bestMove);
-            tempBoard[i][j - 1] = [];
+              tempBoard[i][j - 1] = [...tempBoard[i][j - 1], ...selectedCell];
+              tempBoard[i][j] = [];
+              bestMove = minimax(
+                tempBoard,
+                depth - 1,
+                player1,
+                player2,
+                !isMaximize,
+                {
+                  action: "move",
+                  row: i,
+                  col: j,
+                  direction: "left",
+                }
+              );
+              availableMove.push(bestMove);
+              tempBoard[i][j - 1] = [];
+            }
           }
           if (j < 4) {
             const tempBoard = board.map((row) => row.slice());
             const selectedCell = [...tempBoard[i][j]];
-            tempBoard[i][j + 1] = [selectedCell];
-            bestMove = minimax(
-              tempBoard,
-              depth - 1,
-              player1,
-              player2,
-              !isMaximize,
-              {
-                action: "move",
-                row: i,
-                col: j,
-                direction: "right",
+            if (tempBoard[i][j + 1].length === 0) {
+              tempBoard[i][j + 1] = [selectedCell];
+              bestMove = minimax(
+                tempBoard,
+                depth - 1,
+                player1,
+                player2,
+                !isMaximize,
+                {
+                  action: "move",
+                  row: i,
+                  col: j,
+                  direction: "right",
+                }
+              );
+              availableMove.push(bestMove);
+              tempBoard[i][j + 1] = [];
+            } else {
+              if (
+                ["w", "b"].includes(
+                  selectedCell[selectedCell.length - 1].symbol
+                )
+              ) {
+                if (
+                  ["W", "B", "CB", "CW"].includes(
+                    tempBoard[i][j + 1][tempBoard[i][j + 1].length - 1].symbol
+                  )
+                ) {
+                  return;
+                }
+              } else if (
+                ["W"].includes(selectedCell[selectedCell.length - 1].symbol)
+              ) {
+                if (
+                  ["B", "CB", "CW"].includes(
+                    tempBoard[i][j + 1][tempBoard[i][j + 1].length - 1].symbol
+                  )
+                ) {
+                  return;
+                }
+              } else if (
+                ["B"].includes(selectedCell[selectedCell.length - 1].symbol)
+              ) {
+                if (
+                  ["W", "CW", "CB"].includes(
+                    tempBoard[i][j + 1][tempBoard[i][j + 1].length - 1].symbol
+                  )
+                ) {
+                  return;
+                }
               }
-            );
-            availableMove.push(bestMove);
-            tempBoard[i][j + 1] = [];
+              tempBoard[i][j + 1] = [...tempBoard[i][j + 1], ...selectedCell];
+              tempBoard[i][j] = [];
+              bestMove = minimax(
+                tempBoard,
+                depth - 1,
+                player1,
+                player2,
+                !isMaximize,
+                {
+                  action: "move",
+                  row: i,
+                  col: j,
+                  direction: "right",
+                }
+              );
+              availableMove.push(bestMove);
+              tempBoard[i][j + 1] = [];
+            }
           }
         }
       }
@@ -953,82 +1165,294 @@ const minimax = (board, depth, player1, player2, isMaximize, lastMove) => {
           if (i > 0) {
             const tempBoard = board.map((row) => row.slice());
             const selectedCell = [...tempBoard[i][j]];
-            tempBoard[i - 1][j] = [selectedCell];
-            bestMove = minimax(
-              tempBoard,
-              depth - 1,
-              player1,
-              player2,
-              isMaximize,
-              {
-                action: "move",
-                row: i,
-                col: j,
-                direction: "up",
+            if (tempBoard[i - 1][j].length === 0) {
+              tempBoard[i - 1][j] = [selectedCell];
+              bestMove = minimax(
+                tempBoard,
+                depth - 1,
+                player1,
+                player2,
+                isMaximize,
+                {
+                  action: "move",
+                  row: i,
+                  col: j,
+                  direction: "up",
+                }
+              );
+              availableMove.push(bestMove);
+              tempBoard[i - 1][j] = [];
+            } else {
+              if (
+                ["w", "b"].includes(
+                  selectedCell[selectedCell.length - 1].symbol
+                )
+              ) {
+                if (
+                  ["W", "B", "CB", "CW"].includes(
+                    tempBoard[i - 1][j][tempBoard[i - 1][j].length - 1].symbol
+                  )
+                ) {
+                  return;
+                }
+              } else if (
+                ["W"].includes(selectedCell[selectedCell.length - 1].symbol)
+              ) {
+                if (
+                  ["B", "CB", "CW"].includes(
+                    tempBoard[i - 1][j][tempBoard[i - 1][j].length - 1].symbol
+                  )
+                ) {
+                  return;
+                }
+              } else if (
+                ["B"].includes(selectedCell[selectedCell.length - 1].symbol)
+              ) {
+                if (
+                  ["W", "CW", "CB"].includes(
+                    tempBoard[i - 1][j][tempBoard[i - 1][j].length - 1].symbol
+                  )
+                ) {
+                  return;
+                }
               }
-            );
-            availableMove.push(bestMove);
-            tempBoard[i - 1][j] = [];
+              tempBoard[i - 1][j] = [...tempBoard[i - 1][j], ...selectedCell];
+              tempBoard[i][j] = [];
+              bestMove = minimax(
+                tempBoard,
+                depth - 1,
+                player1,
+                player2,
+                isMaximize,
+                {
+                  action: "move",
+                  row: i,
+                  col: j,
+                  direction: "up",
+                }
+              );
+              availableMove.push(bestMove);
+              tempBoard[i - 1][j] = [];
+            }
           }
           if (i < 4) {
             const tempBoard = board.map((row) => row.slice());
             const selectedCell = [...tempBoard[i][j]];
-            tempBoard[i + 1][j] = [selectedCell];
-            bestMove = minimax(
-              tempBoard,
-              depth - 1,
-              player1,
-              player2,
-              isMaximize,
-              {
-                action: "move",
-                row: i,
-                col: j,
-                direction: "down",
+            if (tempBoard[i + 1][j].length === 0) {
+              tempBoard[i + 1][j] = [selectedCell];
+              bestMove = minimax(
+                tempBoard,
+                depth - 1,
+                player1,
+                player2,
+                isMaximize,
+                {
+                  action: "move",
+                  row: i,
+                  col: j,
+                  direction: "down",
+                }
+              );
+              availableMove.push(bestMove);
+              tempBoard[i + 1][j] = [];
+            } else {
+              if (
+                ["w", "b"].includes(
+                  selectedCell[selectedCell.length - 1].symbol
+                )
+              ) {
+                if (
+                  ["W", "B", "CB", "CW"].includes(
+                    tempBoard[i + 1][j][tempBoard[i + 1][j].length - 1].symbol
+                  )
+                ) {
+                  return;
+                }
+              } else if (
+                ["W"].includes(selectedCell[selectedCell.length - 1].symbol)
+              ) {
+                if (
+                  ["B", "CB", "CW"].includes(
+                    tempBoard[i + 1][j][tempBoard[i + 1][j].length - 1].symbol
+                  )
+                ) {
+                  return;
+                }
+              } else if (
+                ["B"].includes(selectedCell[selectedCell.length - 1].symbol)
+              ) {
+                if (
+                  ["W", "CW", "CB"].includes(
+                    tempBoard[i + 1][j][tempBoard[i + 1][j].length - 1].symbol
+                  )
+                ) {
+                  return;
+                }
               }
-            );
-            availableMove.push(bestMove);
-            tempBoard[i + 1][j] = [];
+              tempBoard[i + 1][j] = [...tempBoard[i + 1][j], ...selectedCell];
+              tempBoard[i][j] = [];
+              bestMove = minimax(
+                tempBoard,
+                depth - 1,
+                player1,
+                player2,
+                isMaximize,
+                {
+                  action: "move",
+                  row: i,
+                  col: j,
+                  direction: "down",
+                }
+              );
+              availableMove.push(bestMove);
+              tempBoard[i + 1][j] = [];
+            }
           }
           if (j > 0) {
             const tempBoard = board.map((row) => row.slice());
             const selectedCell = [...tempBoard[i][j]];
-            tempBoard[i][j - 1] = [selectedCell];
-            bestMove = minimax(
-              tempBoard,
-              depth - 1,
-              player1,
-              player2,
-              isMaximize,
-              {
-                action: "move",
-                row: i,
-                col: j,
-                direction: "left",
+            if (tempBoard[i][j - 1].length === 0) {
+              tempBoard[i][j - 1] = [selectedCell];
+              bestMove = minimax(
+                tempBoard,
+                depth - 1,
+                player1,
+                player2,
+                isMaximize,
+                {
+                  action: "move",
+                  row: i,
+                  col: j,
+                  direction: "left",
+                }
+              );
+              availableMove.push(bestMove);
+              tempBoard[i][j - 1] = [];
+            } else {
+              if (
+                ["w", "b"].includes(
+                  selectedCell[selectedCell.length - 1].symbol
+                )
+              ) {
+                if (
+                  ["W", "B", "CB", "CW"].includes(
+                    tempBoard[i][j - 1][tempBoard[i][j - 1].length - 1].symbol
+                  )
+                ) {
+                  return;
+                }
+              } else if (
+                ["W"].includes(selectedCell[selectedCell.length - 1].symbol)
+              ) {
+                if (
+                  ["B", "CB", "CW"].includes(
+                    tempBoard[i][j - 1][tempBoard[i][j - 1].length - 1].symbol
+                  )
+                ) {
+                  return;
+                }
+              } else if (
+                ["B"].includes(selectedCell[selectedCell.length - 1].symbol)
+              ) {
+                if (
+                  ["W", "CW", "CB"].includes(
+                    tempBoard[i][j - 1][tempBoard[i][j - 1].length - 1].symbol
+                  )
+                ) {
+                  return;
+                }
               }
-            );
-            availableMove.push(bestMove);
-            tempBoard[i][j - 1] = [];
+              tempBoard[i][j - 1] = [...tempBoard[i][j - 1], ...selectedCell];
+              tempBoard[i][j] = [];
+              bestMove = minimax(
+                tempBoard,
+                depth - 1,
+                player1,
+                player2,
+                isMaximize,
+                {
+                  action: "move",
+                  row: i,
+                  col: j,
+                  direction: "left",
+                }
+              );
+              availableMove.push(bestMove);
+              tempBoard[i][j - 1] = [];
+            }
           }
           if (j < 4) {
             const tempBoard = board.map((row) => row.slice());
             const selectedCell = [...tempBoard[i][j]];
-            tempBoard[i][j + 1] = [selectedCell];
-            bestMove = minimax(
-              tempBoard,
-              depth - 1,
-              player1,
-              player2,
-              isMaximize,
-              {
-                action: "move",
-                row: i,
-                col: j,
-                direction: "right",
+            if (tempBoard[i][j + 1].length === 0) {
+              tempBoard[i][j + 1] = [selectedCell];
+              bestMove = minimax(
+                tempBoard,
+                depth - 1,
+                player1,
+                player2,
+                isMaximize,
+                {
+                  action: "move",
+                  row: i,
+                  col: j,
+                  direction: "right",
+                }
+              );
+              availableMove.push(bestMove);
+              tempBoard[i][j + 1] = [];
+            } else {
+              if (
+                ["w", "b"].includes(
+                  selectedCell[selectedCell.length - 1].symbol
+                )
+              ) {
+                if (
+                  ["W", "B", "CB", "CW"].includes(
+                    tempBoard[i][j + 1][tempBoard[i][j + 1].length - 1].symbol
+                  )
+                ) {
+                  return;
+                }
+              } else if (
+                ["W"].includes(selectedCell[selectedCell.length - 1].symbol)
+              ) {
+                if (
+                  ["B", "CB", "CW"].includes(
+                    tempBoard[i][j + 1][tempBoard[i][j + 1].length - 1].symbol
+                  )
+                ) {
+                  return;
+                }
+              } else if (
+                ["B"].includes(selectedCell[selectedCell.length - 1].symbol)
+              ) {
+                if (
+                  ["W", "CW", "CB"].includes(
+                    tempBoard[i][j + 1][tempBoard[i][j + 1].length - 1].symbol
+                  )
+                ) {
+                  return;
+                }
               }
-            );
-            availableMove.push(bestMove);
-            tempBoard[i][j + 1] = [];
+              tempBoard[i][j + 1] = [...tempBoard[i][j + 1], ...selectedCell];
+              tempBoard[i][j] = [];
+              bestMove = minimax(
+                tempBoard,
+                depth - 1,
+                player1,
+                player2,
+                isMaximize,
+                {
+                  action: "move",
+                  row: i,
+                  col: j,
+                  direction: "right",
+                }
+              );
+              availableMove.push(bestMove);
+              tempBoard[i][j + 1] = [];
+            }
           }
         }
       }
