@@ -770,7 +770,16 @@ const AiMove = (
 //   return availableMove[maxSbeIndex];
 // };
 
-const minimax = (board, depth, player1, player2, isMaximize, lastMove) => {
+const minimax = (
+  board,
+  depth,
+  player1,
+  player2,
+  isMaximize,
+  lastMove,
+  alpha,
+  beta
+) => {
   if (depth === 1) {
     console.log("ini ply1");
   } else {
@@ -1120,9 +1129,11 @@ const minimax = (board, depth, player1, player2, isMaximize, lastMove) => {
         }
       }
     }
-    console.log({bestSBE : bestMove.sbe});
     for (let i = 0; i < availableMove.length; i++) {
-      console.log({availableMoveSekarang : availableMove[i]});
+      alpha = Math.max(alpha, bestMove.sbe);
+      if (beta <= alpha) {
+        break; // Prune the branch
+      }
       if (bestMove.sbe < availableMove[i].sbe) {
         bestMove = availableMove[i];
       }
@@ -1195,7 +1206,7 @@ const minimax = (board, depth, player1, player2, isMaximize, lastMove) => {
                     tempBoard[i - 1][j][tempBoard[i - 1][j].length - 1].symbol
                   )
                 ) {
-                  break
+                  break;
                 }
               } else if (
                 ["W"].includes(selectedCell[selectedCell.length - 1].symbol)
@@ -1460,6 +1471,10 @@ const minimax = (board, depth, player1, player2, isMaximize, lastMove) => {
       }
     }
     for (let i = 0; i < availableMove.length; i++) {
+      beta = Math.min(beta, bestMove.sbe);
+      if (beta <= alpha) {
+        break; // Prune the branch
+      }
       if (bestMove.sbe > availableMove[i].sbe) {
         bestMove = availableMove[i];
       }

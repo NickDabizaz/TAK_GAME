@@ -177,7 +177,7 @@ const App = () => {
       player2
     );
   if (currentPlayer === 2 && player2.stones !== 21 && player1.stones !== 21) {
-    let move = minimax(board,2,player1,player2,true,null);
+    let move = minimax(board,2,player1,player2,true,null,-Infinity,Infinity);
     console.log({move});
     AiMove(
       board,
