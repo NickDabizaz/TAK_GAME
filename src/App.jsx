@@ -571,32 +571,74 @@ const App = () => {
             opacity: `${currentPlayer === 2 ? 1 : 0.7}`,
             pointerEvents: `${currentPlayer !== 2 && "none"}`,
             color: `${currentPlayer === 2 ? "black" : "#888"}`,
+            padding: "20px",
           }}
         >
-          Player 2: Stones - {player2.stones},
-          <div style={{ display: "flex" }}>
-            <div
-              style={{
-                minWidth: "20px",
-                width: "20px",
-                minHeight: "20px",
-                height: "20px",
-                backgroundColor: "bisque",
-              }}
-            ></div>
+          Player 2
+          <div
+            style={{ display: "flex", height: "40px", alignItems: "center" }}
+          >
+            <div style={{ display: "block" }}>
+              <div
+                style={{
+                  minWidth: "20px",
+                  width: "20px",
+                  minHeight: "20px",
+                  height: "20px",
+                  backgroundColor: "bisque",
+                  transform: "perspective(1.1px) rotateX(2deg)",
+                  margin: "auto",
+                  marginRight: "20px",
+                }}
+              ></div>
+            </div>
+            x {player2.stones}
+          </div>
+          <div
+            style={{ display: "flex", height: "40px", alignItems: "center" }}
+          >
+            <div style={{ display: "block" }}>
+              <div
+                style={{
+                  minWidth: "10px",
+                  width: "10px",
+                  minHeight: "6px",
+                  height: "6px",
+                  backgroundColor: "bisque",
+                  transform: "perspective(0.5px) rotateX(6deg)",
+                  marginRight: "20px",
+                }}
+              ></div>
+              <div
+                style={{
+                  minWidth: "10px",
+                  width: "10px",
+                  minHeight: "14px",
+                  height: "14px",
+                  backgroundColor: "bisque",
+                  transform: "perspective(1px) rotateX(176.6deg)",
+                  marginTop: "9px",
+                  marginRight: "20px",
+                }}
+              ></div>
+            </div>
             x {player2.capstones}
           </div>
         </div>
-        <div>Current Turn: Player {currentPlayer}</div>
+        {/* <div>Current Turn: Player {currentPlayer}</div> */}
       </div>
 
       {/* Tampilkan board */}
       {renderBoard()}
 
       {/* Tampilkan info stack */}
-      <div style={{ flex: 1, height: "100%", backgroundColor: "red" }}>
-        stack Information
-        {curGrid && curGrid.length}
+      <div style={{ flex: 1, height: "100%" }}>
+        <h1 style={{ textAlign: "center" }}> Stack Information</h1>
+        {curGrid && (
+          <div style={{ textAlign: "center" }}>
+            Stack count: {curGrid.length}
+          </div>
+        )}
         {curGrid &&
           curGrid.slice(0, 10).map((item, index) =>
             item.status === "capstone" ? (
