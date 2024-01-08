@@ -232,7 +232,8 @@ const App = () => {
   // Fungsi untuk menampilkan papan
   const renderBoard = () => {
     const handleMouseEnter = (row, col) => {
-      setCurGrid(board[row][col]);
+      let temp = [...board[row][col]];
+      setCurGrid(temp.reverse());
       // alert("asd");
     };
 
@@ -244,169 +245,219 @@ const App = () => {
     return (
       <div
         style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(5, 70px)",
-          gap: "4px",
-          cursor: "pointer", // Set cursor default menjadi pointer
+          display: "flex",
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        {board.map((row, rowIndex) =>
-          row.map((cell, colIndex) => (
+        <div
+          style={{
+            height: "fit-content",
+            width: "fit-content",
+            padding: "20px",
+            border: "1px solid black",
+            backgroundColor: "#8f6459",
+          }}
+        >
+          <div
+            style={{
+              width: "fit-content",
+              padding: "10px",
+              border: "1px solid black",
+              backgroundColor: "#f8dbb2",
+            }}
+          >
             <div
-              key={`${rowIndex}-${colIndex}`}
-              onClick={() =>
-                cell.length > 0
-                  ? openActionModalHandler(rowIndex, colIndex)
-                  : openModalHandler(rowIndex, colIndex)
-              }
               style={{
-                width: "70px",
-                height: "70px",
-                border: "1px solid black",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                fontSize: "20px",
-                fontWeight: "bold",
-                cursor:
-                  cell.length > 0 &&
-                  !isPlayerTurnValid(cell[cell.length - 1].symbol)
-                    ? "not-allowed"
-                    : currentPlayer === 3
-                    ? "pointer"
-                    : "pointer",
-                position: "relative",
+                display: "grid",
+                gridTemplateColumns: "repeat(5, 70px)",
+                gap: "10px",
+                cursor: "pointer", // Set cursor default menjadi pointer
               }}
             >
-              {cell.length > 0 && (
-                <div
-                  className="bidak"
-                  style={{
-                    width: "60px",
-                    height: "60px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    border: `${cell.length > 1 ? "1px solid black" : "none"}`,
-                    backgroundColor: `${
-                      cell.length > 1
-                        ? cell[cell.length - 2].symbol === "b" ||
-                          cell[cell.length - 2].symbol === "B" ||
-                          cell[cell.length - 2].symbol === "CB"
-                          ? "#8f6459"
-                          : "#f8dbb2"
-                        : ""
-                    }`,
-                  }}
-                  onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}
-                  onMouseLeave={handleMouseLeave}
-                >
+              {board.map((row, rowIndex) =>
+                row.map((cell, colIndex) => (
                   <div
+                    key={`${rowIndex}-${colIndex}`}
+                    onClick={() =>
+                      cell.length > 0
+                        ? openActionModalHandler(rowIndex, colIndex)
+                        : openModalHandler(rowIndex, colIndex)
+                    }
                     style={{
-                      position: "absolute",
-                      width: `${
-                        cell[cell.length - 1].symbol === "CB" ||
-                        cell[cell.length - 1].symbol === "CW"
-                          ? "30px"
-                          : "60px"
-                      }`,
-                      height: `${
-                        cell[cell.length - 1].status === "sleeping"
-                          ? "60px"
-                          : cell[cell.length - 1].status === "standing"
-                          ? "20px"
-                          : "30px"
-                      }`,
-                      backgroundColor: `${
-                        cell[cell.length - 1].symbol === "b" ||
-                        cell[cell.length - 1].symbol === "B" ||
-                        cell[cell.length - 1].symbol === "CB"
-                          ? "#8f6459"
-                          : "#f8dbb2"
-                      }`,
-                      color: `${
-                        cell[cell.length - 1].symbol === "b" ||
-                        cell[cell.length - 1].symbol === "B" ||
-                        cell[cell.length - 1].symbol === "CB"
-                          ? "white"
-                          : "black"
-                      }`,
-                      border: "1px solid black",
-                      borderRadius: `${
-                        cell[cell.length - 1].status === "capstone" ? "50%" : ""
-                      }`,
-                      transform: `${
-                        cell[cell.length - 1].status === "standing"
-                          ? "rotate(45deg)"
-                          : "rotate(0deg)"
-                      }`,
+                      width: "70px",
+                      height: "70px",
+                      border: "2px solid black",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      fontSize: "20px",
+                      fontWeight: "bold",
+                      cursor:
+                        cell.length > 0 &&
+                        !isPlayerTurnValid(cell[cell.length - 1].symbol)
+                          ? "not-allowed"
+                          : currentPlayer === 3
+                          ? "pointer"
+                          : "pointer",
+                      position: "relative",
+                      backgroundColor: "white",
                     }}
                   >
-                    {/* {cell[cell.length - 1].symbol} */}
-                  </div>
+                    {cell.length > 0 && (
+                      <div
+                        className="bidak"
+                        style={{
+                          width: "60px",
+                          height: "60px",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          border: `${
+                            cell.length > 1 ? "1px solid black" : "none"
+                          }`,
+                          backgroundColor: `${
+                            cell.length > 1
+                              ? cell[cell.length - 2].symbol === "b" ||
+                                cell[cell.length - 2].symbol === "B" ||
+                                cell[cell.length - 2].symbol === "CB"
+                                ? "#8f6459"
+                                : "#f8dbb2"
+                              : ""
+                          }`,
+                        }}
+                        onMouseEnter={() =>
+                          handleMouseEnter(rowIndex, colIndex)
+                        }
+                        onMouseLeave={handleMouseLeave}
+                      >
+                        <div
+                          style={{
+                            position: "absolute",
+                            width: `${
+                              cell[cell.length - 1].symbol === "CB" ||
+                              cell[cell.length - 1].symbol === "CW"
+                                ? "30px"
+                                : "60px"
+                            }`,
+                            height: `${
+                              cell[cell.length - 1].status === "sleeping"
+                                ? "60px"
+                                : cell[cell.length - 1].status === "standing"
+                                ? "20px"
+                                : "30px"
+                            }`,
+                            backgroundColor: `${
+                              cell[cell.length - 1].symbol === "b" ||
+                              cell[cell.length - 1].symbol === "B" ||
+                              cell[cell.length - 1].symbol === "CB"
+                                ? "#8f6459"
+                                : "#f8dbb2"
+                            }`,
+                            color: `${
+                              cell[cell.length - 1].symbol === "b" ||
+                              cell[cell.length - 1].symbol === "B" ||
+                              cell[cell.length - 1].symbol === "CB"
+                                ? "white"
+                                : "black"
+                            }`,
+                            border: "1px solid black",
+                            borderRadius: `${
+                              cell[cell.length - 1].status === "capstone"
+                                ? "50%"
+                                : ""
+                            }`,
+                            transform: `${
+                              cell[cell.length - 1].status === "standing"
+                                ? "rotate(45deg)"
+                                : "rotate(0deg)"
+                            }`,
+                          }}
+                        >
+                          {/* {cell[cell.length - 1].symbol} */}
+                        </div>
 
-                  <div className="popup">
-                    {curGrid &&
-                      curGrid.reverse().map((item, index) =>
-                        item.status === "capstone" ? (
-                          <div key={index}>
-                            <div
-                              style={{
-                                width: "30.5px",
-                                height: "10px",
-                                backgroundColor: `${
-                                  item.symbol === "b" ? "#8f6459" : "#f8dbb2"
-                                }`,
-                                transform: "perspective(1.1px) rotateX(3deg)",
-                                margin: "auto",
-                                marginBottom: "11px",
-                                border: "1px solid black",
-                                borderBottom: "none",
-                              }}
-                            ></div>
-                            <div
-                              style={{
-                                width: "30px",
-                                height: "50px",
-                                backgroundColor: `${
-                                  item.symbol === "b" ? "#8f6459" : "#f8dbb2"
-                                }`,
-                                transform: "perspective(5px) rotateX(177deg)",
-                                margin: "auto",
-                                border: "1px solid black",
-                                borderBottom: "none",
-                              }}
-                            ></div>
-                          </div>
-                        ) : (
-                          <div
-                            key={index}
-                            style={{
-                              border: "1px solid black",
-                              backgroundColor: `${
-                                item.symbol === "b" ? "#8f6459" : "#f8dbb2"
-                              }`,
-                              color: `${
-                                item.symbol === "b" ? "#f8dbb2" : "#8f6459"
-                              }`,
-                              height: `${
-                                item.status === "sleeping" ? "30px" : "60px"
-                              }`,
-                              width: `${
-                                item.status === "sleeping" ? "100px" : "30px"
-                              }`,
-                              margin: "auto",
-                              marginTop: "2px",
-                            }}
-                          ></div>
-                        )
-                      )}
+                        <div className="popup">
+                          {curGrid && curGrid.length}
+                          {curGrid &&
+                            curGrid.slice(0, 10).map((item, index) =>
+                              item.status === "capstone" ? (
+                                <div key={index}>
+                                  <div
+                                    style={{
+                                      width: "30.5px",
+                                      height: "10px",
+                                      backgroundColor: `${
+                                        item.symbol === "b"
+                                          ? "#8f6459"
+                                          : "#f8dbb2"
+                                      }`,
+                                      transform:
+                                        "perspective(1.1px) rotateX(3deg)",
+                                      margin: "auto",
+                                      marginBottom: "11px",
+                                      border: "1px solid black",
+                                      borderBottom: "none",
+                                    }}
+                                  ></div>
+                                  <div
+                                    style={{
+                                      width: "30px",
+                                      height: "50px",
+                                      backgroundColor: `${
+                                        item.symbol === "b"
+                                          ? "#8f6459"
+                                          : "#f8dbb2"
+                                      }`,
+                                      transform:
+                                        "perspective(5px) rotateX(177deg)",
+                                      margin: "auto",
+                                      border: "1px solid black",
+                                      borderBottom: "none",
+                                    }}
+                                  ></div>
+                                </div>
+                              ) : (
+                                <div
+                                  key={index}
+                                  style={{
+                                    border: "1px solid black",
+                                    backgroundColor: `${
+                                      item.symbol === "b"
+                                        ? "#8f6459"
+                                        : "#f8dbb2"
+                                    }`,
+                                    color: `${
+                                      item.symbol === "b"
+                                        ? "#f8dbb2"
+                                        : "#8f6459"
+                                    }`,
+                                    height: `${
+                                      item.status === "sleeping"
+                                        ? "30px"
+                                        : "60px"
+                                    }`,
+                                    width: `${
+                                      item.status === "sleeping"
+                                        ? "100px"
+                                        : "30px"
+                                    }`,
+                                    margin: "auto",
+                                    marginTop: "2px",
+                                  }}
+                                ></div>
+                              )
+                            )}
+                        </div>
+                      </div>
+                    )}
                   </div>
-                </div>
+                ))
               )}
             </div>
-          ))
-        )}
+          </div>
+        </div>
       </div>
     );
   };
@@ -433,23 +484,169 @@ const App = () => {
     <div
       style={{
         display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
+        // flexDirection: "column",
+        // alignItems: "center",
         height: "100vh",
       }}
     >
       {/* Tampilkan informasi pemain dan giliran */}
-      <div style={{ marginBottom: "10px" }}>
-        <div>
-          Player 1: Stones - {player1.stones}, Capstones - {player1.capstones}
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          marginBottom: "10px",
+          backgroundColor: "gray",
+        }}
+      >
+        <div
+          style={{
+            flex: 1,
+            backgroundColor: `${
+              currentPlayer === 1 ? "transparent" : "#f0f0f0"
+            }`,
+            opacity: `${currentPlayer === 1 ? 1 : 0.7}`,
+            pointerEvents: `${currentPlayer !== 1 && "none"}`,
+            color: `${currentPlayer === 1 ? "black" : "#888"}`,
+            padding: "20px",
+          }}
+        >
+          Player 1:{" "}
+          <div
+            style={{ display: "flex", height: "40px", alignItems: "center" }}
+          >
+            <div style={{ display: "block" }}>
+              <div
+                style={{
+                  minWidth: "20px",
+                  width: "20px",
+                  minHeight: "20px",
+                  height: "20px",
+                  backgroundColor: "bisque",
+                  transform: "perspective(1.1px) rotateX(2deg)",
+                  margin: "auto",
+                  marginRight: "20px",
+                }}
+              ></div>
+            </div>
+            x {player1.stones}
+          </div>
+          <div
+            style={{ display: "flex", height: "40px", alignItems: "center" }}
+          >
+            <div style={{ display: "block" }}>
+              <div
+                style={{
+                  minWidth: "10px",
+                  width: "10px",
+                  minHeight: "6px",
+                  height: "6px",
+                  backgroundColor: "bisque",
+                  transform: "perspective(0.5px) rotateX(6deg)",
+                  marginRight: "20px",
+                }}
+              ></div>
+              <div
+                style={{
+                  minWidth: "10px",
+                  width: "10px",
+                  minHeight: "14px",
+                  height: "14px",
+                  backgroundColor: "bisque",
+                  transform: "perspective(1px) rotateX(176.6deg)",
+                  marginTop: "9px",
+                  marginRight: "20px",
+                }}
+              ></div>
+            </div>
+            x {player1.capstones}
+          </div>
         </div>
-        <div>
-          Player 2: Stones - {player2.stones}, Capstones - {player2.capstones}
+        <div
+          style={{
+            flex: 1,
+            backgroundColor: `${
+              currentPlayer === 2 ? "transparent" : "#f0f0f0"
+            }`,
+            opacity: `${currentPlayer === 2 ? 1 : 0.7}`,
+            pointerEvents: `${currentPlayer !== 2 && "none"}`,
+            color: `${currentPlayer === 2 ? "black" : "#888"}`,
+          }}
+        >
+          Player 2: Stones - {player2.stones},
+          <div style={{ display: "flex" }}>
+            <div
+              style={{
+                minWidth: "20px",
+                width: "20px",
+                minHeight: "20px",
+                height: "20px",
+                backgroundColor: "bisque",
+              }}
+            ></div>
+            x {player2.capstones}
+          </div>
         </div>
         <div>Current Turn: Player {currentPlayer}</div>
       </div>
+
       {/* Tampilkan board */}
       {renderBoard()}
+
+      {/* Tampilkan info stack */}
+      <div style={{ flex: 1, height: "100%", backgroundColor: "red" }}>
+        stack Information
+        {curGrid && curGrid.length}
+        {curGrid &&
+          curGrid.slice(0, 10).map((item, index) =>
+            item.status === "capstone" ? (
+              <div key={index}>
+                <div
+                  style={{
+                    width: "30.5px",
+                    height: "10px",
+                    backgroundColor: `${
+                      item.symbol === "b" ? "#8f6459" : "#f8dbb2"
+                    }`,
+                    transform: "perspective(1.1px) rotateX(3deg)",
+                    margin: "auto",
+                    marginBottom: "11px",
+                    border: "1px solid black",
+                    borderBottom: "none",
+                  }}
+                ></div>
+                <div
+                  style={{
+                    width: "30px",
+                    height: "50px",
+                    backgroundColor: `${
+                      item.symbol === "b" ? "#8f6459" : "#f8dbb2"
+                    }`,
+                    transform: "perspective(5px) rotateX(177deg)",
+                    margin: "auto",
+                    border: "1px solid black",
+                    borderBottom: "none",
+                  }}
+                ></div>
+              </div>
+            ) : (
+              <div
+                key={index}
+                style={{
+                  border: "1px solid black",
+                  backgroundColor: `${
+                    item.symbol === "b" ? "#8f6459" : "#f8dbb2"
+                  }`,
+                  color: `${item.symbol === "b" ? "#f8dbb2" : "#8f6459"}`,
+                  height: `${item.status === "sleeping" ? "30px" : "60px"}`,
+                  width: `${item.status === "sleeping" ? "100px" : "30px"}`,
+                  margin: "auto",
+                  marginTop: "2px",
+                }}
+              ></div>
+            )
+          )}
+      </div>
 
       {/* Modal untuk memilih status stone atau capstone */}
       {isModalOpen && (
@@ -615,9 +812,9 @@ const App = () => {
       )}
 
       {/* Tombol untuk mengonsole log isi board */}
-      <div>
+      {/* <div>
         <button onClick={logBoard}>Log Board</button>
-      </div>
+      </div> */}
     </div>
   );
 };

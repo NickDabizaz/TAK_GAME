@@ -6,13 +6,15 @@
   display: none; /* Awalnya sembunyi */
   position: absolute;
   top: 100%; /* Atur posisi popup di bawah elemen utama */
-  left: 0;
+  left: 50%;
   width: 100px;
   padding: 10px;
-  background-color: blue;
+  background-color: rgb(176, 176, 216);
   border: 1px solid black;
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transform: translate(-50%, 0);
+  z-index: 999;
 }
 
 .bidak:hover .popup {
