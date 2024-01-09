@@ -521,12 +521,12 @@ const AiMove = (
   action,
   status
 ) => {
-  console.log({ board });
-  console.log({ col });
-  console.log({ row });
-  console.log({ direction });
-  console.log({ action });
-  console.log({ status });
+  // console.log({ board });
+  // console.log({ col });
+  // console.log({ row });
+  // console.log({ direction });
+  // console.log({ action });
+  // console.log({ status });
 
   const newBoard = board.map((row) => row.slice());
   let randomCol = col;
@@ -574,7 +574,7 @@ const AiMove = (
     } else if (status === "capstone") {
       setPlayer2({ ...player2, capstones: player2.capstones - 1 });
     }
-  } else if (newBoard[row][col].length > 0) {
+  } else if (randomAction === 1 && newBoard[row][col].length > 0) {
     // Move
     const selectedCellStack = [...newBoard[randomRow][randomCol]];
     let targetRow = randomRow;
@@ -657,7 +657,7 @@ const AiMove = (
       newBoard[randomRow][randomCol] = [];
     }
   } else {
-    return AiMove(board, setBoard, player2, setPlayer2);
+    return AiMove(board, setBoard, player2, setPlayer2, col, row, direction, 'put', 'sleeping');
   }
 
   if (checkWin(newBoard, 2) === 1) {
@@ -1136,7 +1136,6 @@ const minimax = (
     }
     for (let i = 0; i < availableMove.length; i++) {
       alpha = Math.max(alpha, availableMove[i].sbe);
-      // console.log({ alpha, beta });
       if (beta <= alpha) {
         alert("PRUNE");
         break; // Prune the branch
