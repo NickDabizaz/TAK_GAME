@@ -1138,8 +1138,8 @@ const minimax = (
         bestMove = availableMove[i];
       }
     }
-    console.log({availableMove})
-    console.log(bestMove);
+    // console.log({availableMove})
+    // console.log(bestMove);
     return bestMove;
   } else {
     bestMove.sbe = Number.MAX_VALUE;
@@ -1481,8 +1481,8 @@ const minimax = (
         bestMove = availableMove[i];
       }
     }
-    console.log({availableMove})
-    console.log(bestMove);
+    // console.log({availableMove})
+    // console.log(bestMove);
     return bestMove;
   }
 };
@@ -1492,15 +1492,14 @@ const sbe = (board, currentPlayer, handCW, handCB) => {
   let playercap = 0;
   let aiflat = 0;
   let aicap = 0;
-  let capscore = 0;
+  let capscore = 0;  
   let roadArr = new Array(10)
     .fill(null)
-    .map(() => new Array(5).fill([]).map(() => []));
+    .map(() => new Array(6).fill([]).map(() => []));
   let influenceArr = new Array(5)
     .fill(null)
     .map(() => new Array(5).fill([]).map(() => []));
 
-  //Function influence
   const influence = (board) => {
     for (let i = 0; i < 5; i++) {
       for (let j = 0; j < 5; j++) {
@@ -1510,9 +1509,9 @@ const sbe = (board, currentPlayer, handCW, handCB) => {
 
     for (let i = 0; i < 5; i++) {
       for (let j = 0; j < 5; j++) {
-        let ipoint;
-        let thistype;
-        let neartype;
+        let ipoint = 0;
+        let thistype = "";
+        let neartype = "";
 
         if(board[i][j].length > 0){
           if (
@@ -1566,9 +1565,9 @@ const sbe = (board, currentPlayer, handCW, handCB) => {
 
         if(ipoint != 0){
           influenceArr[i][j] += ipoint;
-        }
-        else{
-          if(i > 0){
+          // console.log(`${influenceArr[i][j]} -- ${i},${j}`)
+
+          if(i != 0){
             if(board[i-1][j].length > 0){
               if (
                 board[i-1][j][board[i-1][j].length - 1].symbol === "w" &&
@@ -1735,7 +1734,7 @@ const sbe = (board, currentPlayer, handCW, handCB) => {
               influenceArr[i][j+1] += ipoint;
             }
           }
-        }
+        }               
       }
     }
   }  
@@ -1771,6 +1770,13 @@ const sbe = (board, currentPlayer, handCW, handCB) => {
   //Menghitung penguasaan papan dari jumlah stone
   let occupiedscore = 0;
   occupiedscore = (playerflat - aiflat) * 60 + (playercap - aicap) * 80
+
+  //Deklarasi Awal roadArr
+  for (let i = 0; i < 10; i++) {
+    for (let j = 0; j < 6; j++) {
+      roadArr[i][j] = 0;
+    }
+  }
 
   //Cek jumlah stone yang tersambung membentuk road di papan
   for (let i = 0; i < 5; i++) {
@@ -1827,7 +1833,7 @@ const sbe = (board, currentPlayer, handCW, handCB) => {
   let centerscore= 0;
   let wallscore = 0;
   let wallscoring = 0;
-  let roadscoring = [0, 35, 70, 140, 200, 250, 320, 400]
+  let roadscoring = [0, 35, 70, 140, 200, 250, 320, 400, 480]
 
   for (let i = 0; i < 10; i++) {
     let w = roadArr[i][0];
@@ -1884,19 +1890,36 @@ const sbe = (board, currentPlayer, handCW, handCB) => {
   influence(board);
   for (let i = 0; i < 5; i++) {
     for (let j = 0; j < 5; j++) {
-      let iscore = influenceArr[i][j];
+      // console.log(`${influenceArr[i][j]} -- ${i} -- ${j}`)
+      let iscore = influenceArr[i][j];      
       if(iscore > 0) {
         influencescore += Math.pow(iscore, 1.5);
       }
       else{
         iscore = iscore * -1;
         influencescore -= Math.pow(iscore, 1.5);
-      }
+      }      
     }
   }
 
-  let heuristic = 1.5 * occupiedscore + 1.8 * roadscore + 0.7 * influencescore + 1 * centerscore + capscore;
+  // console.log(playerflat);
+  // console.log(playercap);
+  // console.log(aiflat);
+  // console.log(aicap);
+  // console.log(capscore);
+  // console.log(occupiedscore);
+  // console.log(roadscore);
+  // console.log(centerscore);
+  // console.log(wallscore);
+  // console.log(wallscoring);
+  // console.log(influencescore);
+  
+  // if(isNaN(influencescore)){
+  //   influencescore = 0;
+  // }
 
+  let heuristic = 1.5 * occupiedscore + 1.8 * roadscore + 0.7 * influencescore + 1 * centerscore + capscore;
+  // console.log(heuristic);
 
   // //Ganjil = Player, Genap = AI
   // let playerScore = 0;
