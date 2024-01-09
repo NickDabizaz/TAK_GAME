@@ -1180,7 +1180,7 @@ const minimax = (
       //   alpha,SBE : bestMove.sbe
       // });
       // console.log("MATH MAX : ",Math.max(alpha, bestMove.sbe));
-      console.log({ alpha, beta });
+      // console.log({ alpha, beta });
       if (beta <= alpha) {
         alert("prune");
         break;
