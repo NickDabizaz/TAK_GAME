@@ -182,11 +182,11 @@ const App = () => {
   if (currentPlayer === 2 && player2.stones !== 21 && player1.stones !== 21) {
     let move = minimax(
       board,
-      2,
+      3,
       player1,
       player2,
       true,
-      null,
+      {},
       -Number.MAX_VALUE,
       Number.MAX_VALUE
     );
