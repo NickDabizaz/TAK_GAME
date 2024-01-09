@@ -187,8 +187,8 @@ const App = () => {
       player2,
       true,
       {},
-      -Number.MAX_VALUE,
-      Number.MAX_VALUE
+      -99999,
+      99999
     );
     console.log({ move });
     AiMove(

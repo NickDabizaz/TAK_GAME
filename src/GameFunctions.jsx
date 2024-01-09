@@ -348,10 +348,14 @@ const handlePut = (
     // Check Win
     if (checkWin(newBoard, currentPlayer) === 1) {
       alert("Player 1 Win");
-      window.location.reload();
+      setTimeout(() => {
+        window.location.reload();
+      }, 5000);
     } else if (checkWin(newBoard, currentPlayer) === 2) {
       alert("Player 2 Win");
-      window.location.reload();
+      setTimeout(() => {
+        window.location.reload();
+      }, 5000);
     }
 
     // Ganti giliran AI
@@ -657,16 +661,31 @@ const AiMove = (
       newBoard[randomRow][randomCol] = [];
     }
   } else {
-    return AiMove(board, setBoard, player2, setPlayer2, col, row, direction, 'put', 'sleeping');
+    return AiMove(
+      board,
+      setBoard,
+      player2,
+      setPlayer2,
+      col,
+      row,
+      direction,
+      "put",
+      "sleeping"
+    );
   }
 
   if (checkWin(newBoard, 2) === 1) {
     alert("Player 1 Win");
-    window.location.reload();
+    setTimeout(() => {
+      window.location.reload();
+    }, 5000);
   } else if (checkWin(newBoard, 2) === 2) {
     alert("Player 2 Win");
-    window.location.reload();
+    setTimeout(() => {
+      window.location.reload();
+    }, 5000);
   }
+
   setBoard(newBoard);
   console.log({ newBoard });
 };
@@ -779,8 +798,8 @@ const minimax = (
   player2,
   isMaximize,
   lastMove,
-  alpha = -Number.MAX_VALUE,
-  beta = Number.MAX_VALUE
+  alpha = -99999,
+  beta = 99999
 ) => {
   // if (depth === 1) {
   //   console.log("ini ply1");
