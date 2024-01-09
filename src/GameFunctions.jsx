@@ -788,8 +788,7 @@ const AiMove = (
 //   console.log({ availableMove: availableMove[maxSbeIndex] });
 //   return availableMove[maxSbeIndex];
 // };
-let totalMax = 1;
-let totalMin = 1;
+
 
 const minimax = (
   board,
@@ -798,18 +797,9 @@ const minimax = (
   player2,
   isMaximize,
   lastMove,
-  alpha = -99999,
-  beta = 99999
+  alpha, 
+  beta 
 ) => {
-  // if (depth === 1) {
-  //   console.log("ini ply1");
-  // } else {
-  //   console.log("ini ply2");
-  // }
-  // if (isMaximize) totalMax++;
-  // else if (!isMaximize) totalMin++;
-
-  // console.log({ totalMax, totalMin });
 
   const availableMove = [];
   let bestMove = {};
@@ -843,12 +833,21 @@ const minimax = (
                 status: k == 0 ? "sleeping" : k == 1 ? "standing" : "capstone",
               },
             ];
-            bestMove = minimax(tempBoard, depth - 1, player1, player2, false, {
-              status: tempBoard[i][j][tempBoard[i][j].length - 1].status,
-              action: "put",
-              row: i,
-              col: j,
-            });
+            bestMove = minimax(
+              tempBoard,
+              depth - 1,
+              player1,
+              player2,
+              false,
+              {
+                status: tempBoard[i][j][tempBoard[i][j].length - 1].status,
+                action: "put",
+                row: i,
+                col: j,
+              },
+              alpha,
+              beta
+            );
             availableMove.push(bestMove);
             tempBoard[i][j] = [];
           }
@@ -874,7 +873,9 @@ const minimax = (
                   row: i,
                   col: j,
                   direction: "up",
-                }
+                },
+                alpha,
+                beta
               );
               availableMove.push(bestMove);
               tempBoard[i - 1][j] = [];
@@ -925,7 +926,9 @@ const minimax = (
                   row: i,
                   col: j,
                   direction: "up",
-                }
+                },
+                alpha,
+                beta
               );
               availableMove.push(bestMove);
               tempBoard[i - 1][j] = [];
@@ -947,7 +950,9 @@ const minimax = (
                   row: i,
                   col: j,
                   direction: "down",
-                }
+                },
+                alpha,
+                beta
               );
               availableMove.push(bestMove);
               tempBoard[i + 1][j] = [];
@@ -998,7 +1003,9 @@ const minimax = (
                   row: i,
                   col: j,
                   direction: "down",
-                }
+                },
+                alpha,
+                beta
               );
               availableMove.push(bestMove);
               tempBoard[i + 1][j] = [];
@@ -1020,7 +1027,9 @@ const minimax = (
                   row: i,
                   col: j,
                   direction: "left",
-                }
+                },
+                alpha,
+                beta
               );
               availableMove.push(bestMove);
               tempBoard[i][j - 1] = [];
@@ -1071,7 +1080,9 @@ const minimax = (
                   row: i,
                   col: j,
                   direction: "left",
-                }
+                },
+                alpha,
+                beta
               );
               availableMove.push(bestMove);
               tempBoard[i][j - 1] = [];
@@ -1093,7 +1104,9 @@ const minimax = (
                   row: i,
                   col: j,
                   direction: "right",
-                }
+                },
+                alpha,
+                beta
               );
               availableMove.push(bestMove);
               tempBoard[i][j + 1] = [];
@@ -1144,7 +1157,9 @@ const minimax = (
                   row: i,
                   col: j,
                   direction: "right",
-                }
+                },
+                alpha,
+                beta
               );
               availableMove.push(bestMove);
               tempBoard[i][j + 1] = [];
@@ -1154,13 +1169,21 @@ const minimax = (
       }
     }
     for (let i = 0; i < availableMove.length; i++) {
-      alpha = Math.max(alpha, availableMove[i].sbe);
-      if (beta <= alpha) {
-        alert("PRUNE");
-        break; // Prune the branch
-      }
       if (bestMove.sbe < availableMove[i].sbe) {
         bestMove = availableMove[i];
+      }
+
+      // alpha = 99
+      // beta = 9999
+      alpha = Math.max(alpha, bestMove.sbe);
+      // console.log({
+      //   alpha,SBE : bestMove.sbe
+      // });
+      // console.log("MATH MAX : ",Math.max(alpha, bestMove.sbe));
+      console.log({ alpha, beta });
+      if (beta <= alpha) {
+        alert("prune");
+        break;
       }
     }
     // console.log("Ini Maximize");
@@ -1181,12 +1204,21 @@ const minimax = (
                 status: k == 0 ? "sleeping" : k == 1 ? "standing" : "capstone",
               },
             ];
-            bestMove = minimax(tempBoard, depth - 1, player1, player2, true, {
-              status: tempBoard[i][j][tempBoard[i][j].length - 1].status,
-              action: "put",
-              row: i,
-              col: j,
-            });
+            bestMove = minimax(
+              tempBoard,
+              depth - 1,
+              player1,
+              player2,
+              true,
+              {
+                status: tempBoard[i][j][tempBoard[i][j].length - 1].status,
+                action: "put",
+                row: i,
+                col: j,
+              },
+              alpha,
+              beta
+            );
             availableMove.push(bestMove);
             tempBoard[i][j] = [];
           }
@@ -1201,12 +1233,21 @@ const minimax = (
             const selectedCell = [...tempBoard[i][j]];
             if (tempBoard[i - 1][j].length === 0) {
               tempBoard[i - 1][j] = [selectedCell];
-              bestMove = minimax(tempBoard, depth - 1, player1, player2, true, {
-                action: "move",
-                row: i,
-                col: j,
-                direction: "up",
-              });
+              bestMove = minimax(
+                tempBoard,
+                depth - 1,
+                player1,
+                player2,
+                true,
+                {
+                  action: "move",
+                  row: i,
+                  col: j,
+                  direction: "up",
+                },
+                alpha,
+                beta
+              );
               availableMove.push(bestMove);
               tempBoard[i - 1][j] = [];
             } else {
@@ -1245,12 +1286,21 @@ const minimax = (
               }
               tempBoard[i - 1][j] = [...tempBoard[i - 1][j], ...selectedCell];
               tempBoard[i][j] = [];
-              bestMove = minimax(tempBoard, depth - 1, player1, player2, true, {
-                action: "move",
-                row: i,
-                col: j,
-                direction: "up",
-              });
+              bestMove = minimax(
+                tempBoard,
+                depth - 1,
+                player1,
+                player2,
+                true,
+                {
+                  action: "move",
+                  row: i,
+                  col: j,
+                  direction: "up",
+                },
+                alpha,
+                beta
+              );
               availableMove.push(bestMove);
               tempBoard[i - 1][j] = [];
             }
@@ -1260,12 +1310,21 @@ const minimax = (
             const selectedCell = [...tempBoard[i][j]];
             if (tempBoard[i + 1][j].length === 0) {
               tempBoard[i + 1][j] = [selectedCell];
-              bestMove = minimax(tempBoard, depth - 1, player1, player2, true, {
-                action: "move",
-                row: i,
-                col: j,
-                direction: "down",
-              });
+              bestMove = minimax(
+                tempBoard,
+                depth - 1,
+                player1,
+                player2,
+                true,
+                {
+                  action: "move",
+                  row: i,
+                  col: j,
+                  direction: "down",
+                },
+                alpha,
+                beta
+              );
               availableMove.push(bestMove);
               tempBoard[i + 1][j] = [];
             } else {
@@ -1304,12 +1363,21 @@ const minimax = (
               }
               tempBoard[i + 1][j] = [...tempBoard[i + 1][j], ...selectedCell];
               tempBoard[i][j] = [];
-              bestMove = minimax(tempBoard, depth - 1, player1, player2, true, {
-                action: "move",
-                row: i,
-                col: j,
-                direction: "down",
-              });
+              bestMove = minimax(
+                tempBoard,
+                depth - 1,
+                player1,
+                player2,
+                true,
+                {
+                  action: "move",
+                  row: i,
+                  col: j,
+                  direction: "down",
+                },
+                alpha,
+                beta
+              );
               availableMove.push(bestMove);
               tempBoard[i + 1][j] = [];
             }
@@ -1319,12 +1387,21 @@ const minimax = (
             const selectedCell = [...tempBoard[i][j]];
             if (tempBoard[i][j - 1].length === 0) {
               tempBoard[i][j - 1] = [selectedCell];
-              bestMove = minimax(tempBoard, depth - 1, player1, player2, true, {
-                action: "move",
-                row: i,
-                col: j,
-                direction: "left",
-              });
+              bestMove = minimax(
+                tempBoard,
+                depth - 1,
+                player1,
+                player2,
+                true,
+                {
+                  action: "move",
+                  row: i,
+                  col: j,
+                  direction: "left",
+                },
+                alpha,
+                beta
+              );
               availableMove.push(bestMove);
               tempBoard[i][j - 1] = [];
             } else {
@@ -1363,12 +1440,21 @@ const minimax = (
               }
               tempBoard[i][j - 1] = [...tempBoard[i][j - 1], ...selectedCell];
               tempBoard[i][j] = [];
-              bestMove = minimax(tempBoard, depth - 1, player1, player2, true, {
-                action: "move",
-                row: i,
-                col: j,
-                direction: "left",
-              });
+              bestMove = minimax(
+                tempBoard,
+                depth - 1,
+                player1,
+                player2,
+                true,
+                {
+                  action: "move",
+                  row: i,
+                  col: j,
+                  direction: "left",
+                },
+                alpha,
+                beta
+              );
               availableMove.push(bestMove);
               tempBoard[i][j - 1] = [];
             }
@@ -1378,12 +1464,21 @@ const minimax = (
             const selectedCell = [...tempBoard[i][j]];
             if (tempBoard[i][j + 1].length === 0) {
               tempBoard[i][j + 1] = [selectedCell];
-              bestMove = minimax(tempBoard, depth - 1, player1, player2, true, {
-                action: "move",
-                row: i,
-                col: j,
-                direction: "right",
-              });
+              bestMove = minimax(
+                tempBoard,
+                depth - 1,
+                player1,
+                player2,
+                true,
+                {
+                  action: "move",
+                  row: i,
+                  col: j,
+                  direction: "right",
+                },
+                alpha,
+                beta
+              );
               availableMove.push(bestMove);
               tempBoard[i][j + 1] = [];
             } else {
@@ -1422,12 +1517,21 @@ const minimax = (
               }
               tempBoard[i][j + 1] = [...tempBoard[i][j + 1], ...selectedCell];
               tempBoard[i][j] = [];
-              bestMove = minimax(tempBoard, depth - 1, player1, player2, true, {
-                action: "move",
-                row: i,
-                col: j,
-                direction: "right",
-              });
+              bestMove = minimax(
+                tempBoard,
+                depth - 1,
+                player1,
+                player2,
+                true,
+                {
+                  action: "move",
+                  row: i,
+                  col: j,
+                  direction: "right",
+                },
+                alpha,
+                beta
+              );
               availableMove.push(bestMove);
               tempBoard[i][j + 1] = [];
             }
@@ -1436,15 +1540,19 @@ const minimax = (
       }
     }
     for (let i = 0; i < availableMove.length; i++) {
-      beta = Math.min(beta, availableMove[i].sbe);
-      // console.log({ alpha, beta });
-
-      if (beta <= alpha) {
-        alert("PRUNE");
-        break; // Prune the branch
-      }
       if (bestMove.sbe > availableMove[i].sbe) {
         bestMove = availableMove[i];
+      }
+
+      beta = Math.min(beta, bestMove.sbe);
+      // console.log({
+      //   beta,SBE : bestMove.sbe
+      // });
+      // console.log("MATH MIN : ",Math.min(beta, bestMove.sbe));
+      console.log({ alpha, beta });
+      if (beta <= alpha) {
+        alert("prune");
+        break;
       }
     }
     // console.log("Ini Minimize");
