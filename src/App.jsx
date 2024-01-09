@@ -1,5 +1,5 @@
 // App.jsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   openModal,
   closeModal,
@@ -14,6 +14,7 @@ import {
 } from "./GameFunctions";
 
 import "../index.css";
+import styled, { keyframes } from "styled-components";
 
 const App = () => {
   // State untuk board
@@ -22,6 +23,8 @@ const App = () => {
       .fill([])
       .map(() => Array(5).fill([]))
   );
+
+  const [route, setRoute] = useState("menu");
 
   // State untuk pemain
   const [currentPlayer, setCurrentPlayer] = useState(1);
@@ -39,10 +42,35 @@ const App = () => {
   const [selectedCellStack, setSelectedCellStack] = useState([]);
   const [movestatus, setMoveStatus] = useState("");
   const [curGrid, setCurGrid] = useState(null);
+  const [gameover, setGameover] = useState(false);
+
+  useEffect(() => {
+    alert("asd");
+  }, [gameover]);
 
   // State untuk modal tindakan
   const [isActionModalOpen, setActionModalOpen] = useState(false);
   const [actionModalContent, setActionModalContent] = useState(null);
+
+  const zoomInOut = keyframes`
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+`;
+
+  const AnimatedText = styled.div`
+    font-size: 24px;
+    display: inline-block;
+    animation: ${zoomInOut} 4s infinite;
+    text-align: center;
+    margin: auto;
+  `;
 
   // Fungsi handler untuk membuka modal
   const openModalHandler = (row, col) => {
@@ -179,17 +207,9 @@ const App = () => {
       player1,
       player2
     );
+
   if (currentPlayer === 2 && player2.stones !== 21 && player1.stones !== 21) {
-    let move = minimax(
-      board,
-      3,
-      player1,
-      player2,
-      true,
-      {},
-      -99999,
-      99999
-    );
+    let move = minimax(board, 3, player1, player2, true, {}, -99999, 99999);
     console.log({ move });
     AiMove(
       board,
@@ -246,7 +266,7 @@ const App = () => {
       <div
         style={{
           display: "flex",
-          flex: 1,
+          flex: 4,
           alignItems: "center",
           justifyContent: "center",
         }}
@@ -255,7 +275,7 @@ const App = () => {
           style={{
             height: "fit-content",
             width: "fit-content",
-            padding: "20px",
+            padding: "40px",
             border: "1px solid black",
             backgroundColor: "#8f6459",
           }}
@@ -263,7 +283,7 @@ const App = () => {
           <div
             style={{
               width: "fit-content",
-              padding: "10px",
+              padding: "20px",
               border: "1px solid black",
               backgroundColor: "#f8dbb2",
             }}
@@ -271,10 +291,11 @@ const App = () => {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(5, 70px)",
+                gridTemplateColumns: "repeat(5, 100px)",
                 gap: "10px",
                 cursor: "pointer", // Set cursor default menjadi pointer
               }}
+              disabled={gameover}
             >
               {board.map((row, rowIndex) =>
                 row.map((cell, colIndex) => (
@@ -286,8 +307,8 @@ const App = () => {
                         : openModalHandler(rowIndex, colIndex)
                     }
                     style={{
-                      width: "70px",
-                      height: "70px",
+                      width: "100px",
+                      height: "100px",
                       border: "2px solid black",
                       display: "flex",
                       justifyContent: "center",
@@ -303,14 +324,15 @@ const App = () => {
                           : "pointer",
                       position: "relative",
                       backgroundColor: "white",
+                      pointerEvents: `${gameover && "none"}`,
                     }}
                   >
                     {cell.length > 0 && (
                       <div
                         className="bidak"
                         style={{
-                          width: "60px",
-                          height: "60px",
+                          width: "70px",
+                          height: "70px",
                           display: "flex",
                           justifyContent: "center",
                           alignItems: "center",
@@ -338,15 +360,15 @@ const App = () => {
                             width: `${
                               cell[cell.length - 1].symbol === "CB" ||
                               cell[cell.length - 1].symbol === "CW"
-                                ? "30px"
-                                : "60px"
+                                ? "35px"
+                                : "70px"
                             }`,
                             height: `${
                               cell[cell.length - 1].status === "sleeping"
-                                ? "60px"
+                                ? "70px"
                                 : cell[cell.length - 1].status === "standing"
-                                ? "20px"
-                                : "30px"
+                                ? "25px"
+                                : "35px"
                             }`,
                             backgroundColor: `${
                               cell[cell.length - 1].symbol === "b" ||
@@ -377,7 +399,7 @@ const App = () => {
                         >
                           {/* {cell[cell.length - 1].symbol} */}
                         </div>
-
+                        {/* 
                         <div className="popup">
                           {curGrid && curGrid.length}
                           {curGrid &&
@@ -389,7 +411,9 @@ const App = () => {
                                       width: "30.5px",
                                       height: "10px",
                                       backgroundColor: `${
-                                        item.symbol === "b"
+                                        cell[cell.length - 1].symbol === "b" ||
+                                        cell[cell.length - 1].symbol === "B" ||
+                                        cell[cell.length - 1].symbol === "CB"
                                           ? "#8f6459"
                                           : "#f8dbb2"
                                       }`,
@@ -406,7 +430,9 @@ const App = () => {
                                       width: "30px",
                                       height: "50px",
                                       backgroundColor: `${
-                                        item.symbol === "b"
+                                        cell[cell.length - 1].symbol === "b" ||
+                                        cell[cell.length - 1].symbol === "B" ||
+                                        cell[cell.length - 1].symbol === "CB"
                                           ? "#8f6459"
                                           : "#f8dbb2"
                                       }`,
@@ -416,7 +442,9 @@ const App = () => {
                                       border: "1px solid black",
                                       borderBottom: "none",
                                     }}
-                                  ></div>
+                                  >
+                                    {cell[cell.length - 1].symbol}
+                                  </div>
                                 </div>
                               ) : (
                                 <div
@@ -424,7 +452,9 @@ const App = () => {
                                   style={{
                                     border: "1px solid black",
                                     backgroundColor: `${
-                                      item.symbol === "b"
+                                      cell[cell.length - 1].symbol === "b" ||
+                                      cell[cell.length - 1].symbol === "B" ||
+                                      cell[cell.length - 1].symbol === "CB"
                                         ? "#8f6459"
                                         : "#f8dbb2"
                                     }`,
@@ -446,14 +476,28 @@ const App = () => {
                                     margin: "auto",
                                     marginTop: "2px",
                                   }}
-                                ></div>
+                                >
+                                  {cell[cell.length - 1].symbol}
+                                </div>
                               )
                             )}
-                        </div>
+                        </div> */}
                       </div>
                     )}
                   </div>
                 ))
+              )}
+              {gameover && (
+                <div
+                  style={{
+                    position: "absolute",
+                    height: "50px",
+                    width: "50px",
+                    backgroundColor: "red",
+                  }}
+                >
+                  ASD
+                </div>
               )}
             </div>
           </div>
@@ -481,298 +525,310 @@ const App = () => {
 
   // Tampilkan board
   return (
-    <div
-      style={{
-        display: "flex",
-        // flexDirection: "column",
-        // alignItems: "center",
-        height: "100vh",
-      }}
-    >
-      {/* Tampilkan informasi pemain dan giliran */}
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          marginBottom: "10px",
-          backgroundColor: "gray",
-        }}
-      >
+    <div style={{ backgroundColor: "#6ca494", height: "98vh" }}>
+      {route === "menu" && (
         <div
           style={{
-            flex: 1,
-            backgroundColor: `${
-              currentPlayer === 1 ? "transparent" : "#f0f0f0"
-            }`,
-            opacity: `${currentPlayer === 1 ? 1 : 0.7}`,
-            pointerEvents: `${currentPlayer !== 1 && "none"}`,
-            color: `${currentPlayer === 1 ? "black" : "#888"}`,
-            padding: "20px",
+            display: "flex",
+            height: "80vh",
+            flexDirection: "column",
+            fontSize: "1.2rem",
           }}
+          onClick={() => setRoute("option")}
         >
-          Player 1:{" "}
-          <div
-            style={{ display: "flex", height: "40px", alignItems: "center" }}
-          >
-            <div style={{ display: "block" }}>
+          <div style={{ flex: 1 }}></div>
+          <AnimatedText>
+            <div style={{ width: "fit-content" }}>
               <div
                 style={{
-                  minWidth: "20px",
-                  width: "20px",
-                  minHeight: "20px",
-                  height: "20px",
-                  backgroundColor: "bisque",
-                  transform: "perspective(1.1px) rotateX(2deg)",
-                  margin: "auto",
-                  marginRight: "20px",
+                  fontSize: "3rem",
+                  width: "fit-content",
+                  textAlign: "start",
+                  padding: "5px",
                 }}
-              ></div>
-            </div>
-            x {player1.stones}
-          </div>
-          <div
-            style={{ display: "flex", height: "40px", alignItems: "center" }}
-          >
-            <div style={{ display: "block" }}>
-              <div
-                style={{
-                  minWidth: "10px",
-                  width: "10px",
-                  minHeight: "6px",
-                  height: "6px",
-                  backgroundColor: "bisque",
-                  transform: "perspective(0.5px) rotateX(6deg)",
-                  marginRight: "20px",
-                }}
-              ></div>
-              <div
-                style={{
-                  minWidth: "10px",
-                  width: "10px",
-                  minHeight: "14px",
-                  height: "14px",
-                  backgroundColor: "bisque",
-                  transform: "perspective(1px) rotateX(176.6deg)",
-                  marginTop: "9px",
-                  marginRight: "20px",
-                }}
-              ></div>
-            </div>
-            x {player1.capstones}
-          </div>
-        </div>
-        <div
-          style={{
-            flex: 1,
-            backgroundColor: `${
-              currentPlayer === 2 ? "transparent" : "#f0f0f0"
-            }`,
-            opacity: `${currentPlayer === 2 ? 1 : 0.7}`,
-            pointerEvents: `${currentPlayer !== 2 && "none"}`,
-            color: `${currentPlayer === 2 ? "black" : "#888"}`,
-            padding: "20px",
-          }}
-        >
-          Player 2
-          <div
-            style={{ display: "flex", height: "40px", alignItems: "center" }}
-          >
-            <div style={{ display: "block" }}>
-              <div
-                style={{
-                  minWidth: "20px",
-                  width: "20px",
-                  minHeight: "20px",
-                  height: "20px",
-                  backgroundColor: "bisque",
-                  transform: "perspective(1.1px) rotateX(2deg)",
-                  margin: "auto",
-                  marginRight: "20px",
-                }}
-              ></div>
-            </div>
-            x {player2.stones}
-          </div>
-          <div
-            style={{ display: "flex", height: "40px", alignItems: "center" }}
-          >
-            <div style={{ display: "block" }}>
-              <div
-                style={{
-                  minWidth: "10px",
-                  width: "10px",
-                  minHeight: "6px",
-                  height: "6px",
-                  backgroundColor: "bisque",
-                  transform: "perspective(0.5px) rotateX(6deg)",
-                  marginRight: "20px",
-                }}
-              ></div>
-              <div
-                style={{
-                  minWidth: "10px",
-                  width: "10px",
-                  minHeight: "14px",
-                  height: "14px",
-                  backgroundColor: "bisque",
-                  transform: "perspective(1px) rotateX(176.6deg)",
-                  marginTop: "9px",
-                  marginRight: "20px",
-                }}
-              ></div>
-            </div>
-            x {player2.capstones}
-          </div>
-        </div>
-        {/* <div>Current Turn: Player {currentPlayer}</div> */}
-      </div>
-
-      {/* Tampilkan board */}
-      {renderBoard()}
-
-      {/* Tampilkan info stack */}
-      <div style={{ flex: 1, height: "100%" }}>
-        <h1 style={{ textAlign: "center" }}> Stack Information</h1>
-        {curGrid && (
-          <div style={{ textAlign: "center" }}>
-            Stack count: {curGrid.length}
-          </div>
-        )}
-        {curGrid &&
-          curGrid.slice(0, 10).map((item, index) =>
-            item.status === "capstone" ? (
-              <div key={index}>
-                <div
-                  style={{
-                    width: "30.5px",
-                    height: "10px",
-                    backgroundColor: `${
-                      item.symbol === "b" ? "#8f6459" : "#f8dbb2"
-                    }`,
-                    transform: "perspective(1.1px) rotateX(3deg)",
-                    margin: "auto",
-                    marginBottom: "11px",
-                    border: "1px solid black",
-                    borderBottom: "none",
-                  }}
-                ></div>
-                <div
-                  style={{
-                    width: "30px",
-                    height: "50px",
-                    backgroundColor: `${
-                      item.symbol === "b" ? "#8f6459" : "#f8dbb2"
-                    }`,
-                    transform: "perspective(5px) rotateX(177deg)",
-                    margin: "auto",
-                    border: "1px solid black",
-                    borderBottom: "none",
-                  }}
-                ></div>
-              </div>
-            ) : (
-              <div
-                key={index}
-                style={{
-                  border: "1px solid black",
-                  backgroundColor: `${
-                    item.symbol === "b" ? "#8f6459" : "#f8dbb2"
-                  }`,
-                  color: `${item.symbol === "b" ? "#f8dbb2" : "#8f6459"}`,
-                  height: `${item.status === "sleeping" ? "30px" : "60px"}`,
-                  width: `${item.status === "sleeping" ? "100px" : "30px"}`,
-                  margin: "auto",
-                  marginTop: "2px",
-                }}
-              ></div>
-            )
-          )}
-      </div>
-
-      {/* Modal untuk memilih status stone atau capstone */}
-      {isModalOpen && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-          }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              background: "#fff",
-              padding: "20px",
-              borderRadius: "8px",
-            }}
-          >
-            <h2>Select Stone or Capstone Status</h2>
-            <button
-              onClick={() =>
-                selectStatusHandler("sleeping", selectedRow, selectedCol)
-              }
-              style={{ marginRight: "10px" }}
-            >
-              Sleeping Stone
-            </button>
-            <button
-              onClick={() =>
-                selectStatusHandler("standing", selectedRow, selectedCol)
-              }
-              style={{ marginRight: "10px" }}
-            >
-              Standing Stone
-            </button>
-            {isCapstoneButtonActive() && (
-              <button
-                onClick={() =>
-                  selectStatusHandler("capstone", selectedRow, selectedCol)
-                }
               >
-                Capstone
-              </button>
-            )}
-            <button onClick={() => setModalOpen(false)}>Close</button>
+                Tak.
+              </div>{" "}
+              <div
+                style={{
+                  fontSize: "1.5rem",
+                  marginTop: "-13px",
+                  width: "100%",
+                  textAlign: "start",
+                  padding: "5px",
+                }}
+              >
+                A Beautiful Game
+              </div>
+            </div>
+          </AnimatedText>
+          <div style={{ fontSize: "1rem", margin: "auto", marginTop: "40px" }}>
+            Tap anywhere to start.
           </div>
+          <div style={{ flex: 1 }}></div>
         </div>
       )}
 
-      {/* Modal untuk tindakan stack */}
-      {isActionModalOpen && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-          }}
-        >
+      {route === "option" && (
+        <>
+          <div
+            style={{ padding: "20px", cursor: "pointer" }}
+            onClick={() => setRoute("menu")}
+          >
+            {"< Back"}
+          </div>
           <div
             style={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              background: "#fff",
-              padding: "20px",
-              borderRadius: "8px",
               display: "flex",
               flexDirection: "column",
-              alignItems: "center",
+              textAlign: "center",
+              height: "80vh",
+              fontSize: "2rem",
             }}
           >
-            <h2>Stack Information</h2>
-            <div>
-              {[...actionModalContent].reverse().map((item, index) =>
+            <div style={{ flex: 1 }}></div>
+            <div>Choose Difficulty</div>
+            <button
+              style={{
+                width: "100px",
+                margin: "auto",
+                fontSize: "1.2rem",
+                marginBottom: "10px",
+              }}
+              onClick={() => setRoute("game")}
+            >
+              Easy
+            </button>
+            <button
+              style={{
+                width: "100px",
+                margin: "auto",
+                fontSize: "1.2rem",
+                marginBottom: "10px",
+              }}
+              disabled
+            >
+              Normal
+            </button>
+            <button
+              style={{
+                width: "100px",
+                margin: "auto",
+                fontSize: "1.2rem",
+              }}
+              disabled
+            >
+              Hard
+            </button>
+            <div style={{ flex: 1 }}></div>
+          </div>
+        </>
+      )}
+
+      {route === "game" && (
+        <div
+          style={{
+            display: "flex",
+            // flexDirection: "column",
+            // alignItems: "center",
+            height: "98vh",
+          }}
+        >
+          {/* Tampilkan informasi pemain dan giliran */}
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              backgroundColor: "gray",
+              padding: "0",
+            }}
+          >
+            <div
+              style={{
+                flex: 1,
+                backgroundColor: "#F8DBB2",
+                opacity: `1`,
+                color: `black`,
+                padding: "20px",
+                fontSize: "1.5rem",
+              }}
+            >
+              Player 1:{" "}
+              <div
+                style={{
+                  display: "flex",
+                  height: "80px",
+                  alignItems: "center",
+                  fontSize: "1.5rem",
+                }}
+              >
+                <div style={{ display: "block" }}>
+                  <div
+                    style={{
+                      minWidth: "40px",
+                      width: "40px",
+                      minHeight: "40px",
+                      textAlign: "center",
+                      height: "40px",
+                      backgroundColor: "bisque",
+                      transform: "perspective(2.2px) rotateX(2deg)",
+                      margin: "auto",
+                      marginRight: "20px",
+                      border: "1px solid black",
+                    }}
+                  ></div>
+                </div>
+                x {player1.stones}
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  height: "80px",
+                  alignItems: "center",
+                  fontSize: "1.5rem",
+                }}
+              >
+                <div
+                  style={{
+                    display: "block",
+                    width: "40px",
+                    marginLeft: "10px",
+                    marginRight: "10px",
+                  }}
+                >
+                  <div
+                    style={{
+                      minWidth: "20px",
+                      width: "20px",
+                      minHeight: "12px",
+                      height: "12px",
+                      backgroundColor: "bisque",
+                      transform: "perspective(2.4px) rotateX(6deg)",
+                      marginRight: "20px",
+                      border: "1px solid black",
+                      borderBottom: "0px",
+                    }}
+                  ></div>
+                  <div
+                    style={{
+                      minWidth: "20px",
+                      width: "20px",
+                      minHeight: "28px",
+                      height: "28px",
+                      backgroundColor: "bisque",
+                      transform: "perspective(3px) rotateX(176.6deg)",
+                      marginTop: "6px",
+                      marginRight: "20px",
+                      border: "1px solid black",
+                      borderBottom: "0px",
+                    }}
+                  ></div>
+                </div>
+                x {player1.capstones}
+              </div>
+            </div>
+
+            <div
+              style={{
+                flex: 1,
+                backgroundColor: "#8f6459",
+                opacity: `1`,
+                color: `black`,
+                padding: "20px",
+                fontSize: "1.5rem",
+              }}
+            >
+              Player 2:{" "}
+              <div
+                style={{
+                  display: "flex",
+                  height: "80px",
+                  alignItems: "center",
+                  fontSize: "1.5rem",
+                }}
+              >
+                <div style={{ display: "block" }}>
+                  <div
+                    style={{
+                      minWidth: "40px",
+                      width: "40px",
+                      minHeight: "40px",
+                      textAlign: "center",
+                      height: "40px",
+                      backgroundColor: "bisque",
+                      transform: "perspective(2.2px) rotateX(2deg)",
+                      margin: "auto",
+                      marginRight: "20px",
+                      border: "1px solid black",
+                    }}
+                  ></div>
+                </div>
+                x {player2.stones}
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  height: "80px",
+                  alignItems: "center",
+                  fontSize: "1.5rem",
+                }}
+              >
+                <div
+                  style={{
+                    display: "block",
+                    width: "40px",
+                    marginLeft: "10px",
+                    marginRight: "10px",
+                  }}
+                >
+                  <div
+                    style={{
+                      minWidth: "20px",
+                      width: "20px",
+                      minHeight: "12px",
+                      height: "12px",
+                      backgroundColor: "bisque",
+                      transform: "perspective(2.3px) rotateX(6deg)",
+                      marginRight: "20px",
+                      border: "1px solid black",
+                      borderBottom: "0px",
+                    }}
+                  ></div>
+                  <div
+                    style={{
+                      minWidth: "20px",
+                      width: "20px",
+                      minHeight: "28px",
+                      height: "28px",
+                      backgroundColor: "bisque",
+                      transform: "perspective(3px) rotateX(176.6deg)",
+                      marginTop: "6px",
+                      marginRight: "20px",
+                      border: "1px solid black",
+                      borderBottom: "0px",
+                    }}
+                  ></div>
+                </div>
+                x {player2.capstones}
+              </div>
+            </div>
+            {/* <div>Current Turn: Player {currentPlayer}</div> */}
+          </div>
+
+          {/* Tampilkan board */}
+          {renderBoard()}
+
+          {/* Tampilkan info stack */}
+          <div style={{ flex: 1, height: "100%" }}>
+            <h1 style={{ textAlign: "center" }}> Stack Information</h1>
+            {curGrid && (
+              <div style={{ textAlign: "center" }}>
+                Stack count: {curGrid.length}
+              </div>
+            )}
+            {curGrid &&
+              curGrid.slice(0, 10).map((item, index) =>
                 item.status === "capstone" ? (
                   <div key={index}>
                     <div
@@ -817,46 +873,190 @@ const App = () => {
                       margin: "auto",
                       marginTop: "2px",
                     }}
-                  >
-                    {/* {item.symbol} - {item.status} */}
-                  </div>
+                  ></div>
                 )
               )}
-            </div>
-            <div
-              style={{ display: "flex", marginTop: "2px", marginBottom: "2px" }}
-            >
-              <span style={{ height: "20px", marginRight: "3px" }}>
-                How Many Stack?
-              </span>
-              <input
-                type="number"
-                value={movecount}
-                max={5}
-                min={1}
-                onChange={(e) => {
-                  setMoveCount(e.target.value);
-                }}
-                style={{ width: "20%", height: "20px" }}
-              />
-            </div>
-            <div style={{ marginTop: "10px" }}>
-              <button
-                onClick={() => handleActionHandler(movecount)}
-                style={{ marginRight: "5px" }}
-              >
-                Ok
-              </button>
-            </div>
-            <button onClick={closeActionModalHandler}>Close</button>
           </div>
-        </div>
-      )}
 
-      {/* Tombol untuk mengonsole log isi board */}
-      {/* <div>
+          {/* Modal untuk memilih status stone atau capstone */}
+          {isModalOpen && (
+            <div
+              style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+              }}
+            >
+              <div
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  background: "#fff",
+                  padding: "20px",
+                  borderRadius: "8px",
+                }}
+              >
+                <h2>Select Stone or Capstone Status</h2>
+                <button
+                  onClick={() =>
+                    selectStatusHandler("sleeping", selectedRow, selectedCol)
+                  }
+                  style={{ marginRight: "10px" }}
+                >
+                  Sleeping Stone
+                </button>
+                <button
+                  onClick={() =>
+                    selectStatusHandler("standing", selectedRow, selectedCol)
+                  }
+                  style={{ marginRight: "10px" }}
+                >
+                  Standing Stone
+                </button>
+                {isCapstoneButtonActive() && (
+                  <button
+                    onClick={() =>
+                      selectStatusHandler("capstone", selectedRow, selectedCol)
+                    }
+                  >
+                    Capstone
+                  </button>
+                )}
+                <button onClick={() => setModalOpen(false)}>Close</button>
+              </div>
+            </div>
+          )}
+
+          {/* Modal untuk tindakan stack */}
+          {isActionModalOpen && (
+            <div
+              style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+              }}
+            >
+              <div
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  background: "#fff",
+                  padding: "20px",
+                  borderRadius: "8px",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <h2>Stack Information</h2>
+                <div>
+                  {[...actionModalContent].reverse().map((item, index) =>
+                    item.status === "capstone" ? (
+                      <div key={index}>
+                        <div
+                          style={{
+                            width: "30.5px",
+                            height: "10px",
+                            backgroundColor: `${
+                              item.symbol === "b" ? "#8f6459" : "#f8dbb2"
+                            }`,
+                            transform: "perspective(1.1px) rotateX(3deg)",
+                            margin: "auto",
+                            marginBottom: "11px",
+                            border: "1px solid black",
+                            borderBottom: "none",
+                          }}
+                        ></div>
+                        <div
+                          style={{
+                            width: "30px",
+                            height: "50px",
+                            backgroundColor: `${
+                              item.symbol === "b" ? "#8f6459" : "#f8dbb2"
+                            }`,
+                            transform: "perspective(5px) rotateX(177deg)",
+                            margin: "auto",
+                            border: "1px solid black",
+                            borderBottom: "none",
+                          }}
+                        ></div>
+                      </div>
+                    ) : (
+                      <div
+                        key={index}
+                        style={{
+                          border: "1px solid black",
+                          backgroundColor: `${
+                            item.symbol === "b" ? "#8f6459" : "#f8dbb2"
+                          }`,
+                          color: `${
+                            item.symbol === "b" ? "#f8dbb2" : "#8f6459"
+                          }`,
+                          height: `${
+                            item.status === "sleeping" ? "30px" : "60px"
+                          }`,
+                          width: `${
+                            item.status === "sleeping" ? "100px" : "30px"
+                          }`,
+                          margin: "auto",
+                          marginTop: "2px",
+                        }}
+                      >
+                        {/* {item.symbol} - {item.status} */}
+                      </div>
+                    )
+                  )}
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    marginTop: "2px",
+                    marginBottom: "2px",
+                  }}
+                >
+                  <span style={{ height: "20px", marginRight: "3px" }}>
+                    How Many Stack?
+                  </span>
+                  <input
+                    type="number"
+                    value={movecount}
+                    max={5}
+                    min={1}
+                    onChange={(e) => {
+                      setMoveCount(e.target.value);
+                    }}
+                    style={{ width: "20%", height: "20px" }}
+                  />
+                </div>
+                <div style={{ marginTop: "10px" }}>
+                  <button
+                    onClick={() => handleActionHandler(movecount)}
+                    style={{ marginRight: "5px" }}
+                  >
+                    Ok
+                  </button>
+                </div>
+                <button onClick={closeActionModalHandler}>Close</button>
+              </div>
+            </div>
+          )}
+
+          {/* Tombol untuk mengonsole log isi board */}
+          {/* <div>
         <button onClick={logBoard}>Log Board</button>
       </div> */}
+        </div>
+      )}
     </div>
   );
 };
