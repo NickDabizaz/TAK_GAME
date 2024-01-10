@@ -348,10 +348,14 @@ const handlePut = (
     // Check Win
     if (checkWin(newBoard, currentPlayer) === 1) {
       alert("Player 1 Win");
-      window.location.reload();
+      setTimeout(() => {
+        window.location.reload();
+      }, 5000);
     } else if (checkWin(newBoard, currentPlayer) === 2) {
       alert("Player 2 Win");
-      window.location.reload();
+      setTimeout(() => {
+        window.location.reload();
+      }, 5000);
     }
 
     // Ganti giliran AI
@@ -521,12 +525,12 @@ const AiMove = (
   action,
   status
 ) => {
-  console.log({ board });
-  console.log({ col });
-  console.log({ row });
-  console.log({ direction });
-  console.log({ action });
-  console.log({ status });
+  // console.log({ board });
+  // console.log({ col });
+  // console.log({ row });
+  // console.log({ direction });
+  // console.log({ action });
+  // console.log({ status });
 
   const newBoard = board.map((row) => row.slice());
   let randomCol = col;
@@ -574,7 +578,7 @@ const AiMove = (
     } else if (status === "capstone") {
       setPlayer2({ ...player2, capstones: player2.capstones - 1 });
     }
-  } else if (newBoard[row][col].length > 0) {
+  } else if (randomAction === 1 && newBoard[row][col].length > 0) {
     // Move
     const selectedCellStack = [...newBoard[randomRow][randomCol]];
     let targetRow = randomRow;
@@ -657,16 +661,31 @@ const AiMove = (
       newBoard[randomRow][randomCol] = [];
     }
   } else {
-    return AiMove(board, setBoard, player2, setPlayer2);
+    return AiMove(
+      board,
+      setBoard,
+      player2,
+      setPlayer2,
+      col,
+      row,
+      direction,
+      "put",
+      "sleeping"
+    );
   }
 
   if (checkWin(newBoard, 2) === 1) {
     alert("Player 1 Win");
-    window.location.reload();
+    setTimeout(() => {
+      window.location.reload();
+    }, 5000);
   } else if (checkWin(newBoard, 2) === 2) {
     alert("Player 2 Win");
-    window.location.reload();
+    setTimeout(() => {
+      window.location.reload();
+    }, 5000);
   }
+
   setBoard(newBoard);
   console.log({ newBoard });
 };
@@ -757,7 +776,7 @@ const AiMove = (
 //       }
 //     }
 //   }
-//   let maxSbe = -Infinity;
+//   let maxSbe = -Number.MAX_VALUE;
 //   let maxSbeIndex;
 //   for (let i = 0; i < availableMove.length; i++) {
 //     if (maxSbe < availableMove[i].sbe) {
@@ -770,6 +789,7 @@ const AiMove = (
 //   return availableMove[maxSbeIndex];
 // };
 
+
 const minimax = (
   board,
   depth,
@@ -777,24 +797,25 @@ const minimax = (
   player2,
   isMaximize,
   lastMove,
-  alpha = -Number.MAX_VALUE, // Initialize alpha to very large negative number
-  beta = Number.MAX_VALUE
+  alpha, 
+  beta 
 ) => {
-  // if (depth === 1) {
-  //   console.log("ini ply1");
-  // } else {
-  //   console.log("ini ply2");
-  // }
 
   const availableMove = [];
   let bestMove = {};
   if (depth === 0) {
-    bestMove.sbe = sbe(board, !isMaximize ? 1 : 2);
+    bestMove.sbe = sbe(
+      board,
+      isMaximize ? 2 : 1,
+      player1.capstones,
+      player2.capstones
+    );
     bestMove.col = lastMove.col;
     bestMove.row = lastMove.row;
     bestMove.direction = lastMove.direction;
     bestMove.action = lastMove.action;
     bestMove.status = lastMove.status;
+    bestMove.player = isMaximize ? 2 : 1;
     return bestMove;
   }
 
@@ -817,13 +838,15 @@ const minimax = (
               depth - 1,
               player1,
               player2,
-              !isMaximize,
+              false,
               {
                 status: tempBoard[i][j][tempBoard[i][j].length - 1].status,
                 action: "put",
                 row: i,
                 col: j,
-              }
+              },
+              alpha,
+              beta
             );
             availableMove.push(bestMove);
             tempBoard[i][j] = [];
@@ -844,13 +867,15 @@ const minimax = (
                 depth - 1,
                 player1,
                 player2,
-                !isMaximize,
+                false,
                 {
                   action: "move",
                   row: i,
                   col: j,
                   direction: "up",
-                }
+                },
+                alpha,
+                beta
               );
               availableMove.push(bestMove);
               tempBoard[i - 1][j] = [];
@@ -895,13 +920,15 @@ const minimax = (
                 depth - 1,
                 player1,
                 player2,
-                !isMaximize,
+                false,
                 {
                   action: "move",
                   row: i,
                   col: j,
                   direction: "up",
-                }
+                },
+                alpha,
+                beta
               );
               availableMove.push(bestMove);
               tempBoard[i - 1][j] = [];
@@ -917,13 +944,15 @@ const minimax = (
                 depth - 1,
                 player1,
                 player2,
-                !isMaximize,
+                false,
                 {
                   action: "move",
                   row: i,
                   col: j,
                   direction: "down",
-                }
+                },
+                alpha,
+                beta
               );
               availableMove.push(bestMove);
               tempBoard[i + 1][j] = [];
@@ -968,13 +997,15 @@ const minimax = (
                 depth - 1,
                 player1,
                 player2,
-                !isMaximize,
+                false,
                 {
                   action: "move",
                   row: i,
                   col: j,
                   direction: "down",
-                }
+                },
+                alpha,
+                beta
               );
               availableMove.push(bestMove);
               tempBoard[i + 1][j] = [];
@@ -990,13 +1021,15 @@ const minimax = (
                 depth - 1,
                 player1,
                 player2,
-                !isMaximize,
+                false,
                 {
                   action: "move",
                   row: i,
                   col: j,
                   direction: "left",
-                }
+                },
+                alpha,
+                beta
               );
               availableMove.push(bestMove);
               tempBoard[i][j - 1] = [];
@@ -1041,13 +1074,15 @@ const minimax = (
                 depth - 1,
                 player1,
                 player2,
-                !isMaximize,
+                false,
                 {
                   action: "move",
                   row: i,
                   col: j,
                   direction: "left",
-                }
+                },
+                alpha,
+                beta
               );
               availableMove.push(bestMove);
               tempBoard[i][j - 1] = [];
@@ -1063,13 +1098,15 @@ const minimax = (
                 depth - 1,
                 player1,
                 player2,
-                !isMaximize,
+                false,
                 {
                   action: "move",
                   row: i,
                   col: j,
                   direction: "right",
-                }
+                },
+                alpha,
+                beta
               );
               availableMove.push(bestMove);
               tempBoard[i][j + 1] = [];
@@ -1114,13 +1151,15 @@ const minimax = (
                 depth - 1,
                 player1,
                 player2,
-                !isMaximize,
+                false,
                 {
                   action: "move",
                   row: i,
                   col: j,
                   direction: "right",
-                }
+                },
+                alpha,
+                beta
               );
               availableMove.push(bestMove);
               tempBoard[i][j + 1] = [];
@@ -1129,21 +1168,27 @@ const minimax = (
         }
       }
     }
-    // In the maximizing player's branch
     for (let i = 0; i < availableMove.length; i++) {
-      alpha = Math.max(alpha, availableMove[i].sbe);
-      console.log({ beta, alpha, move: availableMove[i] });
-
-      if (beta <= alpha) {
-        console.log("Prune (maximizing)");
-        break; // Prune the branch
-      }
-
       if (bestMove.sbe < availableMove[i].sbe) {
         bestMove = availableMove[i];
       }
-    }
 
+      // alpha = 99
+      // beta = 9999
+      alpha = Math.max(alpha, bestMove.sbe);
+      // console.log({
+      //   alpha,SBE : bestMove.sbe
+      // });
+      // console.log("MATH MAX : ",Math.max(alpha, bestMove.sbe));
+      // console.log({ alpha, beta });
+      if (beta <= alpha) {
+        alert("prune");
+        break;
+      }
+    }
+    // console.log("Ini Maximize");
+    // console.log({ availableMove });
+    // console.log(bestMove);
     return bestMove;
   } else {
     bestMove.sbe = Number.MAX_VALUE;
@@ -1164,13 +1209,15 @@ const minimax = (
               depth - 1,
               player1,
               player2,
-              isMaximize,
+              true,
               {
                 status: tempBoard[i][j][tempBoard[i][j].length - 1].status,
                 action: "put",
                 row: i,
                 col: j,
-              }
+              },
+              alpha,
+              beta
             );
             availableMove.push(bestMove);
             tempBoard[i][j] = [];
@@ -1191,13 +1238,15 @@ const minimax = (
                 depth - 1,
                 player1,
                 player2,
-                isMaximize,
+                true,
                 {
                   action: "move",
                   row: i,
                   col: j,
                   direction: "up",
-                }
+                },
+                alpha,
+                beta
               );
               availableMove.push(bestMove);
               tempBoard[i - 1][j] = [];
@@ -1242,13 +1291,15 @@ const minimax = (
                 depth - 1,
                 player1,
                 player2,
-                isMaximize,
+                true,
                 {
                   action: "move",
                   row: i,
                   col: j,
                   direction: "up",
-                }
+                },
+                alpha,
+                beta
               );
               availableMove.push(bestMove);
               tempBoard[i - 1][j] = [];
@@ -1264,13 +1315,15 @@ const minimax = (
                 depth - 1,
                 player1,
                 player2,
-                isMaximize,
+                true,
                 {
                   action: "move",
                   row: i,
                   col: j,
                   direction: "down",
-                }
+                },
+                alpha,
+                beta
               );
               availableMove.push(bestMove);
               tempBoard[i + 1][j] = [];
@@ -1315,13 +1368,15 @@ const minimax = (
                 depth - 1,
                 player1,
                 player2,
-                isMaximize,
+                true,
                 {
                   action: "move",
                   row: i,
                   col: j,
                   direction: "down",
-                }
+                },
+                alpha,
+                beta
               );
               availableMove.push(bestMove);
               tempBoard[i + 1][j] = [];
@@ -1337,13 +1392,15 @@ const minimax = (
                 depth - 1,
                 player1,
                 player2,
-                isMaximize,
+                true,
                 {
                   action: "move",
                   row: i,
                   col: j,
                   direction: "left",
-                }
+                },
+                alpha,
+                beta
               );
               availableMove.push(bestMove);
               tempBoard[i][j - 1] = [];
@@ -1388,13 +1445,15 @@ const minimax = (
                 depth - 1,
                 player1,
                 player2,
-                isMaximize,
+                true,
                 {
                   action: "move",
                   row: i,
                   col: j,
                   direction: "left",
-                }
+                },
+                alpha,
+                beta
               );
               availableMove.push(bestMove);
               tempBoard[i][j - 1] = [];
@@ -1410,13 +1469,15 @@ const minimax = (
                 depth - 1,
                 player1,
                 player2,
-                isMaximize,
+                true,
                 {
                   action: "move",
                   row: i,
                   col: j,
                   direction: "right",
-                }
+                },
+                alpha,
+                beta
               );
               availableMove.push(bestMove);
               tempBoard[i][j + 1] = [];
@@ -1461,13 +1522,15 @@ const minimax = (
                 depth - 1,
                 player1,
                 player2,
-                isMaximize,
+                true,
                 {
                   action: "move",
                   row: i,
                   col: j,
                   direction: "right",
-                }
+                },
+                alpha,
+                beta
               );
               availableMove.push(bestMove);
               tempBoard[i][j + 1] = [];
@@ -1476,35 +1539,42 @@ const minimax = (
         }
       }
     }
-    // In the minimizing player's branch
     for (let i = 0; i < availableMove.length; i++) {
-      beta = Math.min(beta, availableMove[i].sbe);
-      console.log({ beta, alpha });
-
-      if (beta <= alpha) {
-        console.log("Prune (minimizing)");
-        break; // Prune the branch
-      }
-
       if (bestMove.sbe > availableMove[i].sbe) {
         bestMove = availableMove[i];
       }
-    }
 
+      beta = Math.min(beta, bestMove.sbe);
+      // console.log({
+      //   beta,SBE : bestMove.sbe
+      // });
+      // console.log("MATH MIN : ",Math.min(beta, bestMove.sbe));
+      console.log({ alpha, beta });
+      if (beta <= alpha) {
+        alert("prune");
+        break;
+      }
+    }
+    // console.log("Ini Minimize");
+    // console.log({ availableMove });
+    // console.log(bestMove);
     return bestMove;
   }
 };
 
-const sbe = (board, currentPlayer) => {
+const sbe = (board, currentPlayer, handCW, handCB) => {
   let playerflat = 0;
   let playercap = 0;
   let aiflat = 0;
   let aicap = 0;
+  let capscore = 0;
+  let roadArr = new Array(10)
+    .fill(null)
+    .map(() => new Array(6).fill([]).map(() => []));
   let influenceArr = new Array(5)
     .fill(null)
     .map(() => new Array(5).fill([]).map(() => []));
 
-  //Function influence
   const influence = (board) => {
     for (let i = 0; i < 5; i++) {
       for (let j = 0; j < 5; j++) {
@@ -1515,8 +1585,8 @@ const sbe = (board, currentPlayer) => {
     for (let i = 0; i < 5; i++) {
       for (let j = 0; j < 5; j++) {
         let ipoint = 0;
-        let thistype;
-        let neartype;
+        let thistype = "";
+        let neartype = "";
 
         if (board[i][j].length > 0) {
           if (
@@ -1563,8 +1633,9 @@ const sbe = (board, currentPlayer) => {
 
         if (ipoint != 0) {
           influenceArr[i][j] += ipoint;
-        } else {
-          if (i > 0) {
+          // console.log(`${influenceArr[i][j]} -- ${i},${j}`)
+
+          if (i != 0) {
             if (board[i - 1][j].length > 0) {
               if (
                 board[i - 1][j][board[i - 1][j].length - 1].symbol === "w" &&
@@ -1776,7 +1847,7 @@ const sbe = (board, currentPlayer) => {
     }
   };
 
-  //Cek jumlah "flat" atau "capstone" yang ada di papan ("standing" tidak dihitung karena tidak dapat membentuk sebuah road untuk menang)
+  //Cek jumlah stone yang ada di papan
   for (let i = 0; i < 5; i++) {
     for (let j = 0; j < 5; j++) {
       if (board[i][j].length > 0) {
@@ -1804,15 +1875,122 @@ const sbe = (board, currentPlayer) => {
     }
   }
 
-  //Menghitung penguasaan papan
+  //Menghitung penguasaan papan dari jumlah stone
   let occupiedscore = 0;
-  occupiedscore = (playerflat - aiflat) * 75 + (playercap - aicap) * 100;
+  occupiedscore = (playerflat - aiflat) * 60 + (playercap - aicap) * 80;
+
+  //Deklarasi Awal roadArr
+  for (let i = 0; i < 10; i++) {
+    for (let j = 0; j < 6; j++) {
+      roadArr[i][j] = 0;
+    }
+  }
+
+  //Cek jumlah stone yang tersambung membentuk road di papan
+  for (let i = 0; i < 5; i++) {
+    for (let j = 0; j < 5; j++) {
+      if (board[i][j].length > 0) {
+        if (
+          board[i][j][board[i][j].length - 1].symbol === "w" &&
+          board[i][j][board[i][j].length - 1].status === "sleeping"
+        ) {
+          roadArr[i][0] += 1;
+          roadArr[j + 5][0] += 1;
+        } else if (
+          board[i][j][board[i][j].length - 1].symbol === "W" &&
+          board[i][j][board[i][j].length - 1].status === "standing"
+        ) {
+          roadArr[i][1] += 1;
+          roadArr[j + 5][1] += 1;
+        } else if (
+          board[i][j][board[i][j].length - 1].symbol === "CW" &&
+          board[i][j][board[i][j].length - 1].status === "capstone"
+        ) {
+          roadArr[i][2] += 1;
+          roadArr[j + 5][2] += 1;
+        } else if (
+          board[i][j][board[i][j].length - 1].symbol === "b" &&
+          board[i][j][board[i][j].length - 1].status === "sleeping"
+        ) {
+          roadArr[i][3] += 1;
+          roadArr[j + 5][3] += 1;
+        } else if (
+          board[i][j][board[i][j].length - 1].symbol === "B" &&
+          board[i][j][board[i][j].length - 1].status === "standing"
+        ) {
+          roadArr[i][4] += 1;
+          roadArr[j + 5][4] += 1;
+        } else if (
+          board[i][j][board[i][j].length - 1].symbol === "CB" &&
+          board[i][j][board[i][j].length - 1].status === "capstone"
+        ) {
+          roadArr[i][5] += 1;
+          roadArr[j + 5][5] += 1;
+        }
+      }
+    }
+  }
+
+  //Menghitung road yang sudah terkoneksi di papan & value capstone
+  let roadscore = 0;
+  let centerscore = 0;
+  let wallscore = 0;
+  let wallscoring = 0;
+  let roadscoring = [0, 35, 70, 140, 200, 250, 320, 400, 480];
+
+  for (let i = 0; i < 10; i++) {
+    let w = roadArr[i][0];
+    let W = roadArr[i][1];
+    let CW = roadArr[i][2];
+    let whiteroad = w + CW;
+
+    let b = roadArr[i][3];
+    let B = roadArr[i][4];
+    let CB = roadArr[i][5];
+    let blackroad = b + CB;
+
+    let overallvalue = whiteroad - blackroad;
+    let whitevalue = roadscoring[whiteroad];
+    let blackvalue = roadscoring[blackroad];
+
+    if (currentPlayer === 1) {
+      wallscoring = 0.9;
+    } else if (currentPlayer === 2) {
+      wallscoring = 0.7;
+    }
+
+    if (overallvalue > 0) {
+      wallscore =
+        W * 50 + B * 55 + (roadscoring[overallvalue] * (W + B) * 2) / 5;
+    } else if (overallvalue < 0) {
+      wallscore =
+        W * 50 + B * 55 + (roadscoring[overallvalue * -1] * (W + B) * 2) / 5;
+    } else {
+      wallscore = W * 32 + B * 32;
+    }
+
+    roadscore += blackvalue - whitevalue - wallscoring * wallscore;
+
+    if (i < 5) {
+      centerscore += (CW - CB) * (5 - 1 - i) * i * 4;
+    } else {
+      centerscore += (CW - CB) * (10 - 1 - i) * (i - 5) * 4;
+    }
+  }
+
+  //Menghitung value capstone yang masih ada ditangan sekarang
+  if (handCW == 1) {
+    capscore -= 50;
+  } else {
+    capscore += 50;
+  }
 
   //Menghitung score influence
   let influencescore = 0;
   influence(board);
   for (let i = 0; i < 5; i++) {
     for (let j = 0; j < 5; j++) {
+      // console.log(`${influenceArr[i][j]} -- ${i} -- ${j}`)
       let iscore = influenceArr[i][j];
       if (iscore > 0) {
         influencescore += Math.pow(iscore, 1.5);
@@ -1823,7 +2001,29 @@ const sbe = (board, currentPlayer) => {
     }
   }
 
-  let heuristic = 1.2 * occupiedscore + 0.75 * influencescore;
+  // console.log(playerflat);
+  // console.log(playercap);
+  // console.log(aiflat);
+  // console.log(aicap);
+  // console.log(capscore);
+  // console.log(occupiedscore);
+  // console.log(roadscore);
+  // console.log(centerscore);
+  // console.log(wallscore);
+  // console.log(wallscoring);
+  // console.log(influencescore);
+
+  // if(isNaN(influencescore)){
+  //   influencescore = 0;
+  // }
+
+  let heuristic =
+    1.5 * occupiedscore +
+    1.8 * roadscore +
+    0.7 * influencescore +
+    1 * centerscore +
+    capscore;
+  // console.log(heuristic);
 
   // //Ganjil = Player, Genap = AI
   // let playerScore = 0;
@@ -1950,305 +2150,130 @@ const sbe = (board, currentPlayer) => {
   return heuristic;
 };
 
-/*
-const sbe = (board, currentPlayer) => {
-  let score = 0;
+// const sbe = (board, row, col) => {
+//   let playerScore = 0;
+//   let aiScore = 0;
 
-  const checkAdjacent = (row, col, target) => {
-    // Fungsi untuk mengecek apakah ada block target di sekitar block pada posisi (row, col)
-    const directions = [
-      { x: -1, y: 0 }, // atas
-      { x: 1, y: 0 }, // bawah
-      { x: 0, y: -1 }, // kiri
-      { x: 0, y: 1 }, // kanan
-    ];
+//   for (let i = 0; i < 5; i++) {
+//     for (let j = 0; j < 5; j++) {
+//       //setiap kontrol atas stack +2 poin
+//       if (board[i][j].length > 0) {
+//         if (
+//           board[i][j][board[i][j].length - 1].symbol === "b" &&
+//           board[i][j][board[i][j].length - 1].status === "sleeping"
+//         )
+//           aiScore += 1;
+//         else if (
+//           board[i][j][board[i][j].length - 1].symbol === "w" &&
+//           board[i][j][board[i][j].length - 1].status === "sleeping"
+//         )
+//           playerScore += 1;
+//       }
+//     }
+//   }
 
-    for (const dir of directions) {
-      const newRow = row + dir.x;
-      const newCol = col + dir.y;
+//   const totalConnectPlayer = (board) => {
+//     let maxCount = 0;
+//     const visited = Array.from({ length: 5 }, () =>
+//       Array(board[0].length).fill(false)
+//     );
 
-      if (
-        newRow >= 0 &&
-        newRow < 5 &&
-        newCol >= 0 &&
-        newCol < 5 &&
-        board[newRow][newCol].length > 0 &&
-        board[newRow][newCol][board[newRow][newCol].length - 1].symbol ===
-          target
-      ) {
-        return true;
-      }
-    }
+//     const dfs = (i, j) => {
+//       if (
+//         i < 0 ||
+//         i >= 5 ||
+//         j < 0 ||
+//         j >= 5 ||
+//         visited[i][j] ||
+//         board[i][j].length === 0 || // Check if the cell is empty
+//         !(
+//           board[i][j][board[i][j].length - 1].symbol === "w" ||
+//           board[i][j][board[i][j].length - 1].symbol === "CW"
+//         )
+//       ) {
+//         return 0;
+//       }
 
-    return false;
-  };
+//       visited[i][j] = true;
 
-  for (let i = 0; i < 5; i++) {
-    for (let j = 0; j < 5; j++) {
-      const cell = board[i][j];
+//       let count = 1;
+//       count += dfs(i - 1, j) + dfs(i + 1, j) + dfs(i, j - 1) + dfs(i, j + 1);
 
-      if (cell.length > 0) {
-        const topBlock = cell[cell.length - 1].symbol;
+//       return count;
+//     };
 
-        // Pengecekan adjacent untuk tembok
-        if (topBlock === "w" && checkAdjacent(i, j, "b")) {
-          score += 1;
-        } else if (topBlock === "w" && checkAdjacent(i, j, "w")) {
-          score -= 1;
-        }
+//     for (let i = 0; i < 5; i++) {
+//       for (let j = 0; j < board[i].length; j++) {
+//         if (
+//           !visited[i][j] &&
+//           board[i][j].length > 0 && // Check if the cell is not empty
+//           (board[i][j][board[i][j].length - 1].symbol === "w" ||
+//             board[i][j][board[i][j].length - 1].symbol === "CW")
+//         ) {
+//           const count = dfs(i, j);
+//           maxCount = Math.max(maxCount, count);
+//         }
+//       }
+//     }
 
-        // Pengecekan adjacent untuk block pemain
-        if (currentPlayer === 1) {
-          if (topBlock === "w" && checkAdjacent(i, j, "B")) {
-            score += 1;
-          } else if (topBlock === "w" && checkAdjacent(i, j, "W")) {
-            score -= 1;
-          } else if (topBlock === "CW" && checkAdjacent(i, j, "W")) {
-            score += 2;
-          }
-        } else {
-          if (topBlock === "w" && checkAdjacent(i, j, "B")) {
-            score -= 1;
-          } else if (topBlock === "w" && checkAdjacent(i, j, "W")) {
-            score += 1;
-          } else if (topBlock === "CB" && checkAdjacent(i, j, "B")) {
-            score += 2;
-          }
-        }
-      }
-    }
-  }
+//     return maxCount;
+//   };
 
-  const totalConnectPlayer = (board) => {
-    let maxCount = 0;
-    const visited = Array.from({ length: 5 }, () =>
-      Array(board[0].length).fill(false)
-    );
+//   const totalConnectAi = (board) => {
+//     let maxCount = 0;
+//     const visited = Array.from({ length: 5 }, () =>
+//       Array(board[0].length).fill(false)
+//     );
 
-    const dfs = (i, j) => {
-      if (
-        i < 0 ||
-        i >= 5 ||
-        j < 0 ||
-        j >= 5 ||
-        visited[i][j] ||
-        board[i][j].length === 0 || // Check if the cell is empty
-        !(
-          board[i][j][board[i][j].length - 1].symbol === "w" ||
-          board[i][j][board[i][j].length - 1].symbol === "CW"
-        )
-      ) {
-        return 0;
-      }
+//     const dfs = (i, j) => {
+//       if (
+//         i < 0 ||
+//         i >= 5 ||
+//         j < 0 ||
+//         j >= 5 ||
+//         visited[i][j] ||
+//         board[i][j].length === 0 || // Check if the cell is empty
+//         !(
+//           board[i][j][board[i][j].length - 1].symbol === "b" ||
+//           board[i][j][board[i][j].length - 1].symbol === "CB"
+//         )
+//       ) {
+//         return 0;
+//       }
 
-      visited[i][j] = true;
+//       visited[i][j] = true;
 
-      let count = 1;
-      count += dfs(i - 1, j) + dfs(i + 1, j) + dfs(i, j - 1) + dfs(i, j + 1);
+//       let count = 1;
+//       count += dfs(i - 1, j) + dfs(i + 1, j) + dfs(i, j - 1) + dfs(i, j + 1);
 
-      return count;
-    };
+//       return count;
+//     };
 
-    for (let i = 0; i < 5; i++) {
-      for (let j = 0; j < board[i].length; j++) {
-        if (
-          !visited[i][j] &&
-          board[i][j].length > 0 && // Check if the cell is not empty
-          (board[i][j][board[i][j].length - 1].symbol === "w" ||
-            board[i][j][board[i][j].length - 1].symbol === "CW")
-        ) {
-          const count = dfs(i, j);
-          maxCount = Math.max(maxCount, count);
-        }
-      }
-    }
+//     for (let i = 0; i < 5; i++) {
+//       for (let j = 0; j < board[i].length; j++) {
+//         if (
+//           !visited[i][j] &&
+//           board[i][j].length > 0 && // Check if the cell is not empty
+//           (board[i][j][board[i][j].length - 1].symbol === "b" ||
+//             board[i][j][board[i][j].length - 1].symbol === "CB")
+//         ) {
+//           const count = dfs(i, j);
+//           maxCount = Math.max(maxCount, count);
+//         }
+//       }
+//     }
 
-    return maxCount;
-  };
+//     return maxCount;
+//   };
 
-  const totalConnectAi = (board) => {
-    let maxCount = 0;
-    const visited = Array.from({ length: 5 }, () =>
-      Array(board[0].length).fill(false)
-    );
+//   console.log({ totalConnectAi: totalConnectAi(board) });
+//   console.log({ totalConnectPlayer: totalConnectPlayer(board) });
 
-    const dfs = (i, j) => {
-      if (
-        i < 0 ||
-        i >= 5 ||
-        j < 0 ||
-        j >= 5 ||
-        visited[i][j] ||
-        board[i][j].length === 0 || // Check if the cell is empty
-        !(
-          board[i][j][board[i][j].length - 1].symbol === "b" ||
-          board[i][j][board[i][j].length - 1].symbol === "CB"
-        )
-      ) {
-        return 0;
-      }
+//   aiScore += totalConnectAi(board);
+//   playerScore += totalConnectPlayer(board);
 
-      visited[i][j] = true;
-
-      let count = 1;
-      count += dfs(i - 1, j) + dfs(i + 1, j) + dfs(i, j - 1) + dfs(i, j + 1);
-
-      return count;
-    };
-
-    for (let i = 0; i < 5; i++) {
-      for (let j = 0; j < board[i].length; j++) {
-        if (
-          !visited[i][j] &&
-          board[i][j].length > 0 && // Check if the cell is not empty
-          (board[i][j][board[i][j].length - 1].symbol === "b" ||
-            board[i][j][board[i][j].length - 1].symbol === "CB")
-        ) {
-          const count = dfs(i, j);
-          maxCount = Math.max(maxCount, count);
-        }
-      }
-    }
-
-    return maxCount;
-  };
-
-  if(currentPlayer === 1){
-    score += totalConnectPlayer(board)
-  }else if(currentPlayer === 2){
-    score -= totalConnectAi(board)
-  }
-
-  return score;
-};
-/*
-
-/*
-const sbe = (board, row, col) => {
-  let playerScore = 0;
-  let aiScore = 0;
-
-  for (let i = 0; i < 5; i++) {
-    for (let j = 0; j < 5; j++) {
-      //setiap kontrol atas stack +2 poin
-      if (board[i][j].length > 0) {
-        if (
-          board[i][j][board[i][j].length - 1].symbol === "b" &&
-          board[i][j][board[i][j].length - 1].status === "sleeping"
-        )
-          aiScore += 1;
-        else if (
-          board[i][j][board[i][j].length - 1].symbol === "w" &&
-          board[i][j][board[i][j].length - 1].status === "sleeping"
-        )
-          playerScore += 1;
-      }
-    }
-  }
-
-  const totalConnectPlayer = (board) => {
-    let maxCount = 0;
-    const visited = Array.from({ length: 5 }, () =>
-      Array(board[0].length).fill(false)
-    );
-
-    const dfs = (i, j) => {
-      if (
-        i < 0 ||
-        i >= 5 ||
-        j < 0 ||
-        j >= 5 ||
-        visited[i][j] ||
-        board[i][j].length === 0 || // Check if the cell is empty
-        !(
-          board[i][j][board[i][j].length - 1].symbol === "w" ||
-          board[i][j][board[i][j].length - 1].symbol === "CW"
-        )
-      ) {
-        return 0;
-      }
-
-      visited[i][j] = true;
-
-      let count = 1;
-      count += dfs(i - 1, j) + dfs(i + 1, j) + dfs(i, j - 1) + dfs(i, j + 1);
-
-      return count;
-    };
-
-    for (let i = 0; i < 5; i++) {
-      for (let j = 0; j < board[i].length; j++) {
-        if (
-          !visited[i][j] &&
-          board[i][j].length > 0 && // Check if the cell is not empty
-          (board[i][j][board[i][j].length - 1].symbol === "w" ||
-            board[i][j][board[i][j].length - 1].symbol === "CW")
-        ) {
-          const count = dfs(i, j);
-          maxCount = Math.max(maxCount, count);
-        }
-      }
-    }
-
-    return maxCount;
-  };
-
-  const totalConnectAi = (board) => {
-    let maxCount = 0;
-    const visited = Array.from({ length: 5 }, () =>
-      Array(board[0].length).fill(false)
-    );
-
-    const dfs = (i, j) => {
-      if (
-        i < 0 ||
-        i >= 5 ||
-        j < 0 ||
-        j >= 5 ||
-        visited[i][j] ||
-        board[i][j].length === 0 || // Check if the cell is empty
-        !(
-          board[i][j][board[i][j].length - 1].symbol === "b" ||
-          board[i][j][board[i][j].length - 1].symbol === "CB"
-        )
-      ) {
-        return 0;
-      }
-
-      visited[i][j] = true;
-
-      let count = 1;
-      count += dfs(i - 1, j) + dfs(i + 1, j) + dfs(i, j - 1) + dfs(i, j + 1);
-
-      return count;
-    };
-
-    for (let i = 0; i < 5; i++) {
-      for (let j = 0; j < board[i].length; j++) {
-        if (
-          !visited[i][j] &&
-          board[i][j].length > 0 && // Check if the cell is not empty
-          (board[i][j][board[i][j].length - 1].symbol === "b" ||
-            board[i][j][board[i][j].length - 1].symbol === "CB")
-        ) {
-          const count = dfs(i, j);
-          maxCount = Math.max(maxCount, count);
-        }
-      }
-    }
-
-    return maxCount;
-  };
-
-  console.log({ totalConnectAi: totalConnectAi(board) });
-  console.log({ totalConnectPlayer: totalConnectPlayer(board) });
-
-  aiScore += totalConnectAi(board);
-  playerScore += totalConnectPlayer(board);
-
-  return aiScore - playerScore;
-};
-*/
+//   return aiScore - playerScore;
+// };
 
 export {
   openModal,
