@@ -24,7 +24,8 @@ const selectStatus = (
   setPlayer1,
   setPlayer2,
   player1,
-  player2
+  player2,
+  setGameover
 ) => {
   // Menutup modal
   setModalOpen(false);
@@ -65,10 +66,10 @@ const selectStatus = (
   // Check Win
   if (checkWin(newBoard, currentPlayer) === 1) {
     alert("Player 1 Win");
-    window.location.reload();
+    setGameover(true);
   } else if (checkWin(newBoard, currentPlayer) === 2) {
     alert("Player 2 Win");
-    window.location.reload();
+    setGameover(true);
   }
 
   // Ganti giliran pemain
@@ -166,7 +167,8 @@ const handlePut = (
   initialCol,
   setInitialCol,
   movestatus,
-  setMoveStatus
+  setMoveStatus,
+  setGameover
 ) => {
   // Tentukan arah gerakan dan koordinat cell tujuan
   let targetRow = row;
@@ -348,14 +350,10 @@ const handlePut = (
     // Check Win
     if (checkWin(newBoard, currentPlayer) === 1) {
       alert("Player 1 Win");
-      setTimeout(() => {
-        window.location.reload();
-      }, 5000);
+      setGameover(true);
     } else if (checkWin(newBoard, currentPlayer) === 2) {
       alert("Player 2 Win");
-      setTimeout(() => {
-        window.location.reload();
-      }, 5000);
+      setGameover(true);
     }
 
     // Ganti giliran AI
@@ -475,7 +473,7 @@ const checkWin = (board, currentPlayer) => {
       checkJalan(board, 0, i, currentPlayer, null, "vertical") ||
       checkJalan(board, i, 0, currentPlayer, null, "horizontal")
     ) {
-      return currentPlayer;
+      return currentPlayer == 2 ? currentPlayer : 1;
     }
     // console.log(
     //   i,
@@ -523,7 +521,8 @@ const AiMove = (
   row,
   direction,
   action,
-  status
+  status,
+  setGameover
 ) => {
   // console.log({ board });
   // console.log({ col });
@@ -676,14 +675,10 @@ const AiMove = (
 
   if (checkWin(newBoard, 2) === 1) {
     alert("Player 1 Win");
-    setTimeout(() => {
-      window.location.reload();
-    }, 5000);
+    setGameover(true);
   } else if (checkWin(newBoard, 2) === 2) {
     alert("Player 2 Win");
-    setTimeout(() => {
-      window.location.reload();
-    }, 5000);
+    setGameover(true);
   }
 
   setBoard(newBoard);
@@ -1111,14 +1106,13 @@ const minimax = (
       }
     }
 
-    
     for (let i = 0; i < availableMove.length; i++) {
       if (bestMove.sbe < availableMove[i].sbe) {
         bestMove = availableMove[i];
       }
 
       alpha = Math.max(alpha, bestMove.sbe);
-      
+
       if (beta <= alpha) {
         alert("prune");
         break;
@@ -1324,7 +1318,7 @@ const minimax = (
                 ) {
                   break;
                 }
-              }else if (
+              } else if (
                 ["B", "b", "CB"].includes(
                   selectedCell[selectedCell.length - 1].symbol
                 )

@@ -44,8 +44,7 @@ const App = () => {
   const [curGrid, setCurGrid] = useState(null);
   const [gameover, setGameover] = useState(false);
 
-  useEffect(() => {
-  }, [gameover]);
+  useEffect(() => {}, [gameover]);
 
   // State untuk modal tindakan
   const [isActionModalOpen, setActionModalOpen] = useState(false);
@@ -89,7 +88,8 @@ const App = () => {
         initialCol,
         setInitialCol,
         movestatus,
-        setMoveStatus
+        setMoveStatus,
+        setGameover
       );
     } else {
       if (
@@ -159,7 +159,8 @@ const App = () => {
         initialCol,
         setInitialCol,
         movestatus,
-        setMoveStatus
+        setMoveStatus,
+        setGameover
       );
     } else {
       // Pengecekan pemain dan pion yang dapat diklik
@@ -204,7 +205,8 @@ const App = () => {
       setPlayer1,
       setPlayer2,
       player1,
-      player2
+      player2,
+      setGameover
     );
 
   if (currentPlayer === 2 && player2.stones !== 21 && player1.stones !== 21) {
@@ -219,7 +221,8 @@ const App = () => {
       move.row,
       move.direction,
       move.action,
-      move.status
+      move.status,
+      setGameover
     );
 
     setCurrentPlayer(1);
@@ -323,7 +326,7 @@ const App = () => {
                           : "pointer",
                       position: "relative",
                       backgroundColor: "white",
-                      pointerEvents: `${gameover && "none"}`,
+                      pointerEvents: `${gameover ? "none" : "auto"}`,
                     }}
                   >
                     {cell.length > 0 && (
@@ -485,18 +488,6 @@ const App = () => {
                     )}
                   </div>
                 ))
-              )}
-              {gameover && (
-                <div
-                  style={{
-                    position: "absolute",
-                    height: "50px",
-                    width: "50px",
-                    backgroundColor: "red",
-                  }}
-                >
-                  ASD
-                </div>
               )}
             </div>
           </div>
@@ -819,62 +810,92 @@ const App = () => {
           {renderBoard()}
 
           {/* Tampilkan info stack */}
-          <div style={{ flex: 1, height: "100%" }}>
+          <div
+            style={{
+              flex: 1,
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
             <h1 style={{ textAlign: "center" }}> Stack Information</h1>
-            {curGrid && (
-              <div style={{ textAlign: "center" }}>
-                Stack count: {curGrid.length}
-              </div>
-            )}
-            {curGrid &&
-              curGrid.slice(0, 10).map((item, index) =>
-                item.status === "capstone" ? (
-                  <div key={index}>
-                    <div
-                      style={{
-                        width: "30.5px",
-                        height: "10px",
-                        backgroundColor: `${
-                          item.symbol === "b" ? "#8f6459" : "#f8dbb2"
-                        }`,
-                        transform: "perspective(1.1px) rotateX(3deg)",
-                        margin: "auto",
-                        marginBottom: "11px",
-                        border: "1px solid black",
-                        borderBottom: "none",
-                      }}
-                    ></div>
-                    <div
-                      style={{
-                        width: "30px",
-                        height: "50px",
-                        backgroundColor: `${
-                          item.symbol === "b" ? "#8f6459" : "#f8dbb2"
-                        }`,
-                        transform: "perspective(5px) rotateX(177deg)",
-                        margin: "auto",
-                        border: "1px solid black",
-                        borderBottom: "none",
-                      }}
-                    ></div>
-                  </div>
-                ) : (
-                  <div
-                    key={index}
-                    style={{
-                      border: "1px solid black",
-                      backgroundColor: `${
-                        item.symbol === "b" ? "#8f6459" : "#f8dbb2"
-                      }`,
-                      color: `${item.symbol === "b" ? "#f8dbb2" : "#8f6459"}`,
-                      height: `${item.status === "sleeping" ? "30px" : "60px"}`,
-                      width: `${item.status === "sleeping" ? "100px" : "30px"}`,
-                      margin: "auto",
-                      marginTop: "2px",
-                    }}
-                  ></div>
-                )
+            <div style={{ flex: 4 }}>
+              {curGrid && (
+                <div style={{ textAlign: "center" }}>
+                  Stack count: {curGrid.length}
+                </div>
               )}
+              {curGrid &&
+                curGrid.slice(0, 10).map((item, index) =>
+                  item.status === "capstone" ? (
+                    <div key={index}>
+                      <div
+                        style={{
+                          width: "30.5px",
+                          height: "10px",
+                          backgroundColor: `${
+                            item.symbol === "b" ? "#8f6459" : "#f8dbb2"
+                          }`,
+                          transform: "perspective(1.1px) rotateX(3deg)",
+                          margin: "auto",
+                          marginBottom: "11px",
+                          border: "1px solid black",
+                          borderBottom: "none",
+                        }}
+                      ></div>
+                      <div
+                        style={{
+                          width: "30px",
+                          height: "50px",
+                          backgroundColor: `${
+                            item.symbol === "b" ? "#8f6459" : "#f8dbb2"
+                          }`,
+                          transform: "perspective(5px) rotateX(177deg)",
+                          margin: "auto",
+                          border: "1px solid black",
+                          borderBottom: "none",
+                        }}
+                      ></div>
+                    </div>
+                  ) : (
+                    <div
+                      key={index}
+                      style={{
+                        border: "1px solid black",
+                        backgroundColor: `${
+                          item.symbol === "b" ? "#8f6459" : "#f8dbb2"
+                        }`,
+                        color: `${item.symbol === "b" ? "#f8dbb2" : "#8f6459"}`,
+                        height: `${
+                          item.status === "sleeping" ? "30px" : "60px"
+                        }`,
+                        width: `${
+                          item.status === "sleeping" ? "100px" : "30px"
+                        }`,
+                        margin: "auto",
+                        marginTop: "2px",
+                      }}
+                    ></div>
+                  )
+                )}
+            </div>
+            <div style={{ flex: 1 }}>
+              <button
+                onClick={() => {
+                  setBoard(
+                    Array(5)
+                      .fill([])
+                      .map(() => Array(5).fill([]))
+                  );
+                  setCurrentPlayer(1);
+                  setPlayer1({ stones: 21, capstones: 1 });
+                  setPlayer2({ stones: 21, capstones: 1 });
+                  setGameover(false);
+                }}
+              >
+                Reset Board
+              </button>
+            </div>
           </div>
 
           {/* Modal untuk memilih status stone atau capstone */}

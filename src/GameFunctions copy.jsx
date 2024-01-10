@@ -471,7 +471,7 @@ const checkWin = (board, currentPlayer) => {
       checkJalan(board, 0, i, currentPlayer, null, "vertical") ||
       checkJalan(board, i, 0, currentPlayer, null, "horizontal")
     ) {
-      return currentPlayer;
+      return currentPlayer === 2 ? 2 : 1;
     }
     // console.log(
     //   i,
