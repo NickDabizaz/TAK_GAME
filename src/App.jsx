@@ -210,7 +210,7 @@ const App = () => {
     );
 
   if (currentPlayer === 2 && player2.stones !== 21 && player1.stones !== 21) {
-    let move = minimax(board, 3, player1, player2, true, {}, -99999, 99999);
+    let move = minimax(board, 1, player1, player2, true, {}, -99999, 99999);
     console.log({ move });
     AiMove(
       board,
@@ -524,7 +524,7 @@ const App = () => {
             flexDirection: "column",
             fontSize: "1.2rem",
           }}
-          onClick={() => setRoute("option")}
+          onClick={() => setRoute("game")}
         >
           <div style={{ flex: 1 }}></div>
           <AnimatedText>
@@ -879,8 +879,9 @@ const App = () => {
                   )
                 )}
             </div>
-            <div style={{ flex: 1 }}>
+            <div style={{ flex: 1, textAlign: "center" }}>
               <button
+                style={{ padding: "10px", margin: "auto" }}
                 onClick={() => {
                   setBoard(
                     Array(5)

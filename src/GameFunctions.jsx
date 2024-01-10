@@ -414,6 +414,13 @@ const checkJalan = (
   ) {
     return false;
   }
+  if (
+    (currentPlayer === 3 && currentBlock === "b") ||
+    (currentPlayer === 3 && currentBlock === "B") ||
+    (currentPlayer === 3 && currentBlock === "CB")
+  ) {
+    return false;
+  }
 
   if (
     (currentPlayer === 2 && currentBlock === "w") ||
@@ -1114,7 +1121,7 @@ const minimax = (
       alpha = Math.max(alpha, bestMove.sbe);
 
       if (beta <= alpha) {
-        alert("prune");
+        // alert("prune");
         break;
       }
     }
@@ -1419,7 +1426,7 @@ const minimax = (
 
       beta = Math.min(beta, bestMove.sbe);
       if (beta <= alpha) {
-        alert("prune");
+        // alert("prune");
         break;
       }
     }
@@ -1428,6 +1435,26 @@ const minimax = (
 };
 
 const sbe = (board, currentPlayer, handCW, handCB) => {
+  // if (currentPlayer == 1) {
+  //   if (checkWin(board, currentPlayer) === 1) {
+  //     return Number.MAX_VALUE;
+  //   } else if (checkWin(board, currentPlayer) === 2) {
+  //     return -Number.MAX_VALUE;
+  //   }
+  // } else if (currentPlayer === 2) {
+  //   if (checkWin(board, currentPlayer) === 1) {
+  //     return Number.MAX_VALUE;
+  //   } else if (checkWin(board, currentPlayer) === 2) {
+  //     return -Number.MAX_VALUE;
+  //   }
+  // }
+
+  if (checkWin(board, currentPlayer) === 1) {
+    return Number.MAX_VALUE;
+  } else if (checkWin(board, currentPlayer) === 2) {
+    return -Number.MAX_VALUE;
+  }
+
   let playerflat = 0;
   let playercap = 0;
   let aiflat = 0;
@@ -1801,7 +1828,7 @@ const sbe = (board, currentPlayer, handCW, handCB) => {
   let centerscore = 0;
   let wallscore = 0;
   let wallscoring = 0;
-  let roadscoring = [0, 35, 70, 140, 200, 250, 320, 400, 480];
+  let roadscoring = [0, 35, 70, 140, 200, 250, 320, 400];
 
   for (let i = 0; i < 10; i++) {
     let w = roadArr[i][0];
@@ -1819,9 +1846,9 @@ const sbe = (board, currentPlayer, handCW, handCB) => {
     let blackvalue = roadscoring[blackroad];
 
     if (currentPlayer === 1) {
-      wallscoring = 0.9;
+      wallscoring = 0.8;
     } else if (currentPlayer === 2) {
-      wallscoring = 0.7;
+      wallscoring = 0.6;
     }
 
     if (overallvalue > 0) {
