@@ -1110,27 +1110,20 @@ const minimax = (
         }
       }
     }
+
+    
     for (let i = 0; i < availableMove.length; i++) {
       if (bestMove.sbe < availableMove[i].sbe) {
         bestMove = availableMove[i];
       }
 
-      // alpha = 99
-      // beta = 9999
       alpha = Math.max(alpha, bestMove.sbe);
-      // console.log({
-      //   alpha,SBE : bestMove.sbe
-      // });
-      // console.log("MATH MAX : ",Math.max(alpha, bestMove.sbe));
-      // console.log({ alpha, beta });
+      
       if (beta <= alpha) {
         alert("prune");
         break;
       }
     }
-    // console.log("Ini Maximize");
-    // console.log({ availableMove });
-    // console.log(bestMove);
     return bestMove;
   } else {
     bestMove.sbe = Number.MAX_VALUE;
@@ -1431,19 +1424,11 @@ const minimax = (
       }
 
       beta = Math.min(beta, bestMove.sbe);
-      // console.log({
-      //   beta,SBE : bestMove.sbe
-      // });
-      // console.log("MATH MIN : ",Math.min(beta, bestMove.sbe));
-      // console.log({ alpha, beta });
       if (beta <= alpha) {
         alert("prune");
         break;
       }
     }
-    // console.log("Ini Minimize");
-    // console.log({ availableMove });
-    // console.log(bestMove);
     return bestMove;
   }
 };
