@@ -1324,7 +1324,7 @@ const minimax = (
                 ) {
                   break;
                 }
-              } else if (
+              }else if (
                 ["B", "b", "CB"].includes(
                   selectedCell[selectedCell.length - 1].symbol
                 )
@@ -1824,7 +1824,11 @@ const sbe = (board, currentPlayer, handCW, handCB) => {
     let whitevalue = roadscoring[whiteroad];
     let blackvalue = roadscoring[blackroad];
 
-    wallscoring = 0.9;
+    if (currentPlayer === 1) {
+      wallscoring = 0.9;
+    } else if (currentPlayer === 2) {
+      wallscoring = 0.7;
+    }
 
     if (overallvalue > 0) {
       wallscore =
