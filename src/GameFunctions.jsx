@@ -1257,7 +1257,7 @@ const minimax = (
               tempBoard[i + 1][j] = [];
             } else {
               if (
-                ["B", "b"].includes(
+                ["W", "w"].includes(
                   selectedCell[selectedCell.length - 1].symbol
                 )
               ) {
@@ -1320,7 +1320,7 @@ const minimax = (
               tempBoard[i][j - 1] = [];
             } else {
               if (
-                ["B", "b"].includes(
+                ["W", "w"].includes(
                   selectedCell[selectedCell.length - 1].symbol
                 )
               ) {
@@ -1383,7 +1383,7 @@ const minimax = (
               tempBoard[i][j + 1] = [];
             } else {
               if (
-                ["B", "b"].includes(
+                ["W", "w"].includes(
                   selectedCell[selectedCell.length - 1].symbol
                 )
               ) {
