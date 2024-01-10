@@ -45,7 +45,6 @@ const App = () => {
   const [gameover, setGameover] = useState(false);
 
   useEffect(() => {
-    alert("asd");
   }, [gameover]);
 
   // State untuk modal tindakan
